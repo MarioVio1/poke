@@ -1,9 +1,3 @@
----
-title: po
-sdk: docker
-emoji: 🚀
-colorTo: red
----
 # 🎮 Pokemona - Besti di Venetia
 
 Un gioco RPG estilo Pokemon ambientato nella regione veneta con Besti ispirati alla cucina e cultura italiana.
