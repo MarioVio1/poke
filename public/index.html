@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokemona - Besti di Venetia</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Press Start 2P', monospace;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    
+    .game-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .gba-console {
+      background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.1);
+      max-width: 320px;
+    }
+    
+    .screen-bezel {
+      background: #111;
+      border-radius: 10px;
+      padding: 8px;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    }
+    
+    .game-container {
+      position: relative;
+      width: 240px;
+      height: 160px;
+      background: #000;
+      overflow: hidden;
+      border-radius: 5px;
+    }
+    
+    .game-canvas {
+      display: block;
+      image-rendering: pixelated;
+    }
+    
+    .title-screen {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #1e3a5f 0%, #0d1b2a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      z-index: 10;
+    }
+    
+    .title-logo {
+      font-size: 20px;
+      color: #ffd700;
+      text-shadow: 2px 2px 0 #b8860b, 4px 4px 0 #8b6914;
+      animation: pulse 2s infinite;
+    }
+    
+    .title-subtitle {
+      font-size: 6px;
+      margin-top: 10px;
+      color: #87ceeb;
+    }
+    
+    .start-btn-large {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: linear-gradient(180deg, #4caf50, #2e7d32);
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #1b5e20;
+    }
+    
+    .start-btn-large:hover {
+      background: linear-gradient(180deg, #66bb6a, #4caf50);
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .hud-top {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      right: 5px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 7px;
+      color: white;
+      text-shadow: 1px 1px 0 #000;
+      z-index: 5;
+    }
+    
+    .city-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: rgba(0,0,0,0.7);
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-size: 5px;
+      color: #ffd700;
+      z-index: 5;
+    }
+    
+    .dialog-box {
+      position: absolute;
+      bottom: 5px;
+      left: 5px;
+      right: 5px;
+      background: white;
+      border: 2px solid #333;
+      border-radius: 5px;
+      padding: 6px;
+      min-height: 45px;
+      z-index: 10;
+    }
+    
+    .dialog-speaker {
+      font-size: 6px;
+      color: #1976d2;
+      margin-bottom: 3px;
+    }
+    
+    .dialog-text {
+      font-size: 7px;
+      line-height: 1.3;
+    }
+    
+    .notification {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.9);
+      color: #ffd700;
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-size: 7px;
+      z-index: 100;
+      text-align: center;
+    }
+    
+    /* Bottom screen */
+    .bottom-screen {
+      margin-top: 15px;
+    }
+    
+    .screen-bezel-bottom {
+      background: #222;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    
+    .bottom-content {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .info-panel {
+      flex: 1;
+      background: #333;
+      border-radius: 5px;
+      padding: 8px;
+      color: white;
+    }
+    
+    .location {
+      font-size: 7px;
+      margin-bottom: 8px;
+    }
+    
+    .party-preview {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .preview-bestia {
+      width: 24px;
+      height: 24px;
+      background: #555;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: white;
+    }
+    
+    .controls-area {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    
+    .dpad-container {
+      position: relative;
+      width: 70px;
+      height: 70px;
+    }
+    
+    .dpad {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .dpad-btn {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: #444;
+      border: none;
+      border-radius: 3px;
+      color: white;
+      font-size: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .dpad-btn:active {
+      background: #666;
+    }
+    
+    .dpad-up { top: 0; left: 50%; transform: translateX(-50%); }
+    .dpad-down { bottom: 0; left: 50%; transform: translateX(-50%); }
+    .dpad-left { left: 0; top: 50%; transform: translateY(-50%); }
+    .dpad-right { right: 0; top: 50%; transform: translateY(-50%); }
+    .dpad-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 22px;
+      height: 22px;
+      background: #333;
+      border-radius: 50%;
+    }
+    
+    .action-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    
+    #btn-a {
+      background: linear-gradient(145deg, #f44336, #c62828);
+      color: white;
+    }
+    
+    #btn-b {
+      background: linear-gradient(145deg, #ff9800, #e65100);
+      color: white;
+    }
+    
+    .start-select {
+      display: flex;
+      gap: 10px;
+      margin-left: 10px;
+    }
+    
+    .start-btn, .select-btn {
+      width: 30px;
+      height: 10px;
+      background: #555;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    /* City themes */
+    .city-canalborgo { background: linear-gradient(180deg, #1a5f7a 0%, #0d3b4d 100%); }
+    .city-spritzia { background: linear-gradient(180deg, #8d6e63 0%, #5d4037 100%); }
+    .city-veronara { background: linear-gradient(180deg, #c62828 0%, #7f0000 100%); }
+    .city-padoana { background: linear-gradient(180deg, #5e35b1 0%, #311b92 100%); }
+    .city-trevisella { background: linear-gradient(180deg, #558b2f 0%, #33691e 100%); }
+    .city-dolomax { background: linear-gradient(180deg, #78909c 0%, #455a64 100%); }
+    .city-gardalago { background: linear-gradient(180deg, #0277bd 0%, #01579b 100%); }
+    
+    /* Battle screen */
+    .battle-scene {
+      position: absolute;
+      inset: 0;
+    }
+    
+    .enemy-area {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+    
+    .enemy-info {
+      display: flex;
+      gap: 10px;
+      font-size: 7px;
+      color: white;
+    }
+    
+    .hp-bar {
+      width: 70px;
+      height: 5px;
+      background: #333;
+      border-radius: 3px;
+      margin-top: 3px;
+    }
+    
+    .hp-fill {
+      height: 100%;
+      background: linear-gradient(180deg, #4caf50, #2e7d32);
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+    
+    .hp-fill.low {
+      background: linear-gradient(180deg, #f44336, #c62828);
+    }
+    
+    .player-area {
+      position: absolute;
+      bottom: 30px;
+      left: 10px;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    
+    .bestia-sprite {
+      width: 48px;
+      height: 48px;
+      image-rendering: pixelated;
+    }
+    
+    .player-info {
+      font-size: 6px;
+      color: white;
+    }
+    
+    .hp-text {
+      font-size: 5px;
+      margin-top: 2px;
+    }
+    
+    .battle-message {
+      position: absolute;
+      bottom: 70px;
+      left: 5px;
+      right: 5px;
+      background: white;
+      padding: 6px;
+      border-radius: 5px;
+      font-size: 6px;
+      text-align: center;
+    }
+    
+    .battle-menu, .moves-menu {
+      position: absolute;
+      bottom: 5px;
+      left: 5px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      width: 120px;
+    }
+    
+    .battle-btn, .move-btn {
+      background: white;
+      border: 2px solid #333;
+      border-radius: 3px;
+      padding: 4px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 5px;
+      cursor: pointer;
+    }
+    
+    .battle-btn:hover, .move-btn:hover {
+      background: #e3f2fd;
+    }
+    
+    /* Menu overlay */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.95);
+      padding: 8px;
+      overflow-y: auto;
+      z-index: 50;
+    }
+    
+    .overlay-header {
+      font-size: 8px;
+      text-align: center;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #333;
+      margin-bottom: 8px;
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: #f44336;
+      color: white;
+      border: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 10px;
+    }
+    
+    .menu-options {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .menu-option {
+      padding: 8px;
+      background: #f5f5f5;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 7px;
+      text-align: center;
+    }
+    
+    .menu-option:hover {
+      background: #e3f2fd;
+    }
+    
+    .party-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .party-member {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px;
+      background: #f5f5f5;
+      border-radius: 3px;
+    }
+    
+    .party-sprite {
+      width: 32px;
+      height: 32px;
+      border-radius: 5px;
+    }
+    
+    .party-info {
+      flex: 1;
+    }
+    
+    .party-name {
+      font-size: 7px;
+      font-weight: bold;
+    }
+    
+    .party-level {
+      font-size: 5px;
+      color: #666;
+    }
+    
+    .hp-bar-mini {
+      width: 100%;
+      height: 4px;
+      background: #333;
+      border-radius: 2px;
+      margin: 3px 0;
+    }
+    
+    .hp-fill-mini {
+      height: 100%;
+      background: #4caf50;
+      border-radius: 2px;
+    }
+    
+    .party-hp-text {
+      font-size: 5px;
+      color: #666;
+    }
+    
+    /* Starter choice */
+    .starter-choice {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      z-index: 20;
+      padding: 10px;
+    }
+    
+    .starter-choice h2 {
+      font-size: 8px;
+      margin-bottom: 5px;
+      color: #ffd700;
+    }
+    
+    .starter-subtitle {
+      font-size: 5px;
+      color: #87ceeb;
+      margin-bottom: 8px;
+    }
+    
+    .starter-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+    
+    .starter-btn {
+      background: #333;
+      border: 2px solid #555;
+      border-radius: 8px;
+      padding: 5px;
+      cursor: pointer;
+      text-align: center;
+    }
+    
+    .starter-btn:hover {
+      border-color: #ffd700;
+      transform: scale(1.05);
+    }
+    
+    .starter-btn img {
+      width: 32px;
+      height: 32px;
+    }
+    
+    .starter-name {
+      font-size: 5px;
+      margin: 3px 0;
+      font-weight: bold;
+      color: #ffd700;
+    }
+    
+    .starter-desc {
+      font-size: 4px;
+      color: #aaa;
+    }
+    
+    .type-badge {
+      font-size: 4px;
+      padding: 1px 3px;
+      border-radius: 2px;
+      color: white;
+      display: inline-block;
+      margin: 1px;
+    }
+    
+    .type-fire { background: #f44336; }
+    .type-water { background: #2196f3; }
+    .type-nature { background: #4caf50; }
+    .type-earth { background: #8d6e63; }
+    .type-air { background: #87ceeb; }
+    .type-psycho { background: #9c27b0; }
+    .type-ice { background: #00bcd4; }
+    .type-poison { background: #4a148c; }
+    .type-electric { background: #ffc107; }
+    .type-magic { background: #e91e63; }
+    .type-sweet { background: #ff9800; }
+    .type-dragon { background: #673ab7; }
+    .type-normal { background: #9e9e9e; }
+    
+    /* Instructions */
+    .instructions {
+      margin-top: 15px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 10px;
+      max-width: 320px;
+    }
+    
+    .instructions h3 {
+      font-size: 8px;
+      color: #ffd700;
+      margin-bottom: 8px;
+    }
+    
+    .instructions p {
+      font-size: 6px;
+      color: #aaa;
+      line-height: 1.8;
+    }
+    
+    .key {
+      background: #333;
+      padding: 2px 5px;
+      border-radius: 3px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-wrapper">
+    <div class="gba-console">
+      <!-- Top Screen -->
+      <div class="top-screen">
+        <div class="screen-bezel">
+          <div class="game-container" id="gameContainer">
+            <canvas id="gameCanvas" class="game-canvas" width="240" height="160"></canvas>
+            
+            <!-- Title Screen -->
+            <div class="title-screen" id="titleScreen">
+              <div class="title-logo">POKEMONA</div>
+              <div class="title-subtitle">Besti di Venetia</div>
+              <button class="start-btn-large" onclick="startGame()">NUOVA PARTITA</button>
+            </div>
+            
+            <!-- HUD -->
+            <div class="hud-top" id="hud" style="display:none">
+              <span id="playerName">Federico</span>
+              <span id="playerMoney">₿3000</span>
+            </div>
+            
+            <!-- City Badge -->
+            <div class="city-badge" id="cityBadge" style="display:none">CANALBORGO</div>
+            
+            <!-- Dialog -->
+            <div class="dialog-box" id="dialogBox" style="display:none">
+              <div class="dialog-speaker" id="dialogSpeaker"></div>
+              <div class="dialog-text" id="dialogText"></div>
+            </div>
+            
+            <!-- Notification -->
+            <div class="notification" id="notification" style="display:none"></div>
+            
+            <!-- Battle Scene -->
+            <div class="battle-scene" id="battleScene" style="display:none">
+              <div class="enemy-area">
+                <div class="enemy-info">
+                  <span id="enemyName">Nemico</span>
+                  <span id="enemyLevel">Lv.5</span>
+                </div>
+                <div class="hp-bar">
+                  <div class="hp-fill" id="enemyHpFill" style="width:100%"></div>
+                </div>
+              </div>
+              
+              <div class="player-area">
+                <div id="playerSprite" class="bestia-sprite" style="background:#555;width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;">?</div>
+                <div class="player-info">
+                  <div id="playerBestiaName">Bestia</div>
+                  <div id="playerBestiaLevel">Lv.5</div>
+                  <div class="hp-bar">
+                    <div class="hp-fill" id="playerHpFill" style="width:100%"></div>
+                  </div>
+                  <div class="hp-text" id="playerHpText">100/100</div>
+                </div>
+              </div>
+              
+              <div class="battle-message" id="battleMessage" style="display:none"></div>
+              
+              <div class="battle-menu" id="battleMenu">
+                <button class="battle-btn" onclick="showMoves()">MOSSA</button>
+                <button class="battle-btn" onclick="showMenu()">ZAINO</button>
+                <button class="battle-btn" onclick="showParty()">BESTIA</button>
+                <button class="battle-btn" id="captureBtn" onclick="tryCapture()">CATTURA</button>
+              </div>
+              
+              <div class="moves-menu" id="movesMenu" style="display:none"></div>
+            </div>
+            
+            <!-- Starter Choice -->
+            <div class="starter-choice" id="starterChoice" style="display:none">
+              <h2>Scegli il tuo Besti Leggendario!</h2>
+              <p class="starter-subtitle">Come in Pokemon Marron Merda!</p>
+              <div class="starter-container">
+                <div class="starter-btn" onclick="selectStarter('dolomitor')">
+                  <div style="width:32px;height:32px;background:linear-gradient(135deg,#00bcd4,#00838f);border-radius:50%;margin:0 auto 5px;"></div>
+                  <div class="starter-name">DOLOMITOR</div>
+                  <span class="type-badge type-ice">Ghiaccio</span>
+                  <span class="type-badge type-earth">Terra</span>
+                  <div class="starter-desc">Spirito delle Dolomiti</div>
+                </div>
+                <div class="starter-btn" onclick="selectStarter('lagorion')">
+                  <div style="width:32px;height:32px;background:linear-gradient(135deg,#2196f3,#0d47a1);border-radius:50%;margin:0 auto 5px;"></div>
+                  <div class="starter-name">LAGORION</div>
+                  <span class="type-badge type-water">Acqua</span>
+                  <span class="type-badge type-dragon">Drago</span>
+                  <div class="starter-desc">Signore del Lago</div>
+                </div>
+                <div class="starter-btn" onclick="selectStarter('serenissima')">
+                  <div style="width:32px;height:32px;background:linear-gradient(135deg,#9c27b0,#4a148c);border-radius:50%;margin:0 auto 5px;"></div>
+                  <div class="starter-name">SERENISSIMA</div>
+                  <span class="type-badge type-psycho">Psico</span>
+                  <span class="type-badge type-air">Aria</span>
+                  <div class="starter-desc">Spirito di Venezia</div>
+                </div>
+                <div class="starter-btn" onclick="selectStarter('ombradriz')">
+                  <div style="width:32px;height:32px;background:linear-gradient(135deg,#e91e63,#880e4f);border-radius:50%;margin:0 auto 5px;"></div>
+                  <div class="starter-name">OMBRASPRITZ</div>
+                  <span class="type-badge type-magic">Magico</span>
+                  <span class="type-badge type-poison">Veleno</span>
+                  <div class="starter-desc">Spirito Aperitivi</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Menu Overlay -->
+            <div class="overlay" id="menuOverlay" style="display:none">
+              <div class="overlay-header" id="menuTitle">MENU</div>
+              <button class="close-btn" onclick="closeMenu()">✕</button>
+              <div class="menu-options" id="menuContent"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bottom Screen -->
+      <div class="bottom-screen">
+        <div class="screen-bezel-bottom">
+          <div class="bottom-content">
+            <div class="info-panel">
+              <div class="location" id="locationName">???</div>
+              <div class="party-preview" id="partyPreview"></div>
+            </div>
+            
+            <div class="controls-area">
+              <div class="dpad-container">
+                <div class="dpad">
+                  <button class="dpad-btn dpad-up" onmousedown="move('up')">▲</button>
+                  <button class="dpad-btn dpad-down" onmousedown="move('down')">▼</button>
+                  <button class="dpad-btn dpad-left" onmousedown="move('left')">◀</button>
+                  <button class="dpad-btn dpad-right" onmousedown="move('right')">▶</button>
+                  <div class="dpad-center"></div>
+                </div>
+              </div>
+              
+              <div class="action-btns">
+                <button class="action-btn" id="btn-a" onclick="handleA()">A</button>
+                <button class="action-btn" id="btn-b" onclick="handleB()">B</button>
+              </div>
+              
+              <div class="start-select">
+                <button class="start-btn" onclick="showMenu()"></button>
+                <button class="select-btn"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Instructions -->
+    <div class="instructions">
+      <h3>🎮 Controlli</h3>
+      <p>
+        <span class="key">WASD</span> / <span class="key">Frecce</span> = Movimento<br>
+        <span class="key">Z</span> / <span class="key">Enter</span> = Conferma<br>
+        <span class="key">X</span> / <span class="key">Esc</span> = Indietro/Menu<br>
+        <span class="key">Space</span> = Continua dialogo
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════
+    // GAME DATA - Besti, Items, Maps
+    // ═══════════════════════════════════════════════════════════
+    
+    const TILE_COLORS = {
+      0: '#5ab52e', 1: '#8B4513', 2: '#3db3e8', 3: '#a0522d', 4: '#d2b48c',
+      5: '#ff69b4', 6: '#8d6e63', 7: '#7cb342', 8: '#b0bec5'
+    };
+    
+    const BESTI = {
+      dolomitor: { id: 'dolomitor', name: 'Dolomitor', types: ['ice', 'earth'], bs: {hp:55,atk:55,def:55,spd:55}, moves: ['Gelo', 'Terremoto', 'Valanga', 'Soffio'] },
+      lagorion: { id: 'lagorion', name: 'Lagorion', types: ['water', 'dragon'], bs: {hp:55,atk:55,def:55,spd:55}, moves: ['Idropompa', 'Dragospiro', 'Onda', 'Tsunami'] },
+      serenissima: { id: 'serenissima', name: 'Serenissima', types: ['psycho', 'air'], bs: {hp:55,atk:55,def:55,spd:55}, moves: ['Psicamisù', 'Ventata', 'Confusione', 'Aura'] },
+     ombradriz: { id: 'ombradriz', name: 'OmbraSpritz', types: ['magic', 'poison'], bs: {hp:55,atk:60,def:50,spd:60}, moves: ['Spritzata', 'Velenmisù', 'Nebbia', 'Aperitivo'] },
+      gabbianzo: { id: 'gabbianzo', name: 'Gabbianzo', types: ['air', 'nature'], bs: {hp:35,atk:40,def:35,spd:45}, moves: ['Beccata', 'Raffica', 'Volo'] },
+      canalot: { id: 'canalot', name: 'Canalot', types: ['water'], bs: {hp:40,atk:35,def:45,spd:30}, moves: ['Idropompa', 'Morso'] },
+      colombo: { id: 'colombo', name: 'Colombo', types: ['air'], bs: {hp:30,atk:35,def:30,spd:40}, moves: ['Beccata', 'Volo'] },
+      spritzino: { id: 'spritzino', name: 'Spritzino', types: ['magic', 'sweet'], bs: {hp:45,atk:50,def:40,spd:55}, moves: ['Spritzata', 'Zucchero'] },
+      vignel: { id: 'vignel', name: 'Vignel', types: ['earth', 'nature'], bs: {hp:50,atk:45,def:55,spd:35}, moves: ['Radice', 'Terremoto'] },
+      radiccor: { id: 'radiccor', name: 'Radiccor', types: ['nature'], bs: {hp:55,atk:45,def:50,spd:40}, moves: ['Foglielama', 'Radice'] },
+      polentaur: { id: 'polentaur', name: 'Polentaur', types: ['earth'], bs: {hp:70,atk:65,def:70,spd:40}, moves: ['Terremoto', 'Valanga', 'Muro'] },
+    };
+    
+    const LEGENDARY_STARTERS = {
+      dolomitor: { ...BESTI.dolomitor },
+      lagorion: { ...BESTI.lagorion },
+      serenissima: { ...BESTI.serenissima },
+      ombradriz: { ...BESTI.ombradriz },
+    };
+    
+    const MAPS = {
+      canalborgo: {
+        name: 'Canalborgo',
+        tiles: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,0,2,2,2,0,0,0,0,0,2,2,2,0,0,0,0,0,1],
+          [1,0,0,2,2,2,0,0,0,0,0,2,2,2,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,3,3,3,3,3,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,3,3,3,3,3,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
+        ],
+        events: [
+          { type: 'npc', x: 10, y: 7, name: 'Prof. Barcaro', dialog: ['Ciao! Sono il Prof. Barcaro!', 'Studio i Besti da 40 anni!', 'Scegli il tuo primo Besti!'], givesStarter: true },
+          { type: 'sign', x: 8, y: 9, text: 'Benvenuti a CANALBORGO!' },
+          { type: 'warp', x: 7, y: 10, dest: 'casa' },
+        ],
+      },
+      casa: {
+        name: 'Casa',
+        tiles: [
+          [1,1,1,1,1,1,1,1,1,1],
+          [1,4,4,4,4,4,4,4,4,1],
+          [1,4,4,4,4,4,4,4,4,1],
+          [1,4,4,4,4,4,4,4,4,1],
+          [1,4,4,4,4,4,4,4,4,1],
+          [1,1,1,1,1,1,1,1,1,1],
+        ],
+        events: [
+          { type: 'npc', x: 4, y: 3, name: 'Mamma', dialog: ['Vai dal Prof. Barcaro!'] },
+          { type: 'warp', x: 4, y: 4, dest: 'canalborgo' },
+        ],
+      },
+      spritzia: {
+        name: 'Spritzia',
+        tiles: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,3,3,3,3,0,0,0,0,0,0,3,3,3,3,0,0,0,1],
+          [1,0,3,3,3,3,0,0,0,0,0,0,3,3,3,3,0,0,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,3,3,3,3,3,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,3,3,3,3,3,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        ],
+        wild: ['vignel', 'spritzino'],
+        wildLvl: [8, 10],
+        events: [
+          { type: 'sign', x: 10, y: 8, text: 'SPRITZIA - Città dell\'Aperitivo!' },
+          { type: 'warp', x: 10, y: 0, dest: 'canalborgo' },
+        ],
+      },
+      route1: {
+        name: 'Via del Prosecco',
+        tiles: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        ],
+        wild: ['gabbianzo', 'canalot', 'colombo'],
+        wildLvl: [3, 4, 3],
+        events: [
+          { type: 'sign', x: 10, y: 5, text: 'Via del Prosecco → Spritzia' },
+          { type: 'warp', x: 10, y: 0, dest: 'canalborgo' },
+          { type: 'warp', x: 10, y: 9, dest: 'spritzia' },
+        ],
+      },
+    };
+    
+    const CITY_CLASSES = {
+      canalborgo: 'city-canalborgo', casa: 'city-canalborgo',
+      spritzia: 'city-spritzia', route1: 'city-spritzia',
+      veronara: 'city-veronara', route2: 'city-veronara',
+      padoana: 'city-padoana', route3: 'city-padoana',
+      trevisella: 'city-trevisella', route4: 'city-trevisella',
+      dolomax: 'city-dolomax', route5: 'city-dolomax',
+      gardalago: 'city-gardalago', route6: 'city-gardalago',
+    };
+    
+    // ═══════════════════════════════════════════════════════════
+    // GAME STATE
+    // ═══════════════════════════════════════════════════════════
+    
+    const game = {
+      started: false,
+      player: { name: 'Federico', x: 7, y: 5, money: 3000, badges: [] },
+      party: [],
+      rival: null,
+      inventory: [],
+      map: 'canalborgo',
+      flags: { hasStarter: false },
+    };
+    
+    let inBattle = false;
+    let inDialog = false;
+    let dialogQueue = [];
+    let dialogCallback = null;
+    let battleState = null;
+    let showOverlay = false;
+    let overlayTitle = '';
+    let overlayContent = null;
+    
+    // ═══════════════════════════════════════════════════════════
+    // CANVAS & RENDERING
+    // ═══════════════════════════════════════════════════════════
+    
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const TILE_SIZE = 16;
+    const MAP_W = 15;
+    const MAP_H = 10;
+    
+    function draw() {
+      if (!game.started) return;
+      
+      const map = MAPS[game.map];
+      if (!map) return;
+      
+      // Background
+      const bgClass = CITY_CLASSES[game.map] || '';
+      document.getElementById('gameContainer').className = 'game-container ' + bgClass;
+      
+      // Sky
+      ctx.fillStyle = '#87CEEB';
+      ctx.fillRect(0, 0, 240, 160);
+      
+      // Calculate camera offset
+      const sx = Math.max(0, Math.min(game.player.x - 7, (map.tiles[0]?.length || 0) - MAP_W));
+      const sy = Math.max(0, Math.min(game.player.y - 4, (map.tiles.length || 0) - MAP_H));
+      
+      // Draw tiles
+      for (let y = sy; y < sy + MAP_H + 1 && y < map.tiles.length; y++) {
+        for (let x = sx; x < sx + MAP_W + 1 && map.tiles[y] && x < map.tiles[y].length; x++) {
+          const t = map.tiles[y][x];
+          ctx.fillStyle = TILE_COLORS[t] || '#5ab52e';
+          ctx.fillRect((x - sx) * TILE_SIZE, (y - sy) * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+          
+          // Grass detail
+          if (t === 0 && (x + y) % 3 === 0) {
+            ctx.fillStyle = '#4a9e24';
+            ctx.fillRect((x - sx) * TILE_SIZE + 6, (y - sy) * TILE_SIZE + 4, 2, 6);
+          }
+          // Water animation
+          if (t === 2) {
+            const w = Math.sin(Date.now() / 300 + x) * 2;
+            ctx.fillStyle = '#5ac8e8';
+            ctx.fillRect((x - sx) * TILE_SIZE + w, (y - sy) * TILE_SIZE + 8, 5, 2);
+          }
+        }
+      }
+      
+      // Draw events
+      map.events?.forEach(e => {
+        if (e.x >= sx && e.x < sx + MAP_W && e.y >= sy && e.y < sy + MAP_H) {
+          const ex = (e.x - sx) * TILE_SIZE;
+          const ey = (e.y - sy) * TILE_SIZE;
+          
+          if (e.type === 'npc' || e.type === 'gym') {
+            ctx.fillStyle = e.type === 'gym' ? '#FFD700' : '#e94560';
+            ctx.beginPath();
+            ctx.arc(ex + 8, ey + 8, 5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          if (e.type === 'sign') {
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(ex + 6, ey + 8, 4, 8);
+            ctx.fillStyle = '#a0522d';
+            ctx.fillRect(ex + 4, ey + 4, 8, 6);
+          }
+          if (e.type === 'warp') {
+            ctx.fillStyle = '#9e9e9e';
+            ctx.fillRect(ex + 2, ey + 2, 12, 12);
+          }
+        }
+      });
+      
+      // Draw player
+      ctx.fillStyle = '#2196f3';
+      ctx.fillRect((game.player.x - sx) * TILE_SIZE + 4, (game.player.y - sy) * TILE_SIZE + 6, 8, 8);
+      ctx.fillStyle = '#ffcc80';
+      ctx.beginPath();
+      ctx.arc((game.player.x - sx) * TILE_SIZE + 8, (game.player.y - sy) * TILE_SIZE + 5, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#5d4037';
+      ctx.fillRect((game.player.x - sx) * TILE_SIZE + 5, (game.player.y - sy) * TILE_SIZE + 1, 6, 3);
+    }
+    
+    // ═══════════════════════════════════════════════════════════
+    // GAME LOGIC
+    // ═══════════════════════════════════════════════════════════
+    
+    function startGame() {
+      game.started = true;
+      document.getElementById('titleScreen').style.display = 'none';
+      document.getElementById('hud').style.display = 'flex';
+      document.getElementById('cityBadge').style.display = 'block';
+      
+      dialogQueue = [
+        'Buongiorno, tesoro mio!',
+        'Oggi è il giorno importante!',
+        'Devi andare dal Professor Barcaro!',
+        'Stai attento e non litigare!',
+      ];
+      showDialog('Mamma', dialogQueue, () => {
+        dialogQueue = ['Ah, sei arrivato finalmente!', 'Sono il Prof. Barcaro!', 'Ho 4 Besti leggendari per te!', 'Scegli il tuo compagno!'];
+        showDialog('Prof. Barcaro', dialogQueue, () => {
+          document.getElementById('starterChoice').style.display = 'flex';
+        });
+      });
+      
+      updateUI();
+      gameLoop();
+    }
+    
+    function createBestia(id, level) {
+      const base = BESTI[id] || LEGENDARY_STARTERS[id];
+      if (!base) return null;
+      const lf = level / 50;
+      return {
+        ...base,
+        level,
+        maxHp: Math.floor(base.bs.hp * lf + 10 + level),
+        hp: Math.floor(base.bs.hp * lf + 10 + level),
+        atk: Math.floor(base.bs.atk * lf + 5),
+        def: Math.floor(base.bs.def * lf + 5),
+        spd: Math.floor(base.bs.spd * lf + 5),
+      };
+    }
+    
+    function selectStarter(id) {
+      document.getElementById('starterChoice').style.display = 'none';
+      
+      const b = createBestia(id, 5);
+      const rivalBestia = createBestia('ombradriz', 5);
+      
+      game.party = [b];
+      game.rival = rivalBestia;
+      game.flags.hasStarter = true;
+      
+      dialogQueue = [
+        `Hai scelto ${b.name}!`,
+        `Marco: Io prendo ${rivalBestia.name}! Il più forte!`,
+        `Marco: Preparati a perdere!`,
+      ];
+      showDialog('Marco', dialogQueue, () => {
+        startBattle(rivalBestia, false, 'Marco');
+      });
+      
+      updateUI();
+    }
+    
+    function startBattle(enemy, isWild, trainerName) {
+      inBattle = true;
+      battleState = { enemy, isWild, trainerName };
+      
+      document.getElementById('battleScene').style.display = 'block';
+      document.getElementById('battleMessage').style.display = 'none';
+      document.getElementById('battleMenu').style.display = 'grid';
+      document.getElementById('movesMenu').style.display = 'none';
+      
+      document.getElementById('enemyName').textContent = enemy.name;
+      document.getElementById('enemyLevel').textContent = `Lv.${enemy.level}`;
+      document.getElementById('playerBestiaName').textContent = game.party[0]?.name || '???';
+      document.getElementById('playerBestiaLevel').textContent = `Lv.${game.party[0]?.level || 0}`;
+      document.getElementById('playerHpText').textContent = `${game.party[0]?.hp || 0}/${game.party[0]?.maxHp || 0}`;
+      document.getElementById('captureBtn').textContent = isWild ? 'CATTURA' : 'SCAPPA';
+      
+      updateHpBars();
+      
+      showBattleMsg(trainerName ? `${trainerName} vuole combattere!` : `Un ${enemy.name} selvatico è apparso!`);
+    }
+    
+    function updateHpBars() {
+      if (!battleState || !game.party[0]) return;
+      const enemyHp = (battleState.enemy.hp / battleState.enemy.maxHp) * 100;
+      const playerHp = (game.party[0].hp / game.party[0].maxHp) * 100;
+      
+      document.getElementById('enemyHpFill').style.width = enemyHp + '%';
+      document.getElementById('playerHpFill').style.width = playerHp + '%';
+      document.getElementById('playerHpText').textContent = `${game.party[0].hp}/${game.party[0].maxHp}`;
+    }
+    
+    function showBattleMsg(msg) {
+      const msgEl = document.getElementById('battleMessage');
+      msgEl.textContent = msg;
+      msgEl.style.display = 'block';
+      document.getElementById('battleMenu').style.display = 'none';
+      
+      setTimeout(() => {
+        msgEl.style.display = 'none';
+        document.getElementById('battleMenu').style.display = 'grid';
+      }, 1500);
+    }
+    
+    function useMove(idx) {
+      if (!battleState || !game.party[0]) return;
+      
+      const m = game.party[0].moves[idx];
+      const dmg = Math.floor((game.party[0].atk * 0.4 + 2) * 40 * (game.party[0].atk / battleState.enemy.def) / 50 + 2);
+      
+      battleState.enemy.hp = Math.max(0, battleState.enemy.hp - dmg);
+      updateHpBars();
+      showBattleMsg(`${game.party[0].name} usa ${m}! -${dmg}`);
+      
+      if (battleState.enemy.hp <= 0) {
+        setTimeout(() => enemyFainted(), 1500);
+      } else {
+        setTimeout(() => enemyTurn(), 1500);
+      }
+    }
+    
+    function enemyTurn() {
+      if (!battleState) return;
+      const m = battleState.enemy.moves[0];
+      const dmg = Math.floor((battleState.enemy.atk * 0.4 + 2) * 40 * (battleState.enemy.atk / game.party[0].def) / 50 + 2);
+      
+      game.party[0].hp = Math.max(0, game.party[0].hp - dmg);
+      updateHpBars();
+      showBattleMsg(`${battleState.enemy.name} usa ${m}! -${dmg}`);
+      
+      if (game.party[0].hp <= 0) {
+        setTimeout(() => playerFainted(), 1500);
+      }
+    }
+    
+    function enemyFainted() {
+      const exp = battleState.enemy.level * 10 + 20;
+      game.party[0].exp = (game.party[0].exp || 0) + exp;
+      
+      if (game.party[0].exp >= game.party[0].level * 100) {
+        game.party[0].level++;
+        game.party[0].exp = 0;
+        showBattleMsg(`${game.party[0].name} è salito al livello ${game.party[0].level}!`);
+      } else {
+        showBattleMsg(`${battleState.enemy.name} è stato sconfitto! +${exp} EXP`);
+      }
+      
+      setTimeout(() => {
+        document.getElementById('battleScene').style.display = 'none';
+        inBattle = false;
+        battleState = null;
+        updateUI();
+      }, 2000);
+    }
+    
+    function playerFainted() {
+      showBattleMsg(`${game.party[0].name} è esausto!`);
+      game.party[0].hp = game.party[0].maxHp;
+      
+      setTimeout(() => {
+        document.getElementById('battleScene').style.display = 'none';
+        inBattle = false;
+        battleState = null;
+        updateUI();
+      }, 1500);
+    }
+    
+    function tryCapture() {
+      if (!battleState || !battleState.isWild) {
+        document.getElementById('battleScene').style.display = 'none';
+        inBattle = false;
+        battleState = null;
+        return;
+      }
+      
+      const rate = 0.3;
+      showBattleMsg('Lancia Gondolball...');
+      
+      setTimeout(() => {
+        if (Math.random() < rate) {
+          showBattleMsg(`Hai catturato ${battleState.enemy.name}!`);
+          game.party.push({ ...battleState.enemy });
+          setTimeout(() => {
+            document.getElementById('battleScene').style.display = 'none';
+            inBattle = false;
+            battleState = null;
+            updateUI();
+          }, 1500);
+        } else {
+          showBattleMsg('È fuggito!');
+          setTimeout(() => {
+            document.getElementById('battleScene').style.display = 'none';
+            inBattle = false;
+            battleState = null;
+          }, 1000);
+        }
+      }, 1500);
+    }
+    
+    function showMoves() {
+      const menu = document.getElementById('movesMenu');
+      menu.style.display = 'grid';
+      menu.innerHTML = '';
+      
+      game.party[0]?.moves.forEach((m, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'move-btn';
+        btn.textContent = m;
+        btn.onclick = () => { menu.style.display = 'none'; useMove(i); };
+        menu.appendChild(btn);
+      });
+      
+      const backBtn = document.createElement('button');
+      backBtn.className = 'move-btn';
+      backBtn.textContent = 'INDIETRO';
+      backBtn.style.gridColumn = 'span 2';
+      backBtn.onclick = () => menu.style.display = 'none';
+      menu.appendChild(backBtn);
+    }
+    
+    function showDialog(speaker, queue, callback) {
+      inDialog = true;
+      dialogQueue = [...queue];
+      dialogCallback = callback;
+      
+      document.getElementById('dialogBox').style.display = 'block';
+      document.getElementById('dialogSpeaker').textContent = speaker;
+      document.getElementById('dialogText').textContent = dialogQueue.shift();
+    }
+    
+    function advanceDialog() {
+      if (dialogQueue.length === 0) {
+        document.getElementById('dialogBox').style.display = 'none';
+        inDialog = false;
+        if (dialogCallback) {
+          const cb = dialogCallback;
+          dialogCallback = null;
+          cb();
+        }
+      } else {
+        document.getElementById('dialogText').textContent = dialogQueue.shift();
+      }
+    }
+    
+    function showNotification(msg) {
+      const n = document.getElementById('notification');
+      n.textContent = msg;
+      n.style.display = 'block';
+      setTimeout(() => n.style.display = 'none', 2000);
+    }
+    
+    function showMenu() {
+      showOverlay = true;
+      overlayTitle = 'MENU';
+      document.getElementById('menuTitle').textContent = overlayTitle;
+      document.getElementById('menuContent').innerHTML = `
+        <div class="menu-option" onclick="showParty()">Squadra</div>
+        <div class="menu-option" onclick="showInventory()">Zaino</div>
+        <div class="menu-option" onclick="closeMenu()">Chiudi</div>
+      `;
+      document.getElementById('menuOverlay').style.display = 'block';
+    }
+    
+    function showParty() {
+      overlayTitle = 'SQUADRA';
+      document.getElementById('menuTitle').textContent = overlayTitle;
+      document.getElementById('menuContent').innerHTML = game.party.map((b, i) => `
+        <div class="party-member">
+          <div class="party-sprite" style="background: linear-gradient(135deg, #9c27b0, #4a148c);"></div>
+          <div class="party-info">
+            <div class="party-name">${b.name}</div>
+            <div class="party-level">Lv.${b.level}</div>
+            <div class="hp-bar-mini"><div class="hp-fill-mini" style="width:${(b.hp/b.maxHp)*100}%"></div></div>
+            <div class="party-hp-text">${b.hp}/${b.maxHp} PS</div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function showInventory() {
+      overlayTitle = 'ZAINO - ₿' + game.player.money;
+      document.getElementById('menuTitle').textContent = overlayTitle;
+      document.getElementById('menuContent').innerHTML = '<div class="menu-option">Pozioncino x5</div><div class="menu-option">Gondolball x5</div>';
+    }
+    
+    function closeMenu() {
+      showOverlay = false;
+      document.getElementById('menuOverlay').style.display = 'none';
+    }
+    
+    function move(dir) {
+      if (inBattle || inDialog || showOverlay) return;
+      
+      let nx = game.player.x, ny = game.player.y;
+      if (dir === 'up') ny--;
+      if (dir === 'down') ny++;
+      if (dir === 'left') nx--;
+      if (dir === 'right') nx++;
+      
+      const map = MAPS[game.map];
+      if (!map.tiles[ny] || !map.tiles[ny][nx]) return;
+      const tile = map.tiles[ny][nx];
+      if (tile === 1) return; // Wall
+      
+      game.player.x = nx;
+      game.player.y = ny;
+      
+      // Check events
+      const ev = map.events?.find(e => e.x === nx && e.y === ny);
+      if (ev) {
+        if (ev.type === 'sign' && ev.text) {
+          showDialog('', [ev.text]);
+        }
+        if (ev.type === 'npc') {
+          showDialog(ev.name, ev.dialog, ev.givesStarter ? () => {
+            document.getElementById('starterChoice').style.display = 'flex';
+          } : null);
+        }
+        if (ev.type === 'warp' && ev.dest) {
+          game.map = ev.dest;
+          updateUI();
+        }
+      }
+      
+      // Wild encounter
+      if (map.wild && Math.random() < 0.1) {
+        const idx = Math.floor(Math.random() * map.wild.length);
+        const lvl = map.wildLvl[idx] + Math.floor(Math.random() * 3);
+        const enemy = createBestia(map.wild[idx], lvl);
+        if (enemy) startBattle(enemy, true);
+      }
+      
+      updateUI();
+    }
+    
+    function updateUI() {
+      document.getElementById('playerName').textContent = game.player.name;
+      document.getElementById('playerMoney').textContent = '₿' + game.player.money;
+      document.getElementById('cityBadge').textContent = MAPS[game.map]?.name || '???';
+      document.getElementById('locationName').textContent = MAPS[game.map]?.name || '???';
+      
+      const preview = document.getElementById('partyPreview');
+      preview.innerHTML = game.party.slice(0, 3).map(b => 
+        `<div class="preview-bestia">${b.name[0]}</div>`
+      ).join('');
+    }
+    
+    function handleA() {
+      if (inDialog) {
+        advanceDialog();
+      } else if (showOverlay) {
+        closeMenu();
+      }
+    }
+    
+    function handleB() {
+      if (inDialog) {
+        inDialog = false;
+        document.getElementById('dialogBox').style.display = 'none';
+      } else if (showOverlay) {
+        closeMenu();
+      } else {
+        showMenu();
+      }
+    }
+    
+    function gameLoop() {
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+    
+    // Keyboard controls
+    document.addEventListener('keydown', (e) => {
+      switch (e.key) {
+        case 'ArrowUp': case 'w': case 'W': move('up'); break;
+        case 'ArrowDown': case 's': case 'S': move('down'); break;
+        case 'ArrowLeft': case 'a': case 'A': move('left'); break;
+        case 'ArrowRight': case 'd': case 'D': move('right'); break;
+        case 'Enter': case 'z': case 'Z': handleA(); break;
+        case 'Escape': case 'x': case 'X': handleB(); break;
+        case ' ': if (inDialog) advanceDialog(); break;
+      }
+    });
+  </script>
+</body>
+</html>
