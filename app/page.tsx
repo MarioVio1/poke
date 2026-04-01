@@ -1217,7 +1217,7 @@ export default function Game() {
             </span>
             <span>{inv.item.name}</span>
             <span className="item-qty">x{inv.qty}</span>
-            {inv.item.type === 'stone' && gs.party[0] && canEvolveWithStone(gs.party[0].id, inv.item.id) && (
+            {inv.item.type === 'stone' && gs.party[0] && canEvolveWithStone(gs.party[0].id as unknown as string, inv.item.id) && (
               <span className="item-hint">✨</span>
             )}
           </div>
@@ -1844,7 +1844,7 @@ export default function Game() {
                   {/* Player Bestia */}
                   <div className="player-area">
                     <img 
-                      src={getBestiaSprite(gs.party[0].id, true)} 
+                      src={getBestiaSprite(gs.party[0].id as unknown as string, true)} 
                       className={`bestia-sprite player-sprite pixel-sprite ${battleAnimation === 'attack' ? 'battle-sprite-attack' : 'sprite-idle'}`}
                       alt={gs.party[0].name}
                     />
