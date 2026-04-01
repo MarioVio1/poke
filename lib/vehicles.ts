@@ -1,5 +1,5 @@
 // Transportation System - Venetian themed vehicles
-export type VehicleType = 'none' | 'bici' | 'barchino' | 'gondola' | 'scooter'
+export type VehicleType = 'none' | 'bici' | 'biciRubata' | 'barchino' | 'gondola' | 'scooter'
 
 export interface Vehicle {
   id: string

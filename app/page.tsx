@@ -554,7 +554,7 @@ export default function Game() {
             if (ev.gift) {
               if (ev.gift === 'starter') return () => setShowStarterChoice(true)
               if (ev.gift === 'biciRubata') {
-                setGs(prev => ({ ...prev, vehicle: 'biciRubata', flags: { ...prev.flags, hasBike: true } }))
+                setGs(prev => ({ ...prev, vehicle: 'biciRubata' as VehicleType, flags: { ...prev.flags, hasBike: true } }))
                 return () => setNotification('Ottenuto: Bici Rubata!')
               }
             }
