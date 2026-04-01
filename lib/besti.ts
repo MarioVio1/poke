@@ -695,6 +695,8 @@ export interface MapEvent {
   shop?: string
   requireBadge?: string
   storyFlag?: string
+  gift?: string
+  requires?: string
 }
 
 export interface GameMap {
