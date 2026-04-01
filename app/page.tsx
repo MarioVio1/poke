@@ -852,10 +852,11 @@ export default function Game() {
       const newLvl = p.level + 1
       const newExpTL = newLvl * 100
       const lf = newLvl / 50
-      const newHp = Math.floor(BESTI[p.id]?.bs.hp * lf + 10 + newLvl) || p.maxHp + 5
-      const newAtk = Math.floor((BESTI[p.id]?.bs.atk || 50) * lf + 5)
-      const newDef = Math.floor((BESTI[p.id]?.bs.def || 50) * lf + 5)
-      const newSpd = Math.floor((BESTI[p.id]?.bs.spd || 50) * lf + 5)
+      const pData = BESTI[p.id as unknown as string]
+      const newHp = Math.floor((pData?.bs.hp || 50) * lf + 10 + newLvl)
+      const newAtk = Math.floor((pData?.bs.atk || 50) * lf + 5)
+      const newDef = Math.floor((pData?.bs.def || 50) * lf + 5)
+      const newSpd = Math.floor((pData?.bs.spd || 50) * lf + 5)
 
       setGs(prev => ({
         ...prev,
@@ -876,8 +877,9 @@ export default function Game() {
       soundManager.levelUp()
       
       // Check for evolution
-      if (BESTI[p.id]?.ev && newLvl >= (BESTI[p.id]?.evLvl || 99)) {
-        setTimeout(() => evolveBestia(p.id, BESTI[p.id].ev as string), 1000)
+      const bestiaData = BESTI[p.id as unknown as string]
+      if (bestiaData?.ev && newLvl >= (bestiaData?.evLvl || 99)) {
+        setTimeout(() => evolveBestia(p.id, bestiaData.ev as string), 1000)
       }
     } else {
       continueBattle()
