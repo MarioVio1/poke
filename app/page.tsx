@@ -151,13 +151,12 @@ export default function Game() {
   // Save/Load System with Auto-Save
   const saveGame = useCallback((autoSave = false) => {
     try {
-      const saveData = {
+      const dataToSave = {
         ...gs,
         savedAt: new Date().toISOString(),
         version: '1.0.0',
-        playTime: (saveData as any)?.playTime || 0,
       }
-      localStorage.setItem('pokemona_save', JSON.stringify(saveData))
+      localStorage.setItem('pokemona_save', JSON.stringify(dataToSave))
       if (!autoSave) {
         setNotification('Partita salvata!')
         soundManager.levelUp()
