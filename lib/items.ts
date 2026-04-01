@@ -727,8 +727,8 @@ export const ITEMS: Record<string, GameItem> = {
   },
   
   // NATURE TMs
-  tm_erba alta: {
-    id: 'tm_erba alta',
+  tm_erba_alta: {
+    id: 'tm_erba_alta',
     name: 'TM Erba Alta',
     desc: 'Insegna: Erba Alta - attacco Natura.',
     type: 'tm',

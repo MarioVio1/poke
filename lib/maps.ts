@@ -1009,6 +1009,189 @@ export const MAPS: Record<string, GameMap> = {
       { type: 'warp', x: 3, y: 4, dest: 'gardalago', dx: 4, dy: 9 },
     ],
   },
+
+  // Canalborgo Gym - 2 floors, puzzle style
+  gym_canalborgo: {
+    name: 'Palestra Canalborgo (Piano 1)',
+    tiles: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,4,4,4,4,4,0,0,0,0,0,0,4,4,4,4,4,0,1],
+      [1,0,4,0,0,0,4,0,0,0,0,0,0,4,0,0,0,4,0,1],
+      [1,0,4,0,0,0,4,0,0,0,0,0,0,4,0,0,0,4,0,1],
+      [1,0,4,4,4,4,4,0,0,0,0,0,0,4,4,4,4,4,0,1],
+      [1,0,0,0,0,0,0,0,0,9,9,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+    events: [
+      { type: 'trainer', x: 3, y: 3, name: 'Giovanni', npcId: 'lass',
+        dialog: ['Combattiamo!'], team: [{ id: 'canalot', lvl: 8 }, { id: 'gabbianzo', lvl: 9 }] },
+      { type: 'trainer', x: 16, y: 3, name: 'Paolo', npcId: 'lass',
+        dialog: ['Preparati!'], team: [{ id: 'colombo', lvl: 10 }, { id: 'canalino', lvl: 9 }] },
+      { type: 'item', x: 9, y: 4, item: { name: 'Gondolball', type: 'capture', val: 0 } },
+      { type: 'warp', x: 9, y: 6, dest: 'gym_canalborgo_2', dx: 9, dy: 3 },
+      { type: 'warp', x: 9, y: 10, dest: 'canalborgo', dx: 17, dy: 5 },
+    ],
+  },
+  gym_canalborgo_2: {
+    name: 'Palestra Canalborgo (Piano 2)',
+    tiles: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,10,10,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,4,4,4,4,4,0,0,0,0,0,0,4,4,4,4,4,0,1],
+      [1,0,4,0,0,0,4,0,0,0,0,0,0,4,0,0,0,4,0,1],
+      [1,0,4,0,0,0,4,0,0,0,0,0,0,4,0,0,0,4,0,1],
+      [1,0,4,0,0,0,4,0,0,0,0,0,0,4,0,0,0,4,0,1],
+      [1,0,4,4,4,4,4,0,0,0,0,0,0,4,4,4,4,4,0,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+    events: [
+      { type: 'trainer', x: 3, y: 6, name: 'Maestra Lucia', npcId: 'beauty',
+        dialog: ['Sconfitta? Impossibile!'], team: [{ id: 'canalisk', lvl: 12 }, { id: 'vespatron', lvl: 13 }] },
+      { type: 'trainer', x: 16, y: 9, name: 'Maestro Paolo', npcId: 'gentleman',
+        dialog: ['Non sottovalutarmi!'], team: [{ id: 'vignel', lvl: 11 }, { id: 'canalot', lvl: 12 }] },
+      { type: 'gymLeader', x: 10, y: 8, name: 'Dottoressa Chiara', npcId: 'gym_canalborgo',
+        dialog: ['Benvenuto nella mia Palestra! Il canale è pieno di segreti...', 'Preparati a perderti!'],
+        team: [{ id: 'canalord', lvl: 18 }], badge: 'acqua', prize: 1500 },
+      { type: 'warp', x: 9, y: 3, dest: 'gym_canalborgo', dx: 9, dy: 6 },
+    ],
+  },
+
+  // Villa Veneta - 2 floors
+  villa_veneta: {
+    name: 'Villa Veneta (Piano Terra)',
+    tiles: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,1],
+      [1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,1],
+      [1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,1],
+      [1,4,0,0,4,4,4,4,4,4,4,4,4,4,4,0,0,0,4,1],
+      [1,4,0,0,4,5,5,5,5,5,5,5,5,5,4,0,0,0,4,1],
+      [1,4,0,0,4,5,0,0,0,0,0,0,0,5,4,0,0,0,4,1],
+      [1,4,0,0,4,5,0,0,0,0,0,0,0,5,4,0,0,0,4,1],
+      [1,4,0,0,4,5,5,5,0,0,0,0,5,5,4,0,0,0,4,1],
+      [1,4,0,0,4,4,4,4,4,9,9,4,4,4,4,0,0,0,4,1],
+      [1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,1],
+      [1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,1],
+      [1,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+    events: [
+      { type: 'warp', x: 9, y: 9, dest: 'villa_veneta_2', dx: 9, dy: 3 },
+      { type: 'item', x: 2, y: 2, item: { name: 'Super Pozione', type: 'heal', val: 50 } },
+      { type: 'item', x: 17, y: 2, item: { name: 'Iper Pozione', type: 'heal', val: 100 } },
+      { type: 'item', x: 2, y: 11, item: { name: 'Mascheraball', type: 'capture', val: 0 } },
+    ],
+  },
+  villa_veneta_2: {
+    name: 'Villa Veneta (Piano 1)',
+    tiles: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,1],
+      [1,4,0,0,0,0,0,0,0,10,10,0,0,0,0,0,0,0,4,1],
+      [1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,1],
+      [1,4,0,0,4,4,4,4,4,4,4,4,4,4,4,0,0,0,4,1],
+      [1,4,0,0,4,5,5,5,5,5,5,5,5,5,4,0,0,0,4,1],
+      [1,4,0,0,4,5,0,0,0,0,0,0,0,5,4,0,0,0,4,1],
+      [1,4,0,0,4,5,0,0,0,0,0,0,0,5,4,0,0,0,4,1],
+      [1,4,0,0,4,5,5,5,0,0,0,0,5,5,4,0,0,0,4,1],
+      [1,4,0,0,4,4,4,4,4,4,4,4,4,4,4,0,0,0,4,1],
+      [1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,1],
+      [1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,1],
+      [1,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+    events: [
+      { type: 'warp', x: 9, y: 3, dest: 'villa_veneta', dx: 9, dy: 9 },
+      { type: 'item', x: 4, y: 2, item: { name: 'Pietra Acquatica', type: 'evolution', val: 0 } },
+      { type: 'item', x: 15, y: 2, item: { name: 'Pietra Tuono', type: 'evolution', val: 0 } },
+      { type: 'item', x: 9, y: 5, item: { name: 'Ultra Ball', type: 'capture', val: 0 } },
+    ],
+  },
+
+  // League Entrance
+  league_entrance: {
+    name: 'Sede della Lega Besti',
+    width: 20,
+    height: 15,
+    tiles: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+    events: [
+      { type: 'trainer', x: 3, y: 4, name: 'Il Fuocoso Marco', npcId: 'elite_1',
+        dialog: ['Sono Il Fuocoso Marco! Le mie fiamme non perdonano!', 'Non avvicinarti troppo, potresti bruciarti!'],
+        team: [{ id: 'fogarox', lvl: 40 }, { id: 'dolomitor', lvl: 42 }, { id: 'lagorion', lvl: 41 }] },
+      { type: 'trainer', x: 16, y: 4, name: 'L\'Acquoso Luca', npcId: 'elite_2',
+        dialog: ['Io sono L\'Acquoso Luca! I miei canali sono profondi!'],
+        team: [{ id: 'canalord', lvl: 40 }, { id: 'nevelet', lvl: 42 }, { id: 'ombraspritz', lvl: 41 }] },
+      { type: 'trainer', x: 3, y: 10, name: 'Il Naturale Giulia', npcId: 'elite_3',
+        dialog: ['Sono Il Naturale Giulia! La natura è dalla mia parte!'],
+        team: [{ id: 'vignarbor', lvl: 40 }, { id: 'polentitan', lvl: 42 }, { id: 'serenissima', lvl: 41 }] },
+      { type: 'trainer', x: 16, y: 10, name: 'Il Magico Antonio', npcId: 'elite_4',
+        dialog: ['Sono Il Magico Antonio! Le ombre nascondono grandi poteri!'],
+        team: [{ id: 'mascarion', lvl: 40 }, { id: 'stregatto', lvl: 42 }, { id: 'fantasma', lvl: 41 }] },
+      { type: 'warp', x: 10, y: 13, dest: 'league_champion', dx: 10, dy: 3, requires: 'league' },
+    ],
+  },
+  league_champion: {
+    name: 'Arena del Campione',
+    width: 22,
+    height: 17,
+    tiles: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,0,0,1],
+      [1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,1],
+      [1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,1],
+      [1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,1],
+      [1,0,0,0,4,0,0,0,0,0,5,0,0,0,0,0,4,0,0,0,0,1],
+      [1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,1],
+      [1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,1],
+      [1,0,0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+    events: [
+      { type: 'gymLeader', x: 10, y: 8, name: 'DUX VENETIAE', npcId: 'champion',
+        dialog: ['Dopo questo lungo viaggio...', '...finalmente ci incontriamo!', 'Sono il DUX VENETIAE!', 'Dimostra il tuo valore, sfidante!'],
+        team: [
+          { id: 'dolomitor', lvl: 50 },
+          { id: 'lagorion', lvl: 50 },
+          { id: 'serenissima', lvl: 50 },
+          { id: 'ombraspritz', lvl: 50 },
+          { id: 'fogarox', lvl: 52 },
+          { id: 'canalord', lvl: 52 },
+        ], badge: 'champion', prize: 50000 },
+      { type: 'warp', x: 10, y: 15, dest: 'league_entrance', dx: 10, dy: 1 },
+    ],
+  },
+
 }
 
 // Tiles legend:
@@ -1025,919 +1208,3 @@ export const MAPS: Record<string, GameMap> = {
 // 10 = stairs down
 // 11 = locked door
 // 12 = treasure chest
-
-// ═══════════════════════════════════════════════════════════════════
-// MULTI-FLOOR GYMS
-// ═══════════════════════════════════════════════════════════════════
-
-// Canalborgo Gym - 2 floors, puzzle style
-gym_canalborgo: {
-  name: 'Palestra Canalborgo (Piano 1)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,4,4,4,4,4,0,0,0,0,0,0,4,4,4,4,4,0,1],
-    [1,0,4,0,0,0,4,0,0,0,0,0,0,4,0,0,0,4,0,1],
-    [1,0,4,0,0,0,4,0,0,0,0,0,0,4,0,0,0,4,0,1],
-    [1,0,4,4,4,4,4,0,0,0,0,0,0,4,4,4,4,4,0,1],
-    [1,0,0,0,0,0,0,0,0,9,9,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'trainer', x: 3, y: 3, name: 'Giovanni', npcId: 'lass',
-      dialog: ['Combattiamo!'], team: [{ id: 'canalot', lvl: 8 }, { id: 'gabbianzo', lvl: 9 }] },
-    { type: 'trainer', x: 16, y: 3, name: 'Paolo', npcId: 'lass',
-      dialog: ['Preparati!'], team: [{ id: 'colombo', lvl: 10 }, { id: 'canalino', lvl: 9 }] },
-    { type: 'item', x: 9, y: 4, item: { name: 'Gondolball', type: 'capture', val: 0 } },
-    { type: 'warp', x: 9, y: 6, dest: 'gym_canalborgo_2', dx: 9, dy: 3 },
-    { type: 'warp', x: 9, y: 10, dest: 'canalborgo', dx: 17, dy: 5 },
-  ],
-},
-
-gym_canalborgo_2: {
-  name: 'Palestra Canalborgo (Piano 2)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,10,10,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'gym', x: 9, y: 6, name: 'Leader Marco', npcId: 'campione_veneto',
-      badge: 'Badge Gondola',
-      dialog: ['Benvenuto nella mia palestra!', 'I canali nascondono molti segreti!'],
-      team: [{ id: 'canalord', lvl: 15 }, { id: 'lagunello', lvl: 14 }, { id: 'canalot', lvl: 16 }] },
-    { type: 'warp', x: 9, y: 6, dest: 'gym_canalborgo', dx: 9, dy: 6 },
-  ],
-},
-
-// Spritzia Gym - 2 floors, wine theme
-gym_spritzia: {
-  name: 'Palestra Spritzia (Piano 1)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,1],
-    [1,0,4,0,4,4,4,4,0,0,0,0,4,4,4,4,0,4,0,1],
-    [1,0,4,0,4,0,0,4,0,0,0,0,4,0,0,4,0,4,0,1],
-    [1,0,4,0,4,0,0,4,0,9,9,0,4,0,0,4,0,4,0,1],
-    [1,0,4,0,4,4,4,4,0,0,0,0,4,4,4,4,0,4,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'trainer', x: 5, y: 5, name: 'Bepi', npcId: 'lass',
-      dialog: ['CHE BEVEMO!'], team: [{ id: 'vespolo', lvl: 12 }] },
-    { type: 'trainer', x: 14, y: 5, name: 'Gianni', npcId: 'lass',
-      dialog: ['Lo spritz è la mia forza!'], team: [{ id: 'spritzino', lvl: 13 }, { id: 'prosecchino', lvl: 12 }] },
-    { type: 'item', x: 9, y: 3, item: { name: 'Spritz Ball', type: 'capture', val: 0 } },
-    { type: 'warp', x: 9, y: 6, dest: 'gym_spritzia_2', dx: 9, dy: 3 },
-    { type: 'warp', x: 9, y: 10, dest: 'spritzia', dx: 9, dy: 5 },
-  ],
-},
-
-gym_spritzia_2: {
-  name: 'Palestra Spritzia (Piano 2)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,10,10,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'gym', x: 9, y: 6, name: 'Bepi lo Spritzaro', npcId: 'bepi_spritzaro',
-      badge: 'Badge Aperitivo',
-      dialog: ['CHE BEVEMO OGGI?!', 'Spritzino! Pronto per l\'Happy Hour!', 'Combattiamo! Ma dopo... spritz!'],
-      team: [{ id: 'spritzino', lvl: 18 }, { id: 'vespolo', lvl: 19 }, { id: 'fogaron', lvl: 20 }] },
-    { type: 'warp', x: 9, y: 6, dest: 'gym_spritzia', dx: 9, dy: 6 },
-  ],
-},
-
-// Veronara Gym - 3 floors, arena style
-gym_veronara: {
-  name: 'Arena Veronara (Piano 1)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,1],
-    [1,0,4,0,0,0,9,9,9,0,0,0,9,9,9,0,0,4,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'trainer', x: 4, y: 5, name: 'Gladiatore', npcId: 'lass',
-      dialog: ['Combatti con onore!'], team: [{ id: 'polentaur', lvl: 16 }, { id: 'alpibex', lvl: 15 }] },
-    { type: 'trainer', x: 15, y: 5, name: 'Guardia', npcId: 'lass',
-      dialog: ['L Arena non perdona!'], team: [{ id: 'dolomor', lvl: 17 }, { id: 'polentaur', lvl: 16 }] },
-    { type: 'item', x: 9, y: 5, item: { name: 'Polentaball', type: 'capture', val: 0 } },
-    { type: 'warp', x: 7, y: 5, dest: 'gym_veronara_2', dx: 7, dy: 3 },
-    { type: 'warp', x: 12, y: 5, dest: 'gym_veronara_2', dx: 12, dy: 3 },
-    { type: 'warp', x: 9, y: 9, dest: 'veronara', dx: 5, dy: 5 },
-  ],
-},
-
-gym_veronara_2: {
-  name: 'Arena Veronara (Piano 2)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,9,9,9,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'trainer', x: 9, y: 5, name: 'Mago Arena', npcId: 'lass',
-      dialog: ['La magia dell Arena ti colpira!'], team: [{ id: 'mascherotto', lvl: 20 }] },
-    { type: 'warp', x: 8, y: 5, dest: 'gym_veronara_3', dx: 8, dy: 4 },
-    { type: 'warp', x: 10, y: 5, dest: 'gym_veronara_3', dx: 10, dy: 4 },
-    { type: 'warp', x: 9, y: 10, dest: 'gym_veronara', dx: 9, dy: 5 },
-  ],
-},
-
-gym_veronara_3: {
-  name: 'Arena Veronara (Piano 3)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,10,10,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'gym', x: 9, y: 5, name: 'Giuliano Arena', npcId: 'giuliano_arena',
-      badge: 'Badge Arena',
-      dialog: ['Benvenuto nell ARENA!', 'Come a Verona, dove gli innamorati giurano!', 'Combattiamo con onore!'],
-      team: [{ id: 'polentaur', lvl: 22 }, { id: 'alpibex', lvl: 23 }, { id: 'dolomor', lvl: 24 }] },
-    { type: 'warp', x: 9, y: 5, dest: 'gym_veronara_2', dx: 9, dy: 5 },
-  ],
-},
-
-// Dolomax Gym - 3 floors, ice theme
-gym_dolomax: {
-  name: 'Palestra Dolomax (Piano 1)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,0,1],
-    [1,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,1],
-    [1,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,1],
-    [1,0,8,0,0,0,0,0,9,9,9,0,0,0,0,0,0,8,0,1],
-    [1,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,1],
-    [1,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,1],
-    [1,0,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'trainer', x: 4, y: 4, name: 'Alpinista', npcId: 'montanaro',
-      dialog: ['Il freddo mi ha temprato!'], team: [{ id: 'alpibex', lvl: 22 }, { id: 'nevelet', lvl: 21 }] },
-    { type: 'trainer', x: 15, y: 4, name: 'Sciatore', npcId: 'lass',
-      dialog: ['Sciare e combattere!'], team: [{ id: 'dolomor', lvl: 23 }, { id: 'nevelet', lvl: 22 }] },
-    { type: 'item', x: 9, y: 5, item: { name: 'Montagnaball', type: 'capture', val: 0 } },
-    { type: 'warp', x: 9, y: 5, dest: 'gym_dolomax_2', dx: 9, dy: 4 },
-    { type: 'warp', x: 9, y: 9, dest: 'dolomax', dx: 9, dy: 5 },
-  ],
-},
-
-gym_dolomax_2: {
-  name: 'Palestra Dolomax (Piano 2)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,9,9,9,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'trainer', x: 9, y: 5, name: 'Guardiano', npcId: 'lass',
-      dialog: ['Non passerai facilmente!'], team: [{ id: 'dolomibex', lvl: 26 }] },
-    { type: 'warp', x: 9, y: 5, dest: 'gym_dolomax_3', dx: 9, dy: 4 },
-    { type: 'warp', x: 9, y: 10, dest: 'gym_dolomax', dx: 9, dy: 5 },
-  ],
-},
-
-gym_dolomax_3: {
-  name: 'Palestra Dolomax (Piano 3)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,10,10,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'gym', x: 9, y: 5, name: 'Regina dei Ghiacci', npcId: 'regina_ghiacci',
-      badge: 'Badge Ghiaccio',
-      dialog: ['Il freddo è mio alleato!', 'Le Dolomiti sono la mia casa!', 'Combattiamo!'],
-      team: [{ id: 'nevelet', lvl: 28 }, { id: 'dolomor', lvl: 30 }, { id: 'dolomibex', lvl: 32 }] },
-    { type: 'warp', x: 9, y: 5, dest: 'gym_dolomax_2', dx: 9, dy: 5 },
-  ],
-},
-
-// ═══════════════════════════════════════════════════════════════════
-// EXPLORABLE HOUSES - Multi-floor villas and mansions
-// ═══════════════════════════════════════════════════════════════════
-
-// Villa Veneta - 3 floor mansion
-villa_veneta: {
-  name: 'Villa Veneta (Piano 1)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,1],
-    [1,0,4,4,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,1],
-    [1,0,4,4,0,0,0,0,9,9,9,0,0,0,0,0,4,4,0,1],
-    [1,0,4,4,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'npc', x: 5, y: 4, name: 'Nobildonna', npcId: 'lass',
-      dialog: ['Benvenuto nella mia villa!'] },
-    { type: 'npc', x: 14, y: 4, name: 'Servitore', npcId: 'lass',
-      dialog: ['Posso offrirti qualcosa?'] },
-    { type: 'item', x: 9, y: 4, item: { name: 'Super Pozione', type: 'heal', val: 50 } },
-    { type: 'warp', x: 9, y: 5, dest: 'villa_veneta_2', dx: 9, dy: 4 },
-    { type: 'warp', x: 9, y: 9, dest: 'padoana', dx: 4, dy: 7 },
-  ],
-},
-
-villa_veneta_2: {
-  name: 'Villa Veneta (Piano 2)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,9,9,9,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'item', x: 9, y: 5, item: { name: 'Pietra Maschera', type: 'stone', val: 0 } },
-    { type: 'warp', x: 9, y: 5, dest: 'villa_veneta_3', dx: 9, dy: 4 },
-    { type: 'warp', x: 9, y: 10, dest: 'villa_veneta', dx: 9, dy: 5 },
-  ],
-},
-
-villa_veneta_3: {
-  name: 'Villa Veneta (Piano 3)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,10,10,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'item', x: 9, y: 5, item: { name: 'Mascheraball', type: 'capture', val: 0 } },
-    { type: 'warp', x: 9, y: 5, dest: 'villa_veneta_2', dx: 9, dy: 5 },
-  ],
-},
-
-// Casa del Nonno - 2 floor house
-casa_nonno: {
-  name: 'Casa del Nonno (Piano 1)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,4,4,4,4,4,4,4,4,0,1],
-    [1,0,4,0,0,0,0,0,0,4,0,1],
-    [1,0,4,0,0,0,9,9,0,4,0,1],
-    [1,0,4,0,0,0,0,0,0,4,0,1],
-    [1,0,4,4,4,4,4,4,4,4,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'npc', x: 4, y: 4, name: 'Nonno', npcId: 'nonno_piero',
-      dialog: ['Nel mio tempo...', '...i Besti si chiamavano Bestie!', 'E non c era ste palle!'] },
-    { type: 'item', x: 7, y: 4, item: { name: 'Pozioncino', type: 'heal', val: 20 } },
-    { type: 'warp', x: 7, y: 4, dest: 'casa_nonno_2', dx: 7, dy: 3 },
-    { type: 'warp', x: 5, y: 7, dest: 'trevisella', dx: 3, dy: 5 },
-  ],
-},
-
-casa_nonno_2: {
-  name: 'Casa del Nonno (Piano 2)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,10,10,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'item', x: 7, y: 5, item: { name: 'Ricetta Segreta', type: 'key', val: 0 } },
-    { type: 'warp', x: 7, y: 5, dest: 'casa_nonno', dx: 7, dy: 4 },
-  ],
-},
-
-// Museum of Besti - 2 floor exploration
-museo_besti: {
-  name: 'Museo dei Besti (Piano 1)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,0,1],
-    [1,0,4,0,0,0,0,4,4,0,0,0,0,4,0,1],
-    [1,0,4,0,4,4,0,4,4,0,4,4,0,4,0,1],
-    [1,0,4,0,4,4,0,0,0,0,4,4,0,4,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,4,0,1],
-    [1,0,4,4,4,4,4,4,9,4,4,4,4,4,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'npc', x: 3, y: 4, name: 'Guida', npcId: 'prof_barcaro',
-      dialog: ['Benvenuto nel Museo dei Besti!'] },
-    { type: 'npc', x: 12, y: 4, name: 'Studioso', npcId: 'prof_padova',
-      dialog: ['I fossili raccontano storie antiche!'] },
-    { type: 'item', x: 6, y: 4, item: { name: 'Fossile Uovo', type: 'key', val: 0 } },
-    { type: 'item', x: 9, y: 4, item: { name: 'Piuma Verde', type: 'key', val: 0 } },
-    { type: 'warp', x: 8, y: 7, dest: 'museo_besti_2', dx: 8, dy: 4 },
-    { type: 'warp', x: 7, y: 8, dest: 'padoana', dx: 10, dy: 6 },
-  ],
-},
-
-museo_besti_2: {
-  name: 'Museo dei Besti (Piano 2)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,10,10,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'item', x: 8, y: 5, item: { name: 'Diario del Doge', type: 'key', val: 0 } },
-    { type: 'trainer', x: 8, y: 3, name: 'Guardiano', npcId: 'lass',
-      dialog: ['Il tesoro e protetto!'], team: [{ id: 'mascherotto', lvl: 20 }] },
-    { type: 'warp', x: 8, y: 5, dest: 'museo_besti', dx: 8, dy: 7 },
-  ],
-},
-
-// ═══════════════════════════════════════════════════════════════════
-// SECRET CAVES - Multi-floor dungeons
-// ═══════════════════════════════════════════════════════════════════
-
-grotta_segreta: {
-  name: 'Grotta Segreta (Livello 1)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,9,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  wild: ['nevelet', 'dolomor'],
-  wildLvl: [25, 26],
-  wildRate: 20,
-  events: [
-    { type: 'item', x: 5, y: 5, item: { name: 'Pietra Ghiaccio', type: 'stone', val: 0 } },
-    { type: 'item', x: 14, y: 5, item: { name: 'Pietra Ghiaccio', type: 'stone', val: 0 } },
-    { type: 'warp', x: 9, y: 5, dest: 'grotta_segreta_2', dx: 9, dy: 4 },
-  ],
-},
-
-grotta_segreta_2: {
-  name: 'Grotta Segreta (Livello 2)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  wild: ['dolomibex', 'crimignolo'],
-  wildLvl: [28, 30],
-  wildRate: 25,
-  events: [
-    { type: 'trainer', x: 9, y: 4, name: 'Speleologo', npcId: 'champion',
-      dialog: ['Ho trovato il segreto!'], team: [{ id: 'dolomibex', lvl: 28 }, { id: 'crimignolo', lvl: 30 }] },
-    { type: 'item', x: 9, y: 6, item: { name: 'Dogeball', type: 'capture', val: 0 } },
-    { type: 'warp', x: 9, y: 5, dest: 'grotta_segreta_3', dx: 9, dy: 4 },
-    { type: 'warp', x: 9, y: 5, dest: 'grotta_segreta', dx: 9, dy: 5 },
-  ],
-},
-
-grotta_segreta_3: {
-  name: 'Grotta Segreta (Livello 3 - Tesoro)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  wild: ['crimignolo'],
-  wildLvl: [35],
-  wildRate: 5,
-  events: [
-    { type: 'item', x: 9, y: 5, item: { name: 'Carnevaleball', type: 'capture', val: 0 } },
-    { type: 'item', x: 9, y: 5, item: { name: 'Maschera del Doge', type: 'key', val: 0 } },
-    { type: 'trainer', x: 9, y: 3, name: 'Guardiano Finale', npcId: 'champion',
-      dialog: ['Il tesoro e mio!'], team: [{ id: 'crimignolo', lvl: 35 }, { id: 'dolomibex', lvl: 32 }] },
-    { type: 'warp', x: 9, y: 5, dest: 'grotta_segreta_2', dx: 9, dy: 5 },
-  ],
-},
-
-// ═══════════════════════════════════════════════════════════════════
-// EXPANDED CITY MAPS - Larger outdoor areas
-// ═══════════════════════════════════════════════════════════════════
-
-canalborgo_extended: {
-    name: 'Canalborgo Estesa',
-    tiles: [
-      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,0,0,0,0,1],
-      [1,0,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,0,0,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,0,0,0,0,1],
-      [1,0,0,0,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
-      [1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
-    ],
-    canSurf: true,
-    events: [
-      { type: 'npc', x: 10, y: 7, name: 'Prof. Barcaro', npcId: 'prof_barcaro',
-        dialog: ['Ciao! Sono il Prof. Barcaro!', 'Studio i Besti da 40 anni!', 'Scegli il tuo primo Besti!'], givesStarter: true },
-      { type: 'npc', x: 4, y: 10, name: 'Mamma', npcId: 'mamma',
-        dialog: ['Tesoro! Sei uscito?', 'Stai attento e non litigare!'] },
-      { type: 'npc', x: 24, y: 10, name: 'Nonno Piero', npcId: 'nonno_piero',
-        dialog: ['Nel mio tempo...', '...i Besti si chiamavano Bestie!'] },
-      { type: 'npc', x: 25, y: 7, name: 'Gondoliere', npcId: 'gondoliere_nero',
-        dialog: ['Vogando per i canali...', 'Vuoi attraversare? Costa 50!'] },
-      { type: 'npc', x: 14, y: 3, name: 'Foto Mario', npcId: 'fotografo',
-        dialog: ['SORRISI! Siamo a Canalborgo!'] },
-      { type: 'npc', x: 5, y: 3, name: 'Attivista', npcId: 'attivista_animale',
-        dialog: ['I BESTI SONO LIBERI!', 'LIBERTÀ PER TUTTI!'] },
-      { type: 'npc', x: 18, y: 5, name: 'Nonna Pettegola', npcId: 'nonna_pettegola',
-        dialog: ['LO SAI DI MARIA?', 'E DI GIUSEPPE?'] },
-      { type: 'npc', x: 8, y: 8, name: 'Bambino Capriccio', npcId: 'capriccio',
-        dialog: ['VOGLIO! VOGLIO! VOGLIO!', 'IL BESTIA! QUELLO VERDE!'] },
-      { type: 'npc', x: 21, y: 3, name: 'Turista', npcId: 'turistica_tedesca',
-        dialog: ['Entschuldigung! Wo ist der Bahnhof?', 'Venice is so romantic!'] },
-      { type: 'npc', x: 27, y: 8, name: 'Zio Imbarazzante', npcId: 'zio_imbarazzante',
-        dialog: ['SEI GRASSO!', 'QUANDO TI SPOSI?!'] },
-      { type: 'sign', x: 15, y: 9, text: 'Benvenuti a CANALBORGO!' },
-      { type: 'sign', x: 5, y: 5, text: 'Centro Besti ➜' },
-      { type: 'sign', x: 23, y: 5, text: '➜ Negozio' },
-      { type: 'item', x: 9, y: 5, item: { name: 'Pozioncino', type: 'heal', val: 20 } },
-      { type: 'item', x: 19, y: 5, item: { name: 'Gondolball', type: 'capture', val: 0 } },
-      { type: 'warp', x: 7, y: 12, dest: 'casa', dx: 4, dy: 5 },
-      { type: 'warp', x: 21, y: 12, dest: 'casa', dx: 5, dy: 5 },
-      { type: 'warp', x: 6, y: 6, dest: 'centro', dx: 4, dy: 4 },
-      { type: 'warp', x: 23, y: 6, dest: 'shop_centro', dx: 3, dy: 4 },
-      { type: 'warp', x: 4, y: 6, dest: 'gym_canalborgo', dx: 9, dy: 9 },
-      { type: 'warp', x: 7, y: 14, dest: 'route1', dx: 10, dy: 1 },
-    ],
-  },
-
-// Underground Lab - 2 floors
-lab_segreto: {
-  name: 'Laboratorio Segreto (Piano 1)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,4,0,1],
-    [1,0,4,0,4,4,4,4,4,4,4,4,0,4,0,1],
-    [1,0,4,0,4,0,0,0,0,0,0,4,0,4,0,1],
-    [1,0,4,0,4,0,9,9,9,0,0,4,0,4,0,1],
-    [1,0,4,0,4,0,0,0,0,0,0,4,0,4,0,1],
-    [1,0,4,0,4,4,4,4,4,4,4,4,0,4,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,4,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'npc', x: 7, y: 4, name: 'Scienziato', npcId: 'prof_barcaro',
-      dialog: ['Benvenuto nel mio laboratorio segreto!'] },
-    { type: 'trainer', x: 12, y: 6, name: 'Guardia', npcId: 'lass',
-      dialog: ['Non dovresti essere qui!'], team: [{ id: 'mascherotto', lvl: 25 }] },
-    { type: 'item', x: 7, y: 6, item: { name: 'Fossile Uovo', type: 'key', val: 0 } },
-    { type: 'item', x: 8, y: 6, item: { name: 'Ricetta Segreta', type: 'key', val: 0 } },
-    { type: 'warp', x: 7, y: 6, dest: 'lab_segreto_2', dx: 7, dy: 4 },
-    { type: 'warp', x: 7, y: 11, dest: 'canalborgo', dx: 10, dy: 7 },
-  ],
-},
-
-lab_segreto_2: {
-  name: 'Laboratorio Segreto (Piano 2)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,10,10,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'item', x: 8, y: 5, item: { name: 'Dogeball', type: 'capture', val: 0 } },
-    { type: 'item', x: 8, y: 5, item: { name: 'Maschera del Doge', type: 'key', val: 0 } },
-    { type: 'warp', x: 8, y: 5, dest: 'lab_segreto', dx: 7, dy: 6 },
-  ],
-},
-
-// ═══════════════════════════════════════════════════════════════════
-// ADDITIONAL LOCATIONS
-// ═══════════════════════════════════════════════════════════════════
-
-// Watchtower - 2 floor tower
-torre_osservazione: {
-  name: 'Torre di Osservazione (Piano 1)',
-  tiles: [
-    [1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,1],
-    [1,0,4,4,4,0,1],
-    [1,0,4,0,4,0,1],
-    [1,0,4,9,4,0,1],
-    [1,0,4,0,4,0,1],
-    [1,0,4,4,4,0,1],
-    [1,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'npc', x: 3, y: 4, name: 'Guardiano', npcId: 'lass',
-      dialog: ['Questa torre ha una vista magnifica!'] },
-    { type: 'item', x: 3, y: 3, item: { name: 'Binocolo', type: 'key', val: 0 } },
-    { type: 'warp', x: 3, y: 4, dest: 'torre_osservazione_2', dx: 3, dy: 4 },
-    { type: 'warp', x: 3, y: 7, dest: 'dolomax', dx: 18, dy: 7 },
-  ],
-},
-
-torre_osservazione_2: {
-  name: 'Torre di Osservazione (Piano 2)',
-  tiles: [
-    [1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,1],
-    [1,0,0,0,0,0,1],
-    [1,0,0,0,0,0,1],
-    [1,0,0,10,0,0,1],
-    [1,0,0,0,0,0,1],
-    [1,0,0,0,0,0,1],
-    [1,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'item', x: 3, y: 4, item: { name: 'Pietra Alba', type: 'stone', val: 0 } },
-    { type: 'warp', x: 3, y: 4, dest: 'torre_osservazione', dx: 3, dy: 4 },
-  ],
-},
-
-// Ancient Temple - 3 floor
-tempio_antico: {
-  name: 'Tempio Antico (Livello 1)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,4,4,4,4,4,4,4,4,0,1],
-    [1,0,4,0,0,0,0,0,0,4,0,1],
-    [1,0,4,0,0,0,9,0,0,4,0,1],
-    [1,0,4,0,0,0,0,0,0,4,0,1],
-    [1,0,4,0,0,0,0,0,0,4,0,1],
-    [1,0,4,4,4,4,4,4,4,4,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'npc', x: 5, y: 4, name: 'Sacerdote', npcId: 'prof_barcaro',
-      dialog: ['Questo tempio nasconde segreti antichi...'] },
-    { type: 'item', x: 6, y: 4, item: { name: 'Sigillo del Doge', type: 'key', val: 0 } },
-    { type: 'warp', x: 6, y: 4, dest: 'tempio_antico_2', dx: 6, dy: 4 },
-    { type: 'warp', x: 5, y: 8, dest: 'route3', dx: 10, dy: 6 },
-  ],
-},
-
-tempio_antico_2: {
-  name: 'Tempio Antico (Livello 2)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,10,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'trainer', x: 6, y: 5, name: 'Guardiano Sacro', npcId: 'champion',
-      dialog: ['Il tempio ti ha scelto!'], team: [{ id: 'mascherodoro', lvl: 30 }] },
-    { type: 'item', x: 6, y: 4, item: { name: 'Anello del Doge', type: 'key', val: 0 } },
-    { type: 'warp', x: 6, y: 5, dest: 'tempio_antico_3', dx: 6, dy: 4 },
-    { type: 'warp', x: 6, y: 5, dest: 'tempio_antico', dx: 6, dy: 4 },
-  ],
-},
-
-tempio_antico_3: {
-  name: 'Tempio Antico (Livello 3 - Santuario)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,12,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'item', x: 6, y: 5, item: { name: 'Carnevaleball', type: 'capture', val: 0 } },
-    { type: 'item', x: 6, y: 5, item: { name: 'Mappa Antica', type: 'key', val: 0 } },
-    { type: 'warp', x: 6, y: 5, dest: 'tempio_antico_2', dx: 6, dy: 5 },
-  ],
-},
-
-// Beach area
-spiaggia: {
-  name: 'Spiaggia di Gardalago',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
-    [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  canSurf: true,
-  wild: ['scampetto', 'lagunello', 'lagunaga', 'grancanale'],
-  wildLvl: [20, 22, 24, 26],
-  wildRate: 20,
-  events: [
-    { type: 'npc', x: 5, y: 5, name: 'Bagnino', npcId: 'pescatore',
-      dialog: ['Acqua bella fresca!'] },
-    { type: 'item', x: 10, y: 5, item: { name: 'Scampaball', type: 'capture', val: 0 } },
-    { type: 'item', x: 14, y: 5, item: { name: 'Alga Laguna', type: 'hold', val: 0 } },
-    { type: 'warp', x: 10, y: 9, dest: 'gardalago', dx: 5, dy: 4 },
-  ],
-},
-
-// ═══════════════════════════════════════════════════════════════════
-// ELITE FOUR CHALLENGE - The Final Challenge
-// ═══════════════════════════════════════════════════════════════════
-
-league_entrance: {
-  name: 'Sede della Lega Besti',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1],
-    [1,0,4,0,4,4,4,4,4,4,4,4,4,4,4,0,4,0,0,1],
-    [1,0,4,0,4,0,0,0,0,0,0,0,0,0,4,0,4,0,0,1],
-    [1,0,4,0,4,0,4,4,4,10,4,4,4,0,4,0,4,0,0,1],
-    [1,0,4,0,4,0,0,0,0,0,0,0,0,0,4,0,4,0,0,1],
-    [1,0,4,0,4,4,4,4,4,4,4,4,4,4,4,0,4,0,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    // Elite 1 - Il Fuocoso
-    { type: 'trainer', x: 4, y: 5, name: 'Il Fuocoso', npcId: 'elite_fire',
-      dialog: ['Sono il primo Elite!', 'Il mio fuoco è inarrestabile!', 'Preparati a bruciare!'],
-      team: [{ id: 'fogarion', lvl: 45 }, { id: 'fogarox', lvl: 44 }, { id: 'fritellon', lvl: 43 }] },
-    
-    // Elite 2 - L'Acquoso  
-    { type: 'trainer', x: 8, y: 3, name: 'L\'Acquoso', npcId: 'elite_water',
-      dialog: ['Le acque di Venetia sono mie!', 'I miei Besti controllano il mare!'],
-      team: [{ id: 'canalord', lvl: 46 }, { id: 'lagunaga', lvl: 45 }, { id: 'gondrago', lvl: 44 }] },
-    
-    // Elite 3 - Il Naturale
-    { type: 'trainer', x: 15, y: 5, name: 'Il Naturale', npcId: 'elite_nature',
-      dialog: ['La terra e le piante sono la mia forza!', 'Dalla natura ho tutto!'],
-      team: [{ id: 'radicthron', lvl: 47 }, { id: 'polentitan', lvl: 46 }, { id: 'parmageddon', lvl: 45 }] },
-    
-    // Elite 4 - Il Magico
-    { type: 'trainer', x: 10, y: 7, name: 'Il Magico', npcId: 'elite_magic',
-      dialog: ['La magia antica scorre in me!', 'I miei incantesimi sono imbattibili!'],
-      team: [{ id: 'mascarion', lvl: 48 }, { id: 'mascarin', lvl: 47 }, { id: 'spritz_supreme', lvl: 47 }] },
-    
-    // Stairs to Champion
-    { type: 'sign', x: 10, y: 6, text: 'Per il CAMPIONE ➜' },
-    
-    // Entrance/Exit
-    { type: 'warp', x: 10, dy: 0, dest: 'gardalago', dx: 10, dy: 1 },
-  ],
-},
-
-// ═══════════════════════════════════════════════════════════════════
-// CHAMPION'S ROOM - Final Battle
-// ═══════════════════════════════════════════════════════════════════
-
-league_champion: {
-  name: 'Sala del Campione',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,1],
-    [1,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1],
-    [1,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1],
-    [1,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1],
-    [1,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1],
-    [1,0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    // The Champion - Marco il Rivale!
-    { type: 'trainer', x: 10, y: 5, name: 'DUX VENETIAE', npcId: 'champion',
-      dialog: [
-        'Hai superato la Elite Four...',
-        'Ma io sono il DUX! Il sovrano di Venetia!',
-        'I miei 4 LEGGENDARI sono imbattibili!',
-        'Questa sarà la nostra battaglia finale!'
-      ],
-      team: [
-        { id: 'dolomitor', lvl: 50 },
-        { id: 'lagorion', lvl: 50 },
-        { id: 'serenissima', lvl: 50 },
-        { id: 'ombradriz', lvl: 52 },
-      ],
-      isChampion: true,
-      finalBattle: true },
-    
-    // Back to entrance
-    { type: 'warp', x: 10, dy: 1, dest: 'league_entrance', dx: 10, dy: 11 },
-  ],
-},
-
-// ═══════════════════════════════════════════════════════════════════
-// VILLA VENETA - Multi-floor mansion
-// ═══════════════════════════════════════════════════════════════════
-
-villa_veneta: {
-  name: 'Villa Veneta',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1],
-    [1,0,4,0,4,4,4,4,4,4,4,4,4,4,4,0,4,0,0,1],
-    [1,0,4,0,4,0,0,0,0,0,0,0,0,0,4,0,4,0,0,1],
-    [1,0,4,0,4,0,0,0,0,0,0,0,0,0,4,0,4,0,0,1],
-    [1,0,4,0,4,0,0,0,9,0,0,0,0,0,4,0,4,0,0,1],
-    [1,0,4,0,4,0,0,0,0,0,0,0,0,0,4,0,4,0,0,1],
-    [1,0,4,0,4,4,4,4,4,4,4,4,4,4,4,0,4,0,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'npc', x: 10, y: 4, name: 'Nobildonna', npcId: 'nobildonna',
-      dialog: ['Questa villa è della mia famiglia da secoli!'] },
-    { type: 'item', x: 5, y: 3, item: { name: 'Vino Pregiato', type: 'hold', val: 0 } },
-    { type: 'item', x: 14, y: 8, item: { name: 'Mascheraball', type: 'capture', val: 0 } },
-    { type: 'warp', x: 8, dy: 8, dest: 'villa_veneta_2', dx: 8, dy: 4 },
-    { type: 'warp', x: 9, dy: 8, dest: 'route1', dx: 15, dy: 5 },
-  ],
-},
-
-villa_veneta_2: {
-  name: 'Villa Veneta (Piano 2)',
-  tiles: [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1],
-    [1,0,4,0,4,4,4,4,4,4,4,4,4,4,4,0,4,0,0,1],
-    [1,0,4,0,4,0,0,0,0,0,0,0,0,0,4,0,4,0,0,1],
-    [1,0,4,0,4,0,0,0,0,0,0,0,0,0,4,0,4,0,0,1],
-    [1,0,4,0,4,0,0,0,0,0,0,0,0,0,4,0,4,0,0,1],
-    [1,0,4,0,4,0,0,0,0,0,0,0,0,0,4,0,4,0,0,1],
-    [1,0,4,0,4,4,4,4,4,4,4,4,4,4,4,0,4,0,0,1],
-    [1,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  ],
-  events: [
-    { type: 'npc', x: 10, y: 4, name: 'Maestro', npcId: 'maestro',
-      dialog: ['La conoscenza è potere!'] },
-    { type: 'item', x: 5, y: 5, item: { name: 'Pietra Sole', type: 'stone', val: 0 } },
-    { type: 'item', x: 14, y: 5, item: { name: 'Dragoball', type: 'capture', val: 0 } },
-    { type: 'trainer', x: 10, y: 6, name: 'Guardiano', npcId: 'champion',
-      dialog: ['Non passerai!'], team: [{ id: 'gondrago', lvl: 30 }] },
-    { type: 'warp', x: 8, dy: 4, dest: 'villa_veneta', dx: 8, dy: 8 },
-  ],
-},
-
-}

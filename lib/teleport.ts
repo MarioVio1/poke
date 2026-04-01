@@ -321,7 +321,7 @@ export const TELEPORT_LOCATIONS: TeleportLocation[] = [
   {
     id: 'league_entrance',
     name: 'Sede della Lega',
-    description: 'L\\'ingresso della Lega Besti',
+    description: "L'ingresso della Lega Besti",
     map: 'league_entrance',
     x: 10,
     y: 1,
