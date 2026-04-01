@@ -101,7 +101,7 @@ export default function Game() {
   // Dialog states
   const [dialogs, setDialogs] = useState<string[]>([])
   const [speaker, setSpeaker] = useState('')
-  const [dialogCallback, setDialogCallback] = useState<(() => void) | null>(null)
+  const [dialogCallback, setDialogCallback] = useState<(() => () => void) | null>(null)
   
   // Current map event for shop
   const [currentShopItems, setCurrentShopItems] = useState<GameItem[]>([])
