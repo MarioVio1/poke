@@ -885,7 +885,7 @@ export default function Game() {
       const newLvl = p.level + 1
       const newExpTL = newLvl * 100
       const lf = newLvl / 50
-      const pData = BESTI[p.id as unknown as string]
+      const pData = BESTI[String(p.id)]
       const newHp = Math.floor((pData?.bs.hp || 50) * lf + 10 + newLvl)
       const newAtk = Math.floor((pData?.bs.atk || 50) * lf + 5)
       const newDef = Math.floor((pData?.bs.def || 50) * lf + 5)
@@ -910,9 +910,9 @@ export default function Game() {
       soundManager.levelUp()
       
       // Check for evolution
-      const bestiaData = BESTI[p.id as unknown as string]
+      const bestiaData = BESTI[String(p.id)]
       if (bestiaData?.ev && newLvl >= (bestiaData?.evLvl || 99)) {
-        setTimeout(() => evolveBestia(p.id as unknown as string, bestiaData.ev as string), 1000)
+        setTimeout(() => evolveBestia(String(p.id), String(bestiaData.ev)), 1000)
       }
     } else {
       continueBattle()
@@ -1217,7 +1217,7 @@ export default function Game() {
             </span>
             <span>{inv.item.name}</span>
             <span className="item-qty">x{inv.qty}</span>
-            {inv.item.type === 'stone' && gs.party[0] && canEvolveWithStone(gs.party[0].id as unknown as string, inv.item.id) && (
+            {inv.item.type === 'stone' && gs.party[0] && canEvolveWithStone(String(gs.party[0].id), inv.item.id) && (
               <span className="item-hint">✨</span>
             )}
           </div>
@@ -1244,7 +1244,7 @@ export default function Game() {
     // Stone evolution
     if (item.type === 'stone' && gs.party[0]) {
       const bestia = gs.party[0]
-      if (canEvolveWithStone(bestia.id, item.id)) {
+      if (canEvolveWithStone(String(bestia.id), item.id)) {
         useStone(item, bestia)
         setShowOverlay(false)
       } else {
@@ -1381,7 +1381,7 @@ export default function Game() {
   const useStone = (item: GameItem, bestia: PartyBestia) => {
     if (item.type !== 'stone') return
     
-    const newForm = getStoneEvolution(bestia.id, item.id)
+    const newForm = getStoneEvolution(String(bestia.id), item.id)
     if (!newForm) {
       setNotification(`${bestia.name} non può evolversi con ${item.name}!`)
       setTimeout(() => setNotification(''), 2000)
@@ -1424,7 +1424,7 @@ export default function Game() {
 
   const canUseStoneOn = (item: GameItem, bestia: PartyBestia): boolean => {
     if (item.type !== 'stone') return false
-    return canEvolveWithStone(bestia.id, item.id)
+    return canEvolveWithStone(String(bestia.id), item.id)
   }
 
   const showLoad = () => {
@@ -1831,7 +1831,7 @@ export default function Game() {
                       </div>
                     </div>
                     <img 
-                      src={getBestiaSprite(battleState?.enemy.id, false)}
+                      src={getBestiaSprite(String(battleState?.enemy.id), false)}
                       className={`bestia-sprite enemy-sprite pixel-sprite ${battleAnimation === 'damage' ? 'battle-sprite-damage' : 'sprite-idle'}`}
                       alt={battleState?.enemy.name}
                     />
@@ -1844,7 +1844,7 @@ export default function Game() {
                   {/* Player Bestia */}
                   <div className="player-area">
                     <img 
-                      src={getBestiaSprite(gs.party[0].id as unknown as string, true)} 
+                      src={getBestiaSprite(String(gs.party[0].id), true)} 
                       className={`bestia-sprite player-sprite pixel-sprite ${battleAnimation === 'attack' ? 'battle-sprite-attack' : 'sprite-idle'}`}
                       alt={gs.party[0].name}
                     />
