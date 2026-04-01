@@ -101,7 +101,7 @@ export default function Game() {
   // Dialog states
   const [dialogs, setDialogs] = useState<string[]>([])
   const [speaker, setSpeaker] = useState('')
-  const [dialogCallback, setDialogCallback] = useState<(() => () => void) | null>(null)
+  const [dialogCallback, setDialogCallback] = useState<(() => void) | null>(null)
   
   // Current map event for shop
   const [currentShopItems, setCurrentShopItems] = useState<GameItem[]>([])
@@ -545,20 +545,23 @@ export default function Game() {
         if (ev.givesStarter && !gs.flags.hasStarter) {
           setDialogs(ev.dialog || [])
           setSpeaker(ev.name || '')
-          setDialogCallback(() => () => setShowStarterChoice(true))
+          setDialogCallback(() => setShowStarterChoice(true))
           setInDialog(true)
         } else if (ev.dialog) {
           setDialogs(ev.dialog)
           setSpeaker(ev.name || '')
           setDialogCallback(() => {
             if (ev.gift) {
-              if (ev.gift === 'starter') return () => setShowStarterChoice(true)
+              if (ev.gift === 'starter') {
+                setShowStarterChoice(true)
+                return
+              }
               if (ev.gift === 'biciRubata') {
                 setGs(prev => ({ ...prev, vehicle: 'biciRubata' as VehicleType, flags: { ...prev.flags, hasBike: true } }))
-                return () => setNotification('Ottenuto: Bici Rubata!')
+                setNotification('Ottenuto: Bici Rubata!')
+                return
               }
             }
-            return () => {}
           })
           setInDialog(true)
         }
@@ -647,7 +650,7 @@ export default function Game() {
     if (dialogs.length === 0) {
       setInDialog(false)
       if (dialogCallback) {
-        dialogCallback()()
+        dialogCallback()
         setDialogCallback(null)
       }
       return
@@ -679,7 +682,7 @@ export default function Game() {
       `Preparati, perchè ti batterò!`,
     ])
     setSpeaker('Marco')
-    setDialogCallback(() => () => {
+    setDialogCallback(() => {
       // Start rival battle
       setBattleState({
         enemy: rivalStarter,
@@ -1684,7 +1687,7 @@ export default function Game() {
                       'Devi andare dal Professor Barcaro!',
                     ])
                     setSpeaker('Mamma')
-                    setDialogCallback(() => () => {
+                    setDialogCallback(() => {
                       setDialogs([
                         'Ah, sei arrivato finalmente!',
                         'Sono il Prof. Barcaro!',
@@ -1692,7 +1695,6 @@ export default function Game() {
                         'Scegli il tuo compagno!',
                       ])
                       setSpeaker('Prof. Barcaro')
-                      setDialogCallback(() => () => setShowStarterChoice(true))
                       setInDialog(true)
                     })
                     setInDialog(true)
