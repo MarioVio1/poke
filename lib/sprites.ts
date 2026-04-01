@@ -1,12 +1,14 @@
 // Besti SVG Sprites - Pokemon Style
 // Sprites dettagliati per ogni Bestia
 
-export const BESTI_SVG_SPRITES: Record<string, {
+export interface SpriteData {
   front: string
   back: string
   icon: string
   shiny?: string
-}> = {}
+}
+
+export const BESTI_SVG_SPRITES: Record<string, SpriteData> = {}
 
 // Helper per creare SVG
 const createSvg = (content: string, width = 96, height = 96): string => 
