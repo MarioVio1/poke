@@ -538,53 +538,6 @@ export default function Game() {
     soundManager.footstep()
   }, [gs, inBattle, inDialog, inShop, animating])
 
-  // Check for events at current position
-  const checkEvents = useCallback(() => {
-    const map = MAPS[gs.map]
-    
-    // Item pickup
-    const itemEv = map.events?.find((e: MapEvent) => e.type === 'item' && e.x === gs.player.x && e.y === gs.player.y)
-    if (itemEv && itemEv.item) {
-      const foundItem = ITEMS[itemEv.item.name.toLowerCase().replace(/ /g, '')] || Object.values(ITEMS).find(i => i.name === itemEv.item!.name)
-      if (foundItem) {
-        const existing = gs.inv.find(i => i.item.name === foundItem.name)
-        if (existing) {
-          setGs(prev => ({
-            ...prev,
-            inv: prev.inv.map(i => i.item.name === foundItem.name ? { ...i, qty: i.qty + 1 } : i)
-          }))
-        } else {
-          setGs(prev => ({ ...prev, inv: [...prev.inv, { item: foundItem, qty: 1 }] }))
-        }
-        soundManager.itemFound()
-        setNotification(`Trovato: ${foundItem.name}!`)
-        setTimeout(() => setNotification(''), 2000)
-        setGs(prev => ({
-          ...prev,
-          map: prev.map
-        }))
-        // Remove the item from map events by creating new events array
-        if (map.events) {
-          const newEvents = map.events.filter(e => e !== itemEv)
-          MAPS[gs.map] = { ...map, events: newEvents }
-        }
-      }
-    }
-
-    // Event interaction
-    const ev = map.events?.find((e: MapEvent) => {
-      if (e.type === 'npc' || e.type === 'trainer' || e.type === 'gym') {
-        return e.x === gs.player.x && e.y === gs.player.y
-      }
-      if (e.type === 'sign' || e.type === 'warp' || e.type === 'heal' || e.type === 'shop') {
-        return e.x === gs.player.x && e.y === gs.player.y
-      }
-      return false
-    })
-
-    if (ev) handleEvent(ev)
-  }, [gs, handleEvent])
-
   // Handle map events
   const handleEvent = useCallback((ev: MapEvent) => {
     switch (ev.type) {
@@ -650,6 +603,44 @@ export default function Game() {
         break
     }
   }, [gs])
+
+  // Check for events at current position
+  const checkEvents = useCallback(() => {
+    const map = MAPS[gs.map]
+    
+    // Item pickup
+    const itemEv = map.events?.find((e: MapEvent) => e.type === 'item' && e.x === gs.player.x && e.y === gs.player.y)
+    if (itemEv && itemEv.item) {
+      const foundItem = ITEMS[itemEv.item.name.toLowerCase().replace(/ /g, '')] || Object.values(ITEMS).find(i => i.name === itemEv.item!.name)
+      if (foundItem) {
+        const existing = gs.inv.find(i => i.item.name === foundItem.name)
+        if (existing) {
+          setGs(prev => ({
+            ...prev,
+            inv: prev.inv.map(i => i.item.name === foundItem.name ? { ...i, qty: i.qty + 1 } : i)
+          }))
+        } else {
+          setGs(prev => ({ ...prev, inv: [...prev.inv, { item: foundItem, qty: 1 }] }))
+        }
+        soundManager.itemFound()
+        setNotification(`Trovato: ${foundItem.name}!`)
+        setTimeout(() => setNotification(''), 2000)
+      }
+    }
+
+    // Event interaction
+    const ev = map.events?.find((e: MapEvent) => {
+      if (e.type === 'npc' || e.type === 'trainer' || e.type === 'gym') {
+        return e.x === gs.player.x && e.y === gs.player.y
+      }
+      if (e.type === 'sign' || e.type === 'warp' || e.type === 'heal' || e.type === 'shop') {
+        return e.x === gs.player.x && e.y === gs.player.y
+      }
+      return false
+    })
+
+    if (ev) handleEvent(ev)
+  }, [gs, handleEvent])
 
   // Advance dialog
   const advanceDialog = useCallback(() => {
