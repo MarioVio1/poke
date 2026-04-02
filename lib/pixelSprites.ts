@@ -1300,14 +1300,14 @@ export function imageDataToUrl(imageData: ImageData): string {
 }
 
 // Get sprite as data URL
-export function getSpriteUrl(id: string, isBack: boolean = false): string {
-  const sprite = PIXEL_SPRITES[id]
+export function getSpriteUrl(id: string | number, isBack: boolean = false): string {
+  const sprite = PIXEL_SPRITES[String(id)]
   if (!sprite) return ''
   return imageDataToUrl(isBack ? sprite.back : sprite.front)
 }
 
-export function getIconUrl(id: string): string {
-  const sprite = PIXEL_SPRITES[id]
+export function getIconUrl(id: string | number): string {
+  const sprite = PIXEL_SPRITES[String(id)]
   if (!sprite) return ''
   return imageDataToUrl(sprite.icon)
 }

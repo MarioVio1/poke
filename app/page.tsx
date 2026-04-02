@@ -331,24 +331,24 @@ export default function Game() {
   }, [])
 
   // Get sprite URL for a Bestia (try pixel art first, then SVG)
-  const getBestiaSprite = (id: string, isBack: boolean = false): string => {
+  const getBestiaSprite = (id: string | number, isBack: boolean = false): string => {
     // Try pixel sprites first
     const pixelUrl = getSpriteUrl(id, isBack)
     if (pixelUrl) return pixelUrl
     
     // Fallback to SVG sprites
-    const sprite = BESTI_SVG_SPRITES[id] || BESTI_SPRITES[id] || getDefaultSprite()
+    const sprite = BESTI_SVG_SPRITES[String(id)] || BESTI_SPRITES[String(id)] || getDefaultSprite()
     return isBack ? (sprite.back || sprite.front) : sprite.front
   }
 
   // Get icon sprite
-  const getBestiaIcon = (id: string): string => {
+  const getBestiaIcon = (id: string | number): string => {
     // Try pixel sprites first
     const iconUrl = getIconUrl(id)
     if (iconUrl) return iconUrl
     
     // Fallback to SVG sprites
-    const sprite = BESTI_SVG_SPRITES[id] || BESTI_SPRITES[id] || getDefaultSprite()
+    const sprite = BESTI_SVG_SPRITES[String(id)] || BESTI_SPRITES[String(id)] || getDefaultSprite()
     return sprite.icon || sprite.front
   }
 
@@ -920,7 +920,7 @@ export default function Game() {
       // Check for evolution
       const bestiaData = BESTI[p.id]
       if (bestiaData?.ev && newLvl >= (bestiaData?.evLvl || 99)) {
-        setTimeout(() => evolveBestia(p.id, bestiaData.ev!), 1000)
+        setTimeout(() => evolveBestia(String(p.id), bestiaData.ev!), 1000)
       }
     } else {
       continueBattle()

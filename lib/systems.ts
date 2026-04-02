@@ -96,16 +96,16 @@ export const STONE_EVOLUTIONS: Record<string, { from: string; to: string }[]> = 
   ],
 }
 
-export function canEvolveWithStone(bestiaId: string, stoneId: string): boolean {
+export function canEvolveWithStone(bestiaId: string | number, stoneId: string): boolean {
   const evolutions = STONE_EVOLUTIONS[stoneId]
   if (!evolutions) return false
-  return evolutions.some(e => e.from === bestiaId)
+  return evolutions.some(e => e.from === String(bestiaId))
 }
 
-export function getStoneEvolution(bestiaId: string, stoneId: string): string | null {
+export function getStoneEvolution(bestiaId: string | number, stoneId: string): string | null {
   const evolutions = STONE_EVOLUTIONS[stoneId]
   if (!evolutions) return null
-  const evo = evolutions.find(e => e.from === bestiaId)
+  const evo = evolutions.find(e => e.from === String(bestiaId))
   return evo?.to || null
 }
 

@@ -1,6 +1,6 @@
 // Besti (Monster) Data - Complete with Evolution System
 export interface Bestia {
-  id: string
+  id: number
   name: string
   types: string[]
   desc: string
@@ -17,11 +17,11 @@ export interface Bestia {
 }
 
 export const BESTI: Record<string, Bestia> = {
-  // ═══════════════════════════════════════════════════════════════
+  // ═══════════════════════════════════════════════════════════════════
   // STARTERS (3 scelte iniziali)
-  // ═══════════════════════════════════════════════════════════════
+  // ═══════════════════════════════════════════════════════════════════
   fogaron: { 
-    id: 1, name: 'Fogaron', types: ['fire'], 
+    id: 1, name: 'Fogaron', types: ['fire'],
     desc: 'Drago di fuoco nato dai falò veneti. Ama le notti calde.', 
     bs: { hp: 45, atk: 60, def: 40, spd: 50 },
     ev: 'fogarox', evLvl: 16,
