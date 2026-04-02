@@ -687,6 +687,7 @@ export interface MapEvent {
   dy?: number
   item?: { name: string; type: string; val: number }
   badge?: string
+  prize?: number
   team?: { id: string; lvl: number }[]
   items?: { name: string; price: number; type: string; val: number }[]
   isEnemy?: boolean
