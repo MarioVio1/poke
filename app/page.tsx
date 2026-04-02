@@ -146,7 +146,7 @@ export default function Game() {
       { item: ITEMS.gondolball, qty: 5 },
       { item: ITEMS.caffe, qty: 3 },
     ],
-    flags: { hasStarter: false, hasBike: false, hasBoat: false },
+    flags: { hasStarter: false, hasBike: false, hasBoat: false, defeatedRival: false },
     map: 'canalborgo',
     vehicle: 'none',
     storyProgress: 0,
@@ -920,7 +920,7 @@ export default function Game() {
       // Check for evolution
       const bestiaData = BESTI[p.id]
       if (bestiaData?.ev && newLvl >= (bestiaData?.evLvl || 99)) {
-        setTimeout(() => evolveBestia(p.id, String(bestiaData.ev)), 1000)
+        setTimeout(() => evolveBestia(p.id, bestiaData.ev), 1000)
       }
     } else {
       continueBattle()
@@ -1367,11 +1367,11 @@ export default function Game() {
   // Check achievements based on game state
   const checkAchievements = () => {
     const caught = gs.pc.length + gs.party.length
-    const battlesWon = gs.flags.battlesWon || 0
+    const battlesWon: number = gs.flags.battlesWon ?? 0
     
-    if ((battlesWon as number) >= 1) unlockAchievement('first_battle')
-    if ((battlesWon as number) >= 10) unlockAchievement('ten_battles')
-    if ((battlesWon as number) >= 50) unlockAchievement('fifty_battles')
+    if (battlesWon >= 1) unlockAchievement('first_battle')
+    if (battlesWon >= 10) unlockAchievement('ten_battles')
+    if (battlesWon >= 50) unlockAchievement('fifty_battles')
     if (caught >= 1) unlockAchievement('first_capture')
     if (caught >= 10) unlockAchievement('ten_captures')
     if (caught >= 25) unlockAchievement('twenty_five_captures')
