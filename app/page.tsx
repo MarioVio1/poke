@@ -1839,7 +1839,7 @@ export default function Game() {
                       </div>
                     </div>
                     <img 
-                      src={getBestiaSprite(battleState?.enemy.id, false)}
+                      src={getBestiaSprite(String(battleState?.enemy?.id ?? ''), false)}
                       className={`bestia-sprite enemy-sprite pixel-sprite ${battleAnimation === 'damage' ? 'battle-sprite-damage' : 'sprite-idle'}`}
                       alt={battleState?.enemy.name}
                     />
