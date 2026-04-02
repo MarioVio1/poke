@@ -2707,6 +2707,8 @@ export const GAME_STORY: GameStory = {
       ]
     },
   ],
+  annoyingCharacters: ANNOYING_CHARACTERS,
+  routeTrainers: ROUTE_TRAINERS,
 }
 
 export default GAME_STORY
