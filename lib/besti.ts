@@ -1,6 +1,6 @@
 // Besti (Monster) Data - Complete with Evolution System
 export interface Bestia {
-  id: number
+  id: string
   name: string
   types: string[]
   desc: string
