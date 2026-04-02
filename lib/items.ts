@@ -130,6 +130,15 @@ export const ITEMS: Record<string, GameItem> = {
     effect: 'dragon_bonus',
     sprite: 'drago',
   },
+  ultraball: {
+    id: 'ultraball',
+    name: 'Ultra Ball',
+    desc: 'Palla ad alte prestazioni. Migliore della Gondolball standard.',
+    type: 'capture',
+    price: 800,
+    effect: 'high_capture',
+    sprite: 'ultra_ball',
+  },
   
   // ULTRA RARE BALLS
   dogeball: {
@@ -386,6 +395,15 @@ export const ITEMS: Record<string, GameItem> = {
     price: 900,
     effect: 'ice_evo',
     sprite: 'ice_stone',
+  },
+  pietra_terra: {
+    id: 'pietra_terra',
+    name: 'Pietra Terra',
+    desc: 'Pietra pesante. Per Besti Terra.',
+    type: 'stone',
+    price: 900,
+    effect: 'earth_evo',
+    sprite: 'earth_stone',
   },
   
   // SPECIAL STONES

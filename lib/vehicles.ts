@@ -1,11 +1,12 @@
 // Transportation System - Venetian themed vehicles
-export type VehicleType = 'none' | 'bici' | 'biciRubata' | 'barchino' | 'gondola' | 'scooter'
+export type VehicleType = 'none' | 'biciRubata' | 'barchino' | 'gondola_oro' | 'scooterino'
+export type VehicleCategory = 'none' | 'bici' | 'barchino' | 'gondola' | 'scooter'
 
 export interface Vehicle {
   id: string
   name: string
   desc: string
-  type: VehicleType
+  type: VehicleCategory
   speed: number
   canSurf: boolean
   canWater: boolean
@@ -128,7 +129,7 @@ export const canMoveOnTile = (
   
   // Water tiles
   if (WATER_TILES.includes(tile)) {
-    if (currentVehicle === 'barchino' || currentVehicle === 'gondola') {
+    if (currentVehicle === 'barchino' || currentVehicle === 'gondola_oro') {
       return true
     }
     return false
@@ -136,7 +137,7 @@ export const canMoveOnTile = (
   
   // Surf tiles (deep water for gondola)
   if (tile === 21 || tile === 22) {
-    return currentVehicle === 'gondola'
+    return currentVehicle === 'gondola_oro'
   }
   
   return true
@@ -150,12 +151,12 @@ export const getMovementSpeed = (vehicle: VehicleType): number => {
 // Random encounter rate modifiers
 export const getEncounterRate = (vehicle: VehicleType, baseRate: number): number => {
   switch (vehicle) {
-    case 'bici':
+    case 'biciRubata':
       return baseRate * 0.8 // Less encounters on bike
-    case 'scooter':
+    case 'scooterino':
       return baseRate * 0.5 // Much less on scooter
     case 'barchino':
-    case 'gondola':
+    case 'gondola_oro':
       return 0 // No wild encounters in water
     default:
       return baseRate

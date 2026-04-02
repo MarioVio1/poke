@@ -1,18 +1,16 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { BESTI, Bestia, MOVES, GameMap, MapEvent, MoveData, LEGENDARY_STARTERS } from '@/lib/besti'
-import { MAPS, CITY_THEMES, getCityTheme } from '@/lib/maps'
+import { BESTI, Bestia, MOVES, MapEvent, LEGENDARY_STARTERS } from '@/lib/besti'
+import { MAPS } from '@/lib/maps'
 import { ITEMS, SHOP_ITEMS, GameItem } from '@/lib/items'
-import { NPCs, NPCData } from '@/lib/npcs'
-import { VEHICLES, VehicleType, canMoveOnTile, getMovementSpeed } from '@/lib/vehicles'
-import { BESTI_SVG_SPRITES, BESTI_SPRITES, SpriteData, getDefaultSprite } from '@/lib/sprites'
-import { PIXEL_SPRITES, getSpriteUrl, getIconUrl } from '@/lib/pixelSprites'
-import { getNPCSprite } from '@/lib/npcSprites'
-import { TYPE_COLORS, TILE_COLORS, TYPE_CHART, isIndoorMap, getMapBackground, renderTile, renderBuilding } from '@/lib/types'
+import { VEHICLES, VehicleType, canMoveOnTile } from '@/lib/vehicles'
+import { BESTI_SVG_SPRITES, BESTI_SPRITES, getDefaultSprite } from '@/lib/sprites'
+import { getSpriteUrl, getIconUrl } from '@/lib/pixelSprites'
+import { TYPE_COLORS, TYPE_CHART, isIndoorMap, getMapBackground, renderTile } from '@/lib/types'
 import { soundManager } from '@/lib/sounds'
 import { TELEPORT_LOCATIONS, isLocationUnlocked, TeleportLocation } from '@/lib/teleport'
-import { ACHIEVEMENTS, Achievement, STONE_EVOLUTIONS, canEvolveWithStone, getStoneEvolution, getTimeOfDay, getTimeGreeting, TIME_EFFECTS, TimeOfDay } from '@/lib/systems'
+import { ACHIEVEMENTS, Achievement, canEvolveWithStone, getStoneEvolution, getTimeOfDay, TimeOfDay } from '@/lib/systems'
 
 const TILE = 16
 const MAPW = 15
@@ -74,6 +72,23 @@ const INTRO_FRAMES = [
   { text: 'Dove i Besti regnano...', subtext: 'Tra spritz e polenta', delay: 1500 },
   { text: 'La tua avventura inizia ora!', subtext: '', delay: 2000 },
 ]
+
+const normalizeItemKey = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '')
+
+const findItemByName = (value: string): GameItem | undefined => {
+  const normalizedValue = normalizeItemKey(value)
+
+  return (
+    ITEMS[value as keyof typeof ITEMS] ||
+    Object.entries(ITEMS).find(([key]) => normalizeItemKey(key) === normalizedValue)?.[1] ||
+    Object.values(ITEMS).find(item => normalizeItemKey(item.name) === normalizedValue)
+  )
+}
 
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -144,7 +159,7 @@ export default function Game() {
     inv: [
       { item: ITEMS.pozioncino, qty: 5 },
       { item: ITEMS.gondolball, qty: 5 },
-      { item: ITEMS.caffe, qty: 3 },
+      { item: ITEMS.caffette, qty: 3 },
     ],
     flags: { hasStarter: false, hasBike: false, hasBoat: false, defeatedRival: false },
     map: 'canalborgo',
@@ -155,6 +170,22 @@ export default function Game() {
     evolutions: 0,
     citiesVisited: [],
   })
+
+  const grantVehicle = useCallback((vehicleId: VehicleType) => {
+    const vehicleData = VEHICLES[vehicleId]
+    if (!vehicleData) return
+
+    setGs(prev => ({
+      ...prev,
+      vehicle: vehicleId,
+      flags: {
+        ...prev.flags,
+        hasBike: prev.flags.hasBike || vehicleId === 'biciRubata' || vehicleId === 'scooterino',
+        hasBoat: prev.flags.hasBoat || vehicleId === 'barchino' || vehicleId === 'gondola_oro',
+      },
+    }))
+    setNotification(`Ottenuto: ${vehicleData.name}!`)
+  }, [])
 
   // Save/Load System with Auto-Save
   const saveGame = useCallback((autoSave = false) => {
@@ -597,11 +628,13 @@ export default function Game() {
                 setShowStarterChoice(true)
                 return
               }
-              if (ev.gift === 'biciRubata') {
-                setGs(prev => ({ ...prev, vehicle: 'biciRubata' as VehicleType, flags: { ...prev.flags, hasBike: true } }))
-                setNotification('Ottenuto: Bici Rubata!')
+              if (ev.gift in VEHICLES) {
+                grantVehicle(ev.gift as VehicleType)
                 return
               }
+            }
+            if (ev.vehicle && ev.vehicle in VEHICLES) {
+              grantVehicle(ev.vehicle as VehicleType)
             }
           })
           setInDialog(true)
@@ -627,7 +660,7 @@ export default function Game() {
         break
       case 'shop':
         if (ev.items) {
-          setCurrentShopItems(ev.items.map(i => ITEMS[i.name.toLowerCase().replace(/ /g, '')]).filter(Boolean))
+          setCurrentShopItems(ev.items.map(i => findItemByName(i.name)).filter((item): item is GameItem => Boolean(item)))
         } else {
           setCurrentShopItems(SHOP_ITEMS.basics)
         }
@@ -646,7 +679,7 @@ export default function Game() {
         startTrainerBattle(ev)
         break
     }
-  }, [gs])
+  }, [gs, grantVehicle])
 
   // Check for events at current position
   const checkEvents = useCallback(() => {
@@ -655,7 +688,7 @@ export default function Game() {
     // Item pickup
     const itemEv = map.events?.find((e: MapEvent) => e.type === 'item' && (e.x ?? -1) === gs.player.x && (e.y ?? -1) === gs.player.y)
     if (itemEv && itemEv.item) {
-      const foundItem = ITEMS[itemEv.item.name.toLowerCase().replace(/ /g, '')] || Object.values(ITEMS).find(i => i.name === itemEv.item!.name)
+      const foundItem = findItemByName(itemEv.item.name)
       if (foundItem) {
         const existing = gs.inv.find(i => i.item.name === foundItem.name)
         if (existing) {
