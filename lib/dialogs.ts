@@ -467,25 +467,7 @@ export const DIALOGS = {
       'CIAOOO!',
     ],
   },
-  victory: [
-      'Prof. Barcaro: ECCELLENTE!',
-      'Prof. Barcaro: Sei un vero Allenatore!',
-      'Prof. Barcaro: Ora vai! Esplora CANALBORGO!',
-      'Prof. Barcaro: E poi vai verso nord, verso SPRITZIA!',
-      'Prof. Barcaro: Lì troverai il primo GYM!',
-      'Prof. Barcaro: Buona fortuna! E ricorda...',
-      'Prof. Barcaro: ...la polenta è sempre la risposta!',
-    ],
-    lose: [
-      'Marco: AHA! VEDI?! IO SONO IL PIÙ FORTE!',
-      'Marco: Ma non preoccuparti...',
-      'Marco: La rivincita arriverà!',
-      'Marco: Vai a curare i tuoi Besti!',
-      'Marco: Ci rivedremo presto!',
-    ],
-  },
 
-  // ═══════════════════════════════════════════════════════════════════════════
   // CANALBORGO - NPC Dialoghi
   // ═══════════════════════════════════════════════════════════════════════════
   canalborgo: {
@@ -1297,7 +1279,6 @@ export const DIALOGS = {
   },
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
 // Get random venetian expression
 // ═══════════════════════════════════════════════════════════════════════════
 
