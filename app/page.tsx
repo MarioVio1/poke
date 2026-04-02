@@ -1296,7 +1296,7 @@ export default function Game() {
         {Object.values(BESTI).slice(0, 50).map(b => (
           <div key={b.id} className="dex-entry">
             <img src={getBestiaIcon(b.id)} className="dex-sprite" alt={b.name} />
-            <div className="dex-num">#{b.id.padStart(3, '0')}</div>
+            <div className="dex-num">#{String(b.id).padStart(3, '0')}</div>
             <div className="dex-name">{b.name}</div>
             <div className="dex-types">{b.types.map(t => <span key={t} className={`type-badge type-${t}`}>{t}</span>)}</div>
           </div>
