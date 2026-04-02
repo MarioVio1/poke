@@ -675,8 +675,8 @@ export const MOVES: Record<string, MoveData> = {
 // Game map interface
 export interface MapEvent {
   type: string
-  x: number
-  y: number
+  x?: number
+  y?: number
   name?: string
   npcId?: string
   dialog?: string[]

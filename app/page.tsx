@@ -441,9 +441,9 @@ export default function Game() {
 
     // Draw events with Pokemon-style sprites
     map.events?.forEach((e: MapEvent) => {
-      if (e.x >= sx && e.x < sx + MAPW && e.y >= sy && e.y < sy + MAPH) {
-        const ex = (e.x - sx) * TILE
-        const ey = (e.y - sy) * TILE
+      if ((e.x ?? -1) >= sx && (e.x ?? -1) < sx + MAPW && (e.y ?? -1) >= sy && (e.y ?? -1) < sy + MAPH) {
+        const ex = ((e.x ?? 0) - sx) * TILE
+        const ey = ((e.y ?? 0) - sy) * TILE
         
         if (e.type === 'trainer' || e.type === 'gym' || e.type === 'npc') {
           // NPC with shadow
@@ -653,7 +653,7 @@ export default function Game() {
     const map = MAPS[gs.map]
     
     // Item pickup
-    const itemEv = map.events?.find((e: MapEvent) => e.type === 'item' && e.x === gs.player.x && e.y === gs.player.y)
+    const itemEv = map.events?.find((e: MapEvent) => e.type === 'item' && (e.x ?? -1) === gs.player.x && (e.y ?? -1) === gs.player.y)
     if (itemEv && itemEv.item) {
       const foundItem = ITEMS[itemEv.item.name.toLowerCase().replace(/ /g, '')] || Object.values(ITEMS).find(i => i.name === itemEv.item!.name)
       if (foundItem) {
@@ -675,10 +675,10 @@ export default function Game() {
     // Event interaction
     const ev = map.events?.find((e: MapEvent) => {
       if (e.type === 'npc' || e.type === 'trainer' || e.type === 'gym') {
-        return e.x === gs.player.x && e.y === gs.player.y
+        return (e.x ?? -1) === gs.player.x && (e.y ?? -1) === gs.player.y
       }
       if (e.type === 'sign' || e.type === 'warp' || e.type === 'heal' || e.type === 'shop') {
-        return e.x === gs.player.x && e.y === gs.player.y
+        return (e.x ?? 0) === gs.player.x && (e.y ?? 0) === gs.player.y
       }
       return false
     })
