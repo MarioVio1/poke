@@ -148,22 +148,36 @@ export default function Game() {
     citiesVisited: [],
   })
 
-  // Save/Load System
-  const saveGame = useCallback(() => {
+  // Save/Load System with Auto-Save
+  const saveGame = useCallback((autoSave = false) => {
     try {
-      const saveData = {
+      const dataToSave = {
         ...gs,
         savedAt: new Date().toISOString(),
         version: '1.0.0',
       }
-      localStorage.setItem('pokemona_save', JSON.stringify(saveData))
-      setNotification('Partita salvata!')
-      soundManager.levelUp()
+      localStorage.setItem('pokemona_save', JSON.stringify(dataToSave))
+      if (!autoSave) {
+        setNotification('Partita salvata!')
+        soundManager.levelUp()
+      }
+      return true
     } catch (e) {
       console.error('Save failed:', e)
-      setNotification('Errore nel salvataggio!')
+      if (!autoSave) setNotification('Errore nel salvataggio!')
+      return false
     }
   }, [gs])
+
+  // Auto-save every 30 seconds
+  useEffect(() => {
+    if (gameStarted && !inBattle && gs.party.length > 0) {
+      const autoSaveInterval = setInterval(() => {
+        saveGame(true)
+      }, 30000)
+      return () => clearInterval(autoSaveInterval)
+    }
+  }, [gameStarted, inBattle, gs.party.length, saveGame])
 
   const loadGame = useCallback(() => {
     try {
@@ -201,6 +215,25 @@ export default function Game() {
 
   const hasSave = useCallback(() => {
     return localStorage.getItem('pokemona_save') !== null
+  }, [])
+
+  const getSaveInfo = useCallback(() => {
+    try {
+      const saved = localStorage.getItem('pokemona_save')
+      if (saved) {
+        const saveData = JSON.parse(saved)
+        return {
+          playerName: saveData.player?.name || 'Sconosciuto',
+          level: saveData.party?.[0]?.level || 1,
+          badges: saveData.player?.badges?.length || 0,
+          savedAt: saveData.savedAt ? new Date(saveData.savedAt).toLocaleString('it-IT') : 'Sconosciuto',
+          map: saveData.map || 'Sconosciuto',
+        }
+      }
+    } catch (e) {
+      console.error('Get save info failed:', e)
+    }
+    return null
   }, [])
 
   const deleteSave = useCallback(() => {
@@ -852,10 +885,11 @@ export default function Game() {
       const newLvl = p.level + 1
       const newExpTL = newLvl * 100
       const lf = newLvl / 50
-      const newHp = Math.floor(BESTI[p.id]?.bs.hp * lf + 10 + newLvl) || p.maxHp + 5
-      const newAtk = Math.floor((BESTI[p.id]?.bs.atk || 50) * lf + 5)
-      const newDef = Math.floor((BESTI[p.id]?.bs.def || 50) * lf + 5)
-      const newSpd = Math.floor((BESTI[p.id]?.bs.spd || 50) * lf + 5)
+      const pData = BESTI[p.id]
+      const newHp = Math.floor((pData?.bs.hp || 50) * lf + 10 + newLvl)
+      const newAtk = Math.floor((pData?.bs.atk || 50) * lf + 5)
+      const newDef = Math.floor((pData?.bs.def || 50) * lf + 5)
+      const newSpd = Math.floor((pData?.bs.spd || 50) * lf + 5)
 
       setGs(prev => ({
         ...prev,
@@ -876,9 +910,9 @@ export default function Game() {
       soundManager.levelUp()
       
       // Check for evolution
-      const bestiaData = BESTI[p.id as unknown as string]
+      const bestiaData = BESTI[p.id]
       if (bestiaData?.ev && newLvl >= (bestiaData?.evLvl || 99)) {
-        setTimeout(() => evolveBestia(p.id, bestiaData.ev as string), 1000)
+        setTimeout(() => evolveBestia(p.id, String(bestiaData.ev)), 1000)
       }
     } else {
       continueBattle()
@@ -1254,7 +1288,7 @@ export default function Game() {
         {Object.values(BESTI).slice(0, 50).map(b => (
           <div key={b.id} className="dex-entry">
             <img src={getBestiaIcon(b.id)} className="dex-sprite" alt={b.name} />
-            <div className="dex-num">#{String(b.id).padStart(3, '0')}</div>
+            <div className="dex-num">#{b.id.padStart(3, '0')}</div>
             <div className="dex-name">{b.name}</div>
             <div className="dex-types">{b.types.map(t => <span key={t} className={`type-badge type-${t}`}>{t}</span>)}</div>
           </div>
@@ -1787,7 +1821,7 @@ export default function Game() {
                     <div className="battle-trees"></div>
                   </div>
                   
-                  {/* Enemy Info + Sprite */}
+                   {/* Enemy Info + Sprite */}
                   <div className="enemy-area">
                     <div className="enemy-info-box">
                       <span className="enemy-name">{battleState?.enemy.name}</span>
@@ -1798,16 +1832,20 @@ export default function Game() {
                     </div>
                     <img 
                       src={getBestiaSprite(battleState?.enemy.id, false)}
-                      className={`bestia-sprite enemy-sprite pixel-sprite ${battleAnimation === 'damage' ? 'damage-animation' : ''}`}
+                      className={`bestia-sprite enemy-sprite pixel-sprite ${battleAnimation === 'damage' ? 'battle-sprite-damage' : 'sprite-idle'}`}
                       alt={battleState?.enemy.name}
                     />
+                    {/* Critical Hit indicator */}
+                    {battleAnimation === 'damage' && (
+                      <div className="type-effectiveness">-MOSSA-</div>
+                    )}
                   </div>
                     
                   {/* Player Bestia */}
                   <div className="player-area">
                     <img 
                       src={getBestiaSprite(gs.party[0].id, true)} 
-                      className={`bestia-sprite player-sprite pixel-sprite ${battleAnimation === 'attack' ? 'attack-animation' : ''}`}
+                      className={`bestia-sprite player-sprite pixel-sprite ${battleAnimation === 'attack' ? 'battle-sprite-attack' : 'sprite-idle'}`}
                       alt={gs.party[0].name}
                     />
                     <div className="player-info-box">
