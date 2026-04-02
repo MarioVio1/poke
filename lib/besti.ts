@@ -702,6 +702,8 @@ export interface MapEvent {
 
 export interface GameMap {
   name: string
+  width?: number
+  height?: number
   tiles: number[][]
   events: MapEvent[]
   wild?: string[]
