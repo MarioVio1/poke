@@ -130,7 +130,7 @@ export const PARODY_CHARACTERS: Record<string, VenetianCharacter> = {
     role: 'Pescatore Bugiardo',
     dialect: 'Pescatore che racconta sempre storie enormi',
     quirks: ['Le sue storie crescono ogni volta', 'Non ha mai preso niente', 'Sa dove sono i pesci ma non ci va mai', 'Beve vino bianco'],
-    famousPhrase: 'Ieri gavevo 'na spigola così! No aspetta,era un torpedine! No, el pesce siluro! ...No, gò inventà tutto!',
+    famousPhrase: "Ieri gavevo 'na spigola così! No aspetta,era un torpedine! No, el pesce siluro! ...No, gò inventà tutto!",
     sprite: 'fisherman',
   },
 
@@ -218,7 +218,7 @@ export const PARODY_CHARACTERS: Record<string, VenetianCharacter> = {
     role: 'Regina del Bello',
     dialect: 'Parrucchiera che fa i tagli più strani',
     quirks: ['I suoi tagli sono sempre di moda... o no', 'Parlotta senza sosta', 'Sa tutti i segreti delle donne', 'Fuma in pausa'],
-    famousPhrase: 'Te farò 'na belesa! Un taglio modern! Come le modelle! ...No, le modelle de 30 anni fa! Ma xe igual!',
+    famousPhrase: "Te farò 'na belesa! Un taglio modern! Come le modelle! ...No, le modelle de 30 anni fa! Ma xe igual!",
     sprite: 'lass',
   },
 }
