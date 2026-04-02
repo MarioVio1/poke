@@ -1405,11 +1405,12 @@ export default function Game() {
     
     setTimeout(() => {
       // Perform evolution
+      const evolvedData = BESTI[newForm]
       setGs(prev => ({
         ...prev,
         party: prev.party.map(p => p === bestia ? {
           ...p,
-          id: newForm,
+          id: evolvedData?.id ?? newForm,
           name: evolved.name,
           types: evolved.types,
           maxHp: Math.floor(evolved.bs.hp * 1.5),
