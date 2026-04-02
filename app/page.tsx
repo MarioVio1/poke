@@ -1148,9 +1148,10 @@ export default function Game() {
         }))
         
         if (battleState!.badge) {
+          const earnedBadge = battleState!.badge
           soundManager.badgeGet()
           setTimeout(() => {
-            setBattleMsg(`Hai ottenuto il ${getBadgeLabel(battleState!.badge)}!`)
+            setBattleMsg(`Hai ottenuto il ${getBadgeLabel(earnedBadge)}!`)
             setTimeout(() => {
               setInBattle(false)
               setShowBattleMsg(false)
