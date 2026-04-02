@@ -288,8 +288,8 @@ export const TELEPORT_LOCATIONS: TeleportLocation[] = [
     x: 10,
     y: 8,
     unlocked: false,
-    unlockCondition: 'champion',
-    unlockText: 'Diventa il Campione!',
+    unlockCondition: 'badge_laguna',
+    unlockText: 'Vinci il Badge Laguna a Gardalago!',
     icon: '🏖️',
     region: 'Regione Finale',
   },
@@ -301,7 +301,7 @@ export const TELEPORT_LOCATIONS: TeleportLocation[] = [
     x: 4,
     y: 4,
     unlocked: false,
-    unlockCondition: 'champion',
+    unlockCondition: 'badge_laguna',
     icon: '🏥',
     region: 'Regione Finale',
   },
@@ -313,7 +313,7 @@ export const TELEPORT_LOCATIONS: TeleportLocation[] = [
     x: 3,
     y: 3,
     unlocked: false,
-    unlockCondition: 'champion',
+    unlockCondition: 'badge_laguna',
     icon: '🏪',
     region: 'Regione Finale',
   },
@@ -344,33 +344,66 @@ export const TELEPORT_LOCATIONS: TeleportLocation[] = [
   },
 ]
 
+const normalizeBadgeId = (badge: string): string => {
+  const normalized = badge
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '')
+
+  switch (normalized) {
+    case 'badgeaperitivo':
+      return 'aperitivo'
+    case 'badgearena':
+      return 'arena'
+    case 'badgestudio':
+      return 'studio'
+    case 'badgeradicchio':
+      return 'radicchio'
+    case 'badgeghiaccio':
+      return 'ghiaccio'
+    case 'badgelaguna':
+      return 'laguna'
+    case 'campionedivenetia':
+    case 'campione':
+    case 'champion':
+      return 'campione'
+    default:
+      return normalized
+  }
+}
+
 // Check if location is unlocked based on player's badges
 export const isLocationUnlocked = (
   location: TeleportLocation,
   badges: string[],
   storyProgress: number
 ): boolean => {
+  const normalizedBadges = badges.map(normalizeBadgeId)
+
   if (location.unlocked) return true
   
   if (!location.unlockCondition) return false
 
   switch (location.unlockCondition) {
     case 'badge_aperitivo':
-      return badges.includes('aperitivo')
+      return normalizedBadges.includes('aperitivo')
     case 'badge_arena':
-      return badges.includes('arena')
+      return normalizedBadges.includes('arena')
     case 'badge_studio':
-      return badges.includes('studio')
+      return normalizedBadges.includes('studio')
     case 'badge_radicchio':
-      return badges.includes('radicchio')
+      return normalizedBadges.includes('radicchio')
     case 'badge_ghiaccio':
-      return badges.includes('ghiaccio')
+      return normalizedBadges.includes('ghiaccio')
+    case 'badge_laguna':
+      return normalizedBadges.includes('laguna')
     case 'champion':
-      return badges.includes('campione')
+      return normalizedBadges.includes('campione')
     case 'league':
-      return badges.length >= 8 // All 8 badges
+      return ['aperitivo', 'arena', 'studio', 'radicchio', 'ghiaccio', 'laguna'].every(badge => normalizedBadges.includes(badge))
     case 'elite':
-      return badges.includes('league_pass') // After defeating all 4 Elite
+      return normalizedBadges.includes('leaguepass') || badges.includes('league_pass')
     default:
       return false
   }

@@ -90,6 +90,62 @@ const findItemByName = (value: string): GameItem | undefined => {
   )
 }
 
+const MAIN_GYM_BADGES = ['aperitivo', 'arena', 'studio', 'radicchio', 'ghiaccio', 'laguna'] as const
+
+const normalizeBadgeId = (value: string) => {
+  const normalized = normalizeItemKey(value)
+
+  switch (normalized) {
+    case 'leaguepass':
+      return 'league_pass'
+    case 'badgeaperitivo':
+      return 'aperitivo'
+    case 'badgearena':
+      return 'arena'
+    case 'badgestudio':
+      return 'studio'
+    case 'badgeradicchio':
+      return 'radicchio'
+    case 'badgeghiaccio':
+      return 'ghiaccio'
+    case 'badgelaguna':
+      return 'laguna'
+    case 'campionedivenetia':
+    case 'campione':
+      return 'campione'
+    default:
+      return normalized
+  }
+}
+
+const getBadgeLabel = (value: string) => {
+  const badgeId = normalizeBadgeId(value)
+
+  switch (badgeId) {
+    case 'aperitivo':
+      return 'Badge Aperitivo'
+    case 'arena':
+      return 'Badge Arena'
+    case 'studio':
+      return 'Badge Studio'
+    case 'radicchio':
+      return 'Badge Radicchio'
+    case 'ghiaccio':
+      return 'Badge Ghiaccio'
+    case 'laguna':
+      return 'Badge Laguna'
+    case 'campione':
+      return 'Titolo di Campione'
+    default:
+      return value
+  }
+}
+
+const hasAllMainBadges = (badges: string[]) => {
+  const normalizedBadges = badges.map(normalizeBadgeId)
+  return MAIN_GYM_BADGES.every(badge => normalizedBadges.includes(badge))
+}
+
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
@@ -646,6 +702,18 @@ export default function Game() {
         setInDialog(true)
         break
       case 'warp':
+        if (ev.requires === 'league' && !hasAllMainBadges(gs.player.badges)) {
+          setDialogs(['Ti servono tutti i badge principali per entrare nella Lega Besti.'])
+          setSpeaker('Guardia')
+          setInDialog(true)
+          break
+        }
+        if (ev.requires === 'elite' && !gs.player.badges.map(normalizeBadgeId).includes('league_pass')) {
+          setDialogs(['Prima devi sconfiggere tutti gli Elite della Lega.'])
+          setSpeaker('Guardia')
+          setInDialog(true)
+          break
+        }
         setGs(prev => ({ ...prev, map: ev.dest!, player: { ...prev.player, x: ev.dx!, y: ev.dy! } }))
         break
       case 'heal':
@@ -667,7 +735,7 @@ export default function Game() {
         setInShop(true)
         break
       case 'gym':
-        if (gs.player.badges.includes(ev.badge!)) {
+        if (ev.badge && gs.player.badges.map(normalizeBadgeId).includes(normalizeBadgeId(ev.badge))) {
           setDialogs(['Hai già questo badge!'])
           setSpeaker('')
           setInDialog(true)
@@ -811,7 +879,7 @@ export default function Game() {
       enemyIdx: 0,
       isWild: false,
       over: false,
-      badge: ev.badge,
+      badge: ev.badge ? normalizeBadgeId(ev.badge) : undefined,
       trainerName: ev.name,
     })
     setDialogs(ev.dialog || [`${ev.name} vuole combattere!`])
@@ -1070,13 +1138,19 @@ export default function Game() {
         setBattleMsg(`Hai vinto! +₿${reward}`)
         setGs(prev => ({
           ...prev,
-          player: { ...prev.player, money: prev.player.money + reward, badges: battleState!.badge ? [...prev.player.badges, battleState!.badge!] : prev.player.badges },
+          player: {
+            ...prev.player,
+            money: prev.player.money + reward,
+            badges: battleState!.badge && !prev.player.badges.map(normalizeBadgeId).includes(battleState!.badge)
+              ? [...prev.player.badges, battleState!.badge]
+              : prev.player.badges,
+          },
         }))
         
         if (battleState!.badge) {
           soundManager.badgeGet()
           setTimeout(() => {
-            setBattleMsg(`Hai ottenuto il ${battleState!.badge}!`)
+            setBattleMsg(`Hai ottenuto il ${getBadgeLabel(battleState!.badge)}!`)
             setTimeout(() => {
               setInBattle(false)
               setShowBattleMsg(false)

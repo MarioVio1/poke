@@ -288,7 +288,7 @@ export const MAPS: Record<string, GameMap> = {
     events: [
       // Gym Leader
       { type: 'gym', x: 10, y: 6, name: 'Bepi lo Spritzaro', npcId: 'bepi_spritzaro',
-        badge: 'Badge Aperitivo',
+        badge: 'aperitivo',
         dialog: ['CHE BEVEMO OGGI?!', 'Spritzino! Pronto per l\'Happy Hour!', 'Combattiamo! Ma dopo... spritz!'],
         team: [{ id: 'spritzino', lvl: 14 }, { id: 'vespolo', lvl: 15 }, { id: 'fogaron', lvl: 16 }] },
       
@@ -430,7 +430,7 @@ export const MAPS: Record<string, GameMap> = {
     events: [
       // Gym Leader - Arena style
       { type: 'gym', x: 5, y: 4, name: 'Giuliano Arena', npcId: 'giuliano_arena',
-        badge: 'Badge Arena',
+        badge: 'arena',
         dialog: ['Benvenuto nell\'ARENA!', 'Come a Verona, dove gli innamorati giurano!', 'Combattiamo con onore!'],
         team: [{ id: 'polentaur', lvl: 18 }, { id: 'alpibex', lvl: 19 }, { id: 'dolomor', lvl: 20 }] },
       
@@ -558,9 +558,11 @@ export const MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     ],
     events: [
-      // Professor Sansovino
-      { type: 'npc', x: 10, y: 6, name: 'Prof. Sansovino', npcId: 'prof_padova',
-        dialog: ['Benvenuto all\'Università!', 'I Besti sono creature straordinarie!'] },
+      // Gym Leader - Universita
+      { type: 'gym', x: 10, y: 6, name: 'Prof. Sansovino', npcId: 'prof_padova',
+        badge: 'studio',
+        dialog: ['Benvenuto all\'Università!', 'Solo chi studia davvero merita il mio esame finale!', 'Vediamo se hai imparato qualcosa.'],
+        team: [{ id: 'tiramisu', lvl: 22 }, { id: 'prosecchione', lvl: 23 }, { id: 'mascarion', lvl: 24 }] },
       
       // Camera for photos
       { type: 'npc', x: 4, y: 7, name: 'Marco', npcId: 'studente_fannullone',
@@ -690,9 +692,11 @@ export const MAPS: Record<string, GameMap> = {
       { type: 'npc', x: 14, y: 4, name: 'Sior Tonic', npcId: 'pescatore',
         dialog: ['Una volta i pesci i xeata infiniti!', 'Vieni a pescare con me domani?'] },
       
-      // Trainer
-      { type: 'trainer', x: 10, y: 8, name: 'Beppo', npcId: 'bepi_spritzaro',
-        dialog: ['Combattiamo!'], team: [{ id: 'radicorso', lvl: 18 }, { id: 'lagunaga', lvl: 19 }] },
+      // Gym Leader - Radicchio
+      { type: 'gym', x: 10, y: 8, name: 'Nonna Gina', npcId: 'vecchio_treviso',
+        badge: 'radicchio',
+        dialog: ['El radicchio vero no perdona!', 'Se vuoi il mio badge, devi meritartelo sul serio!'],
+        team: [{ id: 'radicorso', lvl: 26 }, { id: 'lagunaga', lvl: 27 }, { id: 'canalisk', lvl: 28 }] },
       
       // Give bike story event
       { type: 'npc', x: 3, y: 7, name: 'Cugino Max', npcId: 'kid',
@@ -821,7 +825,7 @@ export const MAPS: Record<string, GameMap> = {
       
       // Gym Leader - Ice type
       { type: 'gym', x: 9, y: 6, name: 'Regina dei Ghiacci', npcId: 'vecchia_spritzia',
-        badge: 'Badge Ghiaccio',
+        badge: 'ghiaccio',
         dialog: ['Il freddo è mio alleato!', 'Combattiamo!'],
         team: [{ id: 'nevelet', lvl: 24 }, { id: 'dolomor', lvl: 26 }, { id: 'dolomibex', lvl: 28 }] },
       
@@ -943,16 +947,16 @@ export const MAPS: Record<string, GameMap> = {
         dialog: ['Benvenuto al Gardalago!', 'Vuoi attraversare il lago? Costa 100€!'],
         vehicle: 'gondola_oro' },
       
-      // Champion battle
-      { type: 'trainer', x: 10, y: 8, name: 'Maestro Marco', npcId: 'campione_veneto',
-        dialog: ['Hai dimostrato di essere forte!', 'Ma io sono il Campione di Venetia!'],
-        team: [{ id: 'serenissima', lvl: 42 }, { id: 'lagorion', lvl: 42 }, { id: 'fogarion', lvl: 42 }, { id: 'radicthron', lvl: 41 }, { id: 'canalord', lvl: 41 }] },
+      // Gym Leader - Final city badge
+      { type: 'gym', x: 10, y: 8, name: 'Maestro Marco', npcId: 'campione_veneto',
+        badge: 'laguna',
+        dialog: ['Hai attraversato tutta Venetia per arrivare qui.', 'Se vuoi entrare nella Lega, devi prima superare me!'],
+        team: [{ id: 'lagunaga', lvl: 36 }, { id: 'canalord', lvl: 38 }, { id: 'lagorion', lvl: 40 }] },
       
-      // Final badge
-      { type: 'gym', x: 10, y: 6, name: 'Maestro Marco', npcId: 'campione_veneto',
-        badge: 'Campione di Venetia',
-        dialog: ['Hai vinto! Sei il nuovo Campione!'],
-        team: [{ id: 'serenissima', lvl: 50 }, { id: 'lagorion', lvl: 50 }, { id: 'fogarion', lvl: 50 }, { id: 'radicthron', lvl: 49 }, { id: 'canalord', lvl: 49 }] },
+      // Optional rematch before the League
+      { type: 'trainer', x: 10, y: 6, name: 'Maestro Marco', npcId: 'campione_veneto',
+        dialog: ['Sei gia quasi pronto per la Lega.', 'Facciamo una rivincita per vedere se reggi la pressione!'],
+        team: [{ id: 'serenissima', lvl: 42 }, { id: 'lagorion', lvl: 42 }, { id: 'fogarion', lvl: 42 }, { id: 'radicthron', lvl: 41 }, { id: 'canalord', lvl: 41 }] },
       
       // Shop
       { type: 'warp', x: 4, y: 8, dest: 'shop_gardalago', dx: 3, dy: 4 },
