@@ -1507,27 +1507,6 @@ export const ANNOYING_CHARACTERS: AnnoyingCharacter[] = [
       'NO! NON È IMPORTANTE!',
     ]
   },
-]
-  },
-  {
-    id: 'maranza_2',
-    name: 'Sgarbo Milanese',
-    type: 'maranza',
-    location: 'route2',
-    blocksPath: true,
-    appearsMultipleTimes: true,
-    dialog: [
-      'SCUSI! Ma la vía è mia!',
-      'Mi gò il permesso dal sindaco!',
-      'Vabbè, quasi. Do 50 euro al vigile.',
-      'EHI! La tua giacca è cheap!',
-      'La mia l\'è di Versace! O Gucci! O... insomma, una roba così!',
-      'TE SAI QUANTO COSTA?!',
-      'No? Beh, te lo dico io: TANTissimo!',
-      'Mia mama la guadagna 5000 euro al giorno!',
-      '...Ok, forse esagero. Ma quasi!',
-    ]
-  },
   // TERRONI - Personaggi del sud che parlano della famiglia
   {
     id: 'terrone_1',

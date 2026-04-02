@@ -112,6 +112,7 @@ const normalizeBadgeId = (value: string) => {
       return 'laguna'
     case 'campionedivenetia':
     case 'campione':
+    case 'champion':
       return 'campione'
     default:
       return normalized
@@ -532,7 +533,7 @@ export default function Game() {
         const ex = ((e.x ?? 0) - sx) * TILE
         const ey = ((e.y ?? 0) - sy) * TILE
         
-        if (e.type === 'trainer' || e.type === 'gym' || e.type === 'npc') {
+        if (e.type === 'trainer' || e.type === 'gym' || e.type === 'gymLeader' || e.type === 'npc') {
           // NPC with shadow
           ctx.fillStyle = 'rgba(0,0,0,0.3)'
           ctx.beginPath()
@@ -540,7 +541,7 @@ export default function Game() {
           ctx.fill()
           
           // Body
-          ctx.fillStyle = e.isEnemy ? '#8B0000' : e.type === 'gym' ? '#FFD700' : '#3f51b5'
+          ctx.fillStyle = e.isEnemy ? '#8B0000' : (e.type === 'gym' || e.type === 'gymLeader') ? '#FFD700' : '#3f51b5'
           ctx.fillRect(ex + 2, ey + 4, 12, 10)
           
           // Head
@@ -550,7 +551,7 @@ export default function Game() {
           ctx.fill()
           
           // Hair/hat
-          ctx.fillStyle = e.isEnemy ? '#5d0000' : e.type === 'gym' ? '#b8860b' : '#333'
+          ctx.fillStyle = e.isEnemy ? '#5d0000' : (e.type === 'gym' || e.type === 'gymLeader') ? '#b8860b' : '#333'
           ctx.fillRect(ex + 3, ey - 2, 10, 4)
         }
         
@@ -735,6 +736,7 @@ export default function Game() {
         setInShop(true)
         break
       case 'gym':
+      case 'gymLeader':
         if (ev.badge && gs.player.badges.map(normalizeBadgeId).includes(normalizeBadgeId(ev.badge))) {
           setDialogs(['Hai già questo badge!'])
           setSpeaker('')
@@ -775,7 +777,7 @@ export default function Game() {
 
     // Event interaction
     const ev = map.events?.find((e: MapEvent) => {
-      if (e.type === 'npc' || e.type === 'trainer' || e.type === 'gym') {
+      if (e.type === 'npc' || e.type === 'trainer' || e.type === 'gym' || e.type === 'gymLeader') {
         return (e.x ?? -1) === gs.player.x && (e.y ?? -1) === gs.player.y
       }
       if (e.type === 'sign' || e.type === 'warp' || e.type === 'heal' || e.type === 'shop') {
