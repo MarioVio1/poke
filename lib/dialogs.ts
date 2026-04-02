@@ -467,6 +467,7 @@ export const DIALOGS = {
       'CIAOOO!',
     ],
   },
+  victory: [
       'Prof. Barcaro: ECCELLENTE!',
       'Prof. Barcaro: Sei un vero Allenatore!',
       'Prof. Barcaro: Ora vai! Esplora CANALBORGO!',
