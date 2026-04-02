@@ -920,7 +920,7 @@ export default function Game() {
       // Check for evolution
       const bestiaData = BESTI[p.id]
       if (bestiaData?.ev && newLvl >= (bestiaData?.evLvl || 99)) {
-        setTimeout(() => evolveBestia(p.id, bestiaData.ev), 1000)
+        setTimeout(() => evolveBestia(p.id, bestiaData.ev!), 1000)
       }
     } else {
       continueBattle()
