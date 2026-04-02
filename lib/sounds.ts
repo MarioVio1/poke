@@ -104,6 +104,11 @@ class SoundManager {
     }
   }
 
+  // Evolution alias
+  evolution() {
+    this.evolve()
+  }
+
   // Dialog text
   dialogText() {
     this.playTone(800, 0.02, 'sine', 0.03)
