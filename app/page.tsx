@@ -441,6 +441,7 @@ export default function Game() {
 
     // Draw events with Pokemon-style sprites
     map.events?.forEach((e: MapEvent) => {
+      if (typeof e.x !== 'number' || typeof e.y !== 'number') return
       if (e.x >= sx && e.x < sx + MAPW && e.y >= sy && e.y < sy + MAPH) {
         const ex = (e.x - sx) * TILE
         const ey = (e.y - sy) * TILE
@@ -2101,52 +2102,58 @@ export default function Game() {
       <style jsx global>{`
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-          background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+          background: radial-gradient(circle at 30% 20%, #1e2a55 0%, #0f1d3b 35%, #0a1225 70%), #0a1225;
           min-height: 100vh; 
           display: flex; 
           justify-content: center; 
           align-items: center;
           font-family: 'Press Start 2P', monospace;
+          padding: 16px;
         }
 
         .game-wrapper {
+          width: min(1100px, 96vw);
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 20px;
         }
 
         .gba-console {
+          width: 100%;
           background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
-          border-radius: 20px;
-          padding: 20px;
+          border-radius: 26px;
+          padding: 18px;
           box-shadow: 
-            0 10px 40px rgba(0,0,0,0.5),
-            inset 0 2px 0 rgba(255,255,255,0.1);
-          max-width: 320px;
+            0 10px 40px rgba(0,0,0,0.6),
+            inset 0 2px 0 rgba(255,255,255,0.06);
         }
 
         .top-screen, .bottom-screen {
-          margin-bottom: 15px;
+          margin-bottom: 14px;
+          width: 100%;
         }
 
         .screen-bezel {
           background: #111;
-          border-radius: 10px;
-          padding: 8px;
-          box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+          border-radius: 14px;
+          padding: 10px;
+          box-shadow: inset 0 0 24px rgba(0,0,0,0.85);
         }
 
         .game-container {
           position: relative;
-          width: 240px;
-          height: 160px;
+          width: 100%;
+          aspect-ratio: 3 / 2;
           background: #000;
           overflow: hidden;
+          border-radius: 10px;
         }
 
         .game-canvas {
           display: block;
+          width: 100%;
+          height: 100%;
+          image-rendering: pixelated;
         }
 
         .game-canvas.shake {
@@ -2398,6 +2405,12 @@ export default function Game() {
         .battle-scene {
           position: absolute;
           inset: 0;
+          background: linear-gradient(180deg, #9bd4ff 0%, #9bd4ff 52%, #6cb64a 52%, #52953a 100%);
+          border: 4px solid #0b0b0b;
+          border-radius: 10px;
+          overflow: hidden;
+          padding: 8px;
+          box-shadow: inset 0 0 12px rgba(0,0,0,0.6);
         }
 
         .battle-scene.attack-animation {
@@ -2413,6 +2426,10 @@ export default function Game() {
           position: absolute;
           top: 10px;
           right: 10px;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 6px;
         }
 
         .enemy-info {
@@ -2427,17 +2444,18 @@ export default function Game() {
         .enemy-level { color: #ffd93d; }
 
         .hp-bar {
-          width: 80px;
-          height: 6px;
-          background: #333;
-          border-radius: 3px;
+          width: 120px;
+          height: 8px;
+          background: #1a1a1a;
+          border: 2px solid #0b0b0b;
+          border-radius: 4px;
           margin-top: 4px;
         }
 
         .hp-fill {
           height: 100%;
-          background: linear-gradient(180deg, #4caf50, #2e7d32);
-          border-radius: 3px;
+          background: linear-gradient(180deg, #7dd56f, #3c8c35);
+          border-radius: 2px;
           transition: width 0.3s;
         }
 
@@ -2446,8 +2464,8 @@ export default function Game() {
         }
 
         .bestia-sprite {
-          width: 64px;
-          height: 64px;
+          width: 88px;
+          height: 88px;
           image-rendering: pixelated;
           transition: transform 0.2s;
         }
@@ -2470,11 +2488,11 @@ export default function Game() {
 
         .player-area {
           position: absolute;
-          bottom: 30px;
-          left: 10px;
+          bottom: 34px;
+          left: 16px;
           display: flex;
           align-items: flex-end;
-          gap: 10px;
+          gap: 12px;
         }
 
         .player-sprite.attack-animation {
@@ -2487,7 +2505,7 @@ export default function Game() {
         }
 
         .player-info {
-          font-size: 7px;
+          font-size: 9px;
           color: white;
           text-shadow: 1px 1px 0 #000;
         }
@@ -2506,35 +2524,41 @@ export default function Game() {
 
         .battle-message {
           position: absolute;
-          bottom: 80px;
-          left: 5px;
-          right: 5px;
-          background: white;
-          padding: 8px;
-          border-radius: 5px;
-          font-size: 7px;
-          text-align: center;
+          bottom: 70px;
+          left: 8px;
+          right: 8px;
+          background: #f8f8f0;
+          padding: 10px;
+          border-radius: 6px;
+          border: 3px solid #1b1b1b;
+          font-size: 9px;
+          text-align: left;
+          color: #111;
           z-index: 10;
         }
 
         .battle-menu, .moves-menu {
           position: absolute;
-          bottom: 5px;
-          left: 5px;
+          bottom: 6px;
+          right: 6px;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 3px;
-          width: 145px;
+          gap: 6px;
+          width: 180px;
+          background: #f8f8f0;
+          border: 3px solid #1b1b1b;
+          border-radius: 6px;
+          padding: 6px;
           z-index: 10;
         }
 
         .battle-btn, .move-btn {
-          background: white;
-          border: 2px solid #333;
-          border-radius: 3px;
-          padding: 5px;
+          background: #ffffff;
+          border: 2px solid #222;
+          border-radius: 4px;
+          padding: 6px;
           font-family: inherit;
-          font-size: 6px;
+          font-size: 9px;
           cursor: pointer;
         }
 
@@ -3110,14 +3134,18 @@ export default function Game() {
 
         /* Bottom Screen */
         .screen-bezel-bottom {
-          background: #222;
-          border-radius: 10px;
-          padding: 10px;
+          background: #0d0d0d;
+          border-radius: 16px;
+          padding: 14px 16px;
+          box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
 
         .bottom-content {
-          display: flex;
-          gap: 10px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+          align-items: center;
+          width: 100%;
         }
 
         .info-panel {
@@ -3156,15 +3184,17 @@ export default function Game() {
         }
 
         .controls-area {
-          display: flex;
-          gap: 15px;
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
           align-items: center;
+          gap: 18px;
+          width: 100%;
         }
 
         .dpad-container {
           position: relative;
-          width: 90px;
-          height: 90px;
+          width: 110px;
+          height: 110px;
           touch-action: none;
         }
 
@@ -3176,8 +3206,8 @@ export default function Game() {
 
         .dpad-btn {
           position: absolute;
-          width: 32px;
-          height: 32px;
+          width: 42px;
+          height: 42px;
           background: linear-gradient(145deg, #555, #333);
           border: 2px solid #222;
           border-radius: 6px;
@@ -3238,28 +3268,29 @@ export default function Game() {
 
         .action-btns {
           display: flex;
-          flex-direction: column;
-          gap: 8px;
+          gap: 16px;
+          justify-content: flex-end;
         }
 
         .action-btn {
-          width: 40px;
-          height: 40px;
+          width: 60px;
+          height: 60px;
           border-radius: 50%;
-          border: 3px solid #222;
+          border: none;
           font-family: 'Press Start 2P', monospace;
-          font-size: 12px;
+          font-size: 18px;
           cursor: pointer;
           user-select: none;
           -webkit-user-select: none;
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
-          box-shadow: 0 4px 0 #222;
+          box-shadow: 0 5px 0 #222, inset 0 2px 0 rgba(255,255,255,0.35);
+          transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
 
         .action-btn:active {
           transform: translateY(3px);
-          box-shadow: 0 1px 0 #222;
+          box-shadow: 0 2px 0 #222, inset 0 1px 0 rgba(255,255,255,0.25);
         }
 
         #btn-a {
@@ -3285,8 +3316,9 @@ export default function Game() {
 
         .start-select {
           display: flex;
-          gap: 10px;
-          margin-left: 10px;
+          flex-direction: column;
+          gap: 12px;
+          align-items: center;
         }
 
         .start-btn, .select-btn {
