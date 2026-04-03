@@ -1,16 +1,18 @@
 'use client'
 
-import React, { useEffect, useRef, useState, useCallback } from 'react'
-import { BESTI, Bestia, MOVES, MapEvent, LEGENDARY_STARTERS } from '@/lib/besti'
-import { MAPS } from '@/lib/maps'
+import { useEffect, useRef, useState, useCallback } from 'react'
+import { BESTI, Bestia, MOVES, GameMap, MapEvent, MoveData, LEGENDARY_STARTERS } from '@/lib/besti'
+import { MAPS, CITY_THEMES, getCityTheme } from '@/lib/maps'
 import { ITEMS, SHOP_ITEMS, GameItem } from '@/lib/items'
-import { VEHICLES, VehicleType, canMoveOnTile } from '@/lib/vehicles'
-import { BESTI_SVG_SPRITES, BESTI_SPRITES, getDefaultSprite } from '@/lib/sprites'
-import { getSpriteUrl, getIconUrl } from '@/lib/pixelSprites'
-import { TYPE_COLORS, TYPE_CHART, isIndoorMap, getMapBackground, renderTile } from '@/lib/types'
+import { NPCs, NPCData } from '@/lib/npcs'
+import { VEHICLES, VehicleType, canMoveOnTile, getMovementSpeed } from '@/lib/vehicles'
+import { BESTI_SVG_SPRITES, BESTI_SPRITES, SpriteData, getDefaultSprite } from '@/lib/sprites'
+import { PIXEL_SPRITES, getSpriteUrl, getIconUrl } from '@/lib/pixelSprites'
+import { getNPCSprite } from '@/lib/npcSprites'
+import { TYPE_COLORS, TILE_COLORS, TYPE_CHART, isIndoorMap, getMapBackground, renderTile, renderBuilding } from '@/lib/types'
 import { soundManager } from '@/lib/sounds'
 import { TELEPORT_LOCATIONS, isLocationUnlocked, TeleportLocation } from '@/lib/teleport'
-import { ACHIEVEMENTS, Achievement, canEvolveWithStone, getStoneEvolution, getTimeOfDay, TimeOfDay } from '@/lib/systems'
+import { ACHIEVEMENTS, Achievement, STONE_EVOLUTIONS, canEvolveWithStone, getStoneEvolution, getTimeOfDay, getTimeGreeting, TIME_EFFECTS, TimeOfDay } from '@/lib/systems'
 
 const TILE = 16
 const MAPW = 15
@@ -39,7 +41,7 @@ interface GameFlags {
 }
 
 interface GameState {
-  player: { name: string; x: number; y: number; money: number; badges: string[]; persona?: string }
+  player: { name: string; x: number; y: number; money: number; badges: string[] }
   party: PartyBestia[]
   rival?: PartyBestia
   pc: PartyBestia[]
@@ -65,54 +67,6 @@ interface BattleState {
   trainerName?: string
 }
 
-interface DailyRewardState {
-  lastClaimed: string | null
-  streak: number
-}
-
-interface MonthlyEvent {
-  title: string
-  description: string
-  rumor: string
-  rewardItem: string
-  rewardLabel: string
-}
-
-interface IdentityOption {
-  id: string
-  label: string
-  introLabel: string
-  flavor: string
-  icon: string
-}
-
-interface SpeakerPortrait {
-  icon: string
-  accent: string
-  side: 'left' | 'right'
-}
-
-interface SavedInventoryEntry {
-  item: string | GameItem
-  qty: number
-}
-
-interface PartialSaveData {
-  player?: Partial<GameState['player']>
-  party?: PartyBestia[]
-  rival?: PartyBestia
-  pc?: PartyBestia[]
-  inv?: SavedInventoryEntry[]
-  flags?: Partial<GameFlags>
-  map?: string
-  vehicle?: string
-  storyProgress?: number
-  defeatedRival?: boolean
-  achievements?: string[]
-  evolutions?: number
-  citiesVisited?: string[]
-}
-
 // Intro animation frames
 const INTRO_FRAMES = [
   { text: '★ POKEMONA ★', subtext: 'Besti di Venetia', delay: 2000 },
@@ -121,330 +75,7 @@ const INTRO_FRAMES = [
   { text: 'La tua avventura inizia ora!', subtext: '', delay: 2000 },
 ]
 
-const MONTHLY_EVENTS: MonthlyEvent[] = [
-  { title: 'Sagra del Radicchio', description: 'Un mese perfetto per cercare Besti erbosi e sentire ogni nonna dare consigli non richiesti.', rumor: 'Pare che a Trevisella girino radicchi lucidi come rubini.', rewardItem: 'caffette', rewardLabel: 'Caffe Corretto' },
-  { title: 'Carnevale dei Canali', description: 'Maschere, ponti e confusione. I Besti ombra si fanno vedere piu spesso dopo il tramonto.', rumor: 'Un gondoliere giura di aver visto OmbraSpritz specchiarsi nell acqua.', rewardItem: 'mascheraball', rewardLabel: 'Mascheraball' },
-  { title: 'Mese degli Studenti Fuori Corso', description: 'A Padoana nessuno dorme e tutti promettono di recuperare gli esami.', rumor: 'Prof. Sansovino nasconde quiz segreti tra i vicoli.', rewardItem: 'pietra_temporale', rewardLabel: 'Pietra Temporale' },
-  { title: 'Primavera in Laguna', description: 'Il lago e calmo, i canali cantano e i pescatori raccontano storie sempre piu grosse.', rumor: 'A Gardalago si sente parlare di una regata Besti clandestina.', rewardItem: 'scampaball', rewardLabel: 'Scampaball' },
-  { title: 'Festa del Prosecco', description: 'Spritzia e in pieno caos elegante: brindisi, terrazze e promesse di rivincita.', rumor: 'Bepi lo Spritzaro starebbe preparando una squadra da after infinito.', rewardItem: 'spritzball', rewardLabel: 'Spritz Ball' },
-  { title: 'Notti delle Dolomiti', description: 'L aria si fa sottile e i racconti sullo Yeti tornano a circolare.', rumor: 'Nevelet e stato visto vicino a una funivia chiusa da anni.', rewardItem: 'iperpozione', rewardLabel: 'Iper Pozione' },
-  { title: 'Tour dei Bagnanti', description: 'Il lago pullula di villeggianti e Besti acquatici piu nervosi del solito.', rumor: 'Lagunaga odia i pedaloni e qualcuno ne paghera il prezzo.', rewardItem: 'lagunaball', rewardLabel: 'Lagunaball' },
-  { title: 'Ferragosto da Moni', description: 'Griglie accese, parenti invadenti e sfide improvvisate in ogni piazza.', rumor: 'La Compagnia della Polenta recluta grint alle sagre di paese.', rewardItem: 'polentaball', rewardLabel: 'Polentaball' },
-  { title: 'Vendemmia Selvaggia', description: 'Veronara torna teatrale e ogni filare nasconde un allenatore convinto di essere un poeta.', rumor: 'Giuliano Arena prova monologhi contro i passanti.', rewardItem: 'vinoball', rewardLabel: 'Vinoball' },
-  { title: 'Mese delle Nebbie', description: 'La pianura e lattiginosa e i dialoghi diventano ancora piu strani del solito.', rumor: 'Un grint della Polenta starebbe perdendo il pacco da consegnare ogni mattina.', rewardItem: 'ultraball', rewardLabel: 'Ultra Ball' },
-  { title: 'Mercatini in Piazza', description: 'Tra luci e bancarelle si scambiano pietre evolutive come fossero caramelle.', rumor: 'Cugino Max vende bici di dubbia provenienza dietro il Centro Besti.', rewardItem: 'pietra_acquatica', rewardLabel: 'Pietra Acquatica' },
-  { title: 'Inverno da Ostarie', description: 'Tra osterie e stufe accese, le storie si allungano e i Besti si allenano al caldo.', rumor: 'Dux Polenta starebbe preparando un cenone decisamente poco rassicurante.', rewardItem: 'spritz_curativo', rewardLabel: 'Spritz Curativo' },
-]
-
-const IDENTITY_OPTIONS: IdentityOption[] = [
-  { id: 'maschio', label: 'Maschio', introLabel: 'un fioło tosto', flavor: 'Pronto a partire con scarpe sporche e grandi idee.', icon: '🧢' },
-  { id: 'femmina', label: 'Femmina', introLabel: 'una tosa sveglia', flavor: 'Con grinta, sguardo furbo e zero tempo per le ciacole.', icon: '🎀' },
-  { id: 'trans', label: 'Trans', introLabel: 'un mito da carnevale', flavor: 'Con la figura del pagliaccio e stile che spacca ogni piazza.', icon: '🤡' },
-]
-
-const normalizeItemKey = (value: string) =>
-  value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, '')
-
-const findItemByName = (value: string): GameItem | undefined => {
-  const normalizedValue = normalizeItemKey(value)
-
-  return (
-    ITEMS[value as keyof typeof ITEMS] ||
-    Object.entries(ITEMS).find(([key]) => normalizeItemKey(key) === normalizedValue)?.[1] ||
-    Object.values(ITEMS).find(item => normalizeItemKey(item.name) === normalizedValue)
-  )
-}
-
-const MAIN_GYM_BADGES = ['aperitivo', 'arena', 'studio', 'radicchio', 'ghiaccio', 'laguna'] as const
-const ELITE_BADGES = ['elite_fuoco', 'elite_acqua', 'elite_natura', 'elite_magia'] as const
-
-const normalizeBadgeId = (value: string) => {
-  const normalized = normalizeItemKey(value)
-
-  switch (normalized) {
-    case 'leaguepass':
-      return 'league_pass'
-    case 'badgeaperitivo':
-      return 'aperitivo'
-    case 'badgearena':
-      return 'arena'
-    case 'badgestudio':
-      return 'studio'
-    case 'badgeradicchio':
-      return 'radicchio'
-    case 'badgeghiaccio':
-      return 'ghiaccio'
-    case 'badgelaguna':
-      return 'laguna'
-    case 'campionedivenetia':
-    case 'campione':
-    case 'champion':
-      return 'campione'
-    default:
-      return normalized
-  }
-}
-
-const getBadgeLabel = (value: string) => {
-  const badgeId = normalizeBadgeId(value)
-
-  switch (badgeId) {
-    case 'aperitivo':
-      return 'Badge Aperitivo'
-    case 'arena':
-      return 'Badge Arena'
-    case 'studio':
-      return 'Badge Studio'
-    case 'radicchio':
-      return 'Badge Radicchio'
-    case 'ghiaccio':
-      return 'Badge Ghiaccio'
-    case 'laguna':
-      return 'Badge Laguna'
-    case 'elite_fuoco':
-      return 'Sigillo del Fuoco'
-    case 'elite_acqua':
-      return "Sigillo dell'Acqua"
-    case 'elite_natura':
-      return 'Sigillo della Natura'
-    case 'elite_magia':
-      return 'Sigillo della Magia'
-    case 'league_pass':
-      return 'Pass della Lega'
-    case 'campione':
-      return 'Titolo di Campione'
-    default:
-      return value
-  }
-}
-
-const hasAllMainBadges = (badges: string[]) => {
-  const normalizedBadges = badges.map(normalizeBadgeId)
-  return MAIN_GYM_BADGES.every(badge => normalizedBadges.includes(badge))
-}
-
-const getEliteBadgeId = (trainerName?: string) => {
-  switch (trainerName) {
-    case 'Il Fuocoso Marco':
-      return 'elite_fuoco'
-    case "L'Acquoso Luca":
-      return 'elite_acqua'
-    case 'Il Naturale Giulia':
-      return 'elite_natura'
-    case 'Il Magico Antonio':
-      return 'elite_magia'
-    default:
-      return null
-  }
-}
-
-const normalizeVehicleId = (value?: string): VehicleType => {
-  switch (value) {
-    case 'bici':
-    case 'biciRubata':
-      return 'biciRubata'
-    case 'barchino':
-      return 'barchino'
-    case 'gondola':
-    case 'gondola_oro':
-      return 'gondola_oro'
-    case 'scooter':
-    case 'scooterino':
-      return 'scooterino'
-    default:
-      return 'none'
-  }
-}
-
-const getTodayKey = () => new Date().toLocaleDateString('sv-SE')
-
-const getYesterdayKey = () => {
-  const date = new Date()
-  date.setDate(date.getDate() - 1)
-  return date.toLocaleDateString('sv-SE')
-}
-
-const getMonthlyEvent = (): MonthlyEvent => {
-  const monthIndex = new Date().getMonth()
-  return MONTHLY_EVENTS[monthIndex] || MONTHLY_EVENTS[0]
-}
-
-const getIntroStarStyle = (index: number) => ({
-  left: `${(index * 17) % 100}%`,
-  top: `${(index * 29) % 100}%`,
-  animationDelay: `${(index % 5) * 0.35}s`,
-})
-
-const getTitleParticleStyle = (index: number) => ({
-  left: `${(index * 11 + 7) % 100}%`,
-  animationDelay: `${(index % 6) * 0.4}s`,
-})
-
-const getSpeakerPortrait = (speakerName: string): SpeakerPortrait | null => {
-  if (!speakerName) return null
-
-  const portraits: Record<string, SpeakerPortrait> = {
-    'Prof. GheSboro': { icon: '🧪', accent: '#5e92f3', side: 'left' },
-    'Dottor GheSboro': { icon: '🧪', accent: '#5e92f3', side: 'left' },
-    'Mamma': { icon: '🧹', accent: '#f48fb1', side: 'left' },
-    'Marco': { icon: '⚡', accent: '#ffd54f', side: 'right' },
-    'Bepi lo Spritzaro': { icon: '🍹', accent: '#ffb74d', side: 'right' },
-    'Giuliano Arena': { icon: '🏟️', accent: '#e57373', side: 'right' },
-    'Prof. Sansovino': { icon: '🎓', accent: '#9575cd', side: 'left' },
-    'Nonna Gina': { icon: '🥬', accent: '#81c784', side: 'left' },
-    'Regina dei Ghiacci': { icon: '❄️', accent: '#81d4fa', side: 'right' },
-    'Maestro Marco': { icon: '🚤', accent: '#4fc3f7', side: 'right' },
-    'DUX VENETIAE': { icon: '👑', accent: '#ffd54f', side: 'right' },
-    'Grint': { icon: '🥣', accent: '#ff8a65', side: 'right' },
-    'Infermiera': { icon: '💊', accent: '#80cbc4', side: 'left' },
-    'Narratore': { icon: '📜', accent: '#bcaaa4', side: 'left' },
-  }
-
-  return portraits[speakerName] || { icon: '🙂', accent: '#90a4ae', side: 'left' }
-}
-
-class RuntimeErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { hasError: boolean; message: string }
-> {
-  constructor(props: { children: React.ReactNode }) {
-    super(props)
-    this.state = { hasError: false, message: '' }
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    return {
-      hasError: true,
-      message: error?.message || 'Errore sconosciuto',
-    }
-  }
-
-  componentDidCatch(error: Error) {
-    console.error('Pokemona runtime crash:', error)
-  }
-
-  private resetGame = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('pokemona_save')
-      localStorage.removeItem('pokemona_daily_reward')
-      window.location.reload()
-    }
-  }
-
-  render() {
-    if (!this.state.hasError) {
-      return this.props.children
-    }
-
-    return (
-      <div style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-        color: '#fff',
-        fontFamily: "'Press Start 2P', monospace",
-        padding: '24px',
-      }}>
-        <div style={{
-          maxWidth: '420px',
-          background: 'rgba(0,0,0,0.72)',
-          border: '2px solid #ffd700',
-          borderRadius: '14px',
-          padding: '20px',
-          textAlign: 'center',
-          lineHeight: 1.8,
-        }}>
-          <div style={{ fontSize: '14px', marginBottom: '12px', color: '#ffd700' }}>POKEMONA SI E INCIAMPATO</div>
-          <div style={{ fontSize: '11px', marginBottom: '12px' }}>Il gioco e andato in crash nel browser invece di restare visibile.</div>
-          <div style={{ fontSize: '10px', marginBottom: '16px', color: '#ffccbc' }}>{this.state.message}</div>
-          <button
-            onClick={this.resetGame}
-            style={{
-              border: 'none',
-              borderRadius: '8px',
-              padding: '12px 16px',
-              background: '#c96d1f',
-              color: '#fff',
-              fontFamily: 'inherit',
-              cursor: 'pointer',
-            }}
-          >
-            Reset salvataggio e ricarica
-          </button>
-        </div>
-      </div>
-    )
-  }
-}
-
-const INITIAL_GAME_STATE: GameState = {
-  player: { name: 'Federico', x: 4, y: 4, money: 3000, badges: [], persona: 'maschio' },
-  party: [],
-  rival: undefined,
-  pc: [],
-  inv: [
-    { item: ITEMS.pozioncino, qty: 5 },
-    { item: ITEMS.gondolball, qty: 5 },
-    { item: ITEMS.caffette, qty: 3 },
-  ],
-  flags: { hasStarter: false, hasBike: false, hasBoat: false, defeatedRival: false },
-  map: 'canalborgo',
-  vehicle: 'none',
-  storyProgress: 0,
-  defeatedRival: false,
-  achievements: [],
-  evolutions: 0,
-  citiesVisited: [],
-}
-
-const hydrateSaveData = (saveData: PartialSaveData): GameState => {
-  const safeInv = Array.isArray(saveData.inv)
-    ? saveData.inv.map((entry): { item: GameItem; qty: number } => ({
-        item: typeof entry.item === 'string'
-          ? ITEMS[entry.item] || findItemByName(entry.item) || ITEMS.pozioncino
-          : entry.item,
-        qty: typeof entry.qty === 'number' && entry.qty > 0 ? entry.qty : 1,
-      }))
-    : INITIAL_GAME_STATE.inv
-
-  const safeMap = typeof saveData.map === 'string' && MAPS[saveData.map]
-    ? saveData.map
-    : INITIAL_GAME_STATE.map
-
-  return {
-    player: {
-      name: saveData.player?.name || INITIAL_GAME_STATE.player.name,
-      x: typeof saveData.player?.x === 'number' ? saveData.player.x : INITIAL_GAME_STATE.player.x,
-      y: typeof saveData.player?.y === 'number' ? saveData.player.y : INITIAL_GAME_STATE.player.y,
-      money: typeof saveData.player?.money === 'number' ? saveData.player.money : INITIAL_GAME_STATE.player.money,
-      badges: Array.isArray(saveData.player?.badges) ? saveData.player!.badges : INITIAL_GAME_STATE.player.badges,
-      persona: saveData.player?.persona || INITIAL_GAME_STATE.player.persona,
-    },
-    party: Array.isArray(saveData.party) ? saveData.party : INITIAL_GAME_STATE.party,
-    rival: saveData.rival,
-    pc: Array.isArray(saveData.pc) ? saveData.pc : INITIAL_GAME_STATE.pc,
-    inv: safeInv,
-    flags: {
-      ...INITIAL_GAME_STATE.flags,
-      ...(saveData.flags || {}),
-    },
-    map: safeMap,
-    vehicle: normalizeVehicleId(saveData.vehicle),
-    storyProgress: typeof saveData.storyProgress === 'number' ? saveData.storyProgress : INITIAL_GAME_STATE.storyProgress,
-    defeatedRival: typeof saveData.defeatedRival === 'boolean' ? saveData.defeatedRival : INITIAL_GAME_STATE.defeatedRival,
-    achievements: Array.isArray(saveData.achievements) ? saveData.achievements : INITIAL_GAME_STATE.achievements,
-    evolutions: typeof saveData.evolutions === 'number' ? saveData.evolutions : INITIAL_GAME_STATE.evolutions,
-    citiesVisited: Array.isArray(saveData.citiesVisited) ? saveData.citiesVisited : INITIAL_GAME_STATE.citiesVisited,
-  }
-}
-
-function GameScreen() {
+export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
   // Game states
@@ -456,7 +87,6 @@ function GameScreen() {
   
   // UI States
   const [showStarterChoice, setShowStarterChoice] = useState(false)
-  const [showIdentityChoice, setShowIdentityChoice] = useState(false)
   const [showOverlay, setShowOverlay] = useState(false)
   const [overlayTitle, setOverlayTitle] = useState('')
   const [overlayContent, setOverlayContent] = useState<React.ReactNode>(null)
@@ -501,63 +131,30 @@ function GameScreen() {
 
   // Day/Night cycle
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('morning')
-  const [dailyReward, setDailyReward] = useState<DailyRewardState>({ lastClaimed: null, streak: 0 })
 
   // Evolution state
   const [showEvolve, setShowEvolve] = useState(false)
   const [evolvingBestia, setEvolvingBestia] = useState<PartyBestia | null>(null)
 
-  const [gs, setGs] = useState<GameState>(INITIAL_GAME_STATE)
-
-  const grantVehicle = useCallback((vehicleId: VehicleType) => {
-    const vehicleData = VEHICLES[vehicleId]
-    if (!vehicleData) return
-
-    setGs(prev => ({
-      ...prev,
-      vehicle: vehicleId,
-      flags: {
-        ...prev.flags,
-        hasBike: prev.flags.hasBike || vehicleId === 'biciRubata' || vehicleId === 'scooterino',
-        hasBoat: prev.flags.hasBoat || vehicleId === 'barchino' || vehicleId === 'gondola_oro',
-      },
-    }))
-    setNotification(`Ottenuto: ${vehicleData.name}!`)
-  }, [])
-
-  const grantItem = useCallback((itemKey: string) => {
-    const giftedItem =
-      findItemByName(itemKey) ||
-      (itemKey === 'camera' ? ITEMS.foto_souvenir : undefined)
-
-    if (!giftedItem) return
-    if (giftedItem.type === 'key' && gs.inv.some(entry => entry.item.id === giftedItem.id && entry.qty > 0)) return
-
-    setGs(prev => {
-      const existing = prev.inv.find(entry => entry.item.id === giftedItem.id)
-      if (giftedItem.type === 'key' && existing) {
-        return prev
-      }
-
-      return {
-        ...prev,
-        inv: existing
-          ? prev.inv.map(entry => entry.item.id === giftedItem.id ? { ...entry, qty: entry.qty + 1 } : entry)
-          : [...prev.inv, { item: giftedItem, qty: 1 }],
-      }
-    })
-    setNotification(`Ottenuto: ${giftedItem.name}!`)
-  }, [gs.inv])
-
-  const hasInventoryItem = useCallback((itemId: string) => {
-    return gs.inv.some(entry => entry.item.id === itemId && entry.qty > 0)
-  }, [gs.inv])
-
-  const closeOverlay = useCallback(() => {
-    setShowOverlay(false)
-    setInMenu(false)
-    setInTeleport(false)
-  }, [])
+  const [gs, setGs] = useState<GameState>({
+    player: { name: 'Federico', x: 7, y: 9, money: 3000, badges: [] },
+    party: [],
+    rival: undefined,
+    pc: [],
+    inv: [
+      { item: ITEMS.pozioncino, qty: 5 },
+      { item: ITEMS.gondolball, qty: 5 },
+      { item: ITEMS.caffe, qty: 3 },
+    ],
+    flags: { hasStarter: false, hasBike: false, hasBoat: false, defeatedRival: false },
+    map: 'canalborgo',
+    vehicle: 'none',
+    storyProgress: 0,
+    defeatedRival: false,
+    achievements: [],
+    evolutions: 0,
+    citiesVisited: [],
+  })
 
   // Save/Load System with Auto-Save
   const saveGame = useCallback((autoSave = false) => {
@@ -594,10 +191,26 @@ function GameScreen() {
     try {
       const saved = localStorage.getItem('pokemona_save')
       if (saved) {
-        const saveData = JSON.parse(saved) as PartialSaveData
-        const hydratedSave = hydrateSaveData(saveData)
-        setGs(hydratedSave)
-        setAchievements(hydratedSave.achievements || [])
+        const saveData = JSON.parse(saved)
+        setGs({
+          player: saveData.player,
+          party: saveData.party,
+          rival: saveData.rival,
+          pc: saveData.pc,
+          inv: saveData.inv.map((i: { item: string; qty: number }) => ({
+            item: ITEMS[i.item] || ITEMS.pozioncino,
+            qty: i.qty
+          })),
+          flags: saveData.flags,
+          map: saveData.map,
+          vehicle: saveData.vehicle,
+          storyProgress: saveData.storyProgress,
+          defeatedRival: saveData.defeatedRival,
+          achievements: saveData.achievements || [],
+          evolutions: saveData.evolutions || 0,
+          citiesVisited: saveData.citiesVisited || [],
+        })
+        setAchievements(saveData.achievements || [])
         setNotification('Partita caricata!')
         return true
       }
@@ -641,38 +254,27 @@ function GameScreen() {
     const saved = localStorage.getItem('pokemona_save')
     if (saved) {
       try {
-        const saveData = JSON.parse(saved) as PartialSaveData
-        const hydratedSave = hydrateSaveData(saveData)
-        setGs(hydratedSave)
-        setAchievements(hydratedSave.achievements || [])
+        const saveData = JSON.parse(saved)
+        setGs({
+          player: saveData.player,
+          party: saveData.party,
+          rival: saveData.rival,
+          pc: saveData.pc,
+          inv: saveData.inv.map((i: { item: string; qty: number }) => ({
+            item: ITEMS[i.item] || ITEMS.pozioncino,
+            qty: i.qty
+          })),
+          flags: saveData.flags,
+          map: saveData.map,
+          vehicle: saveData.vehicle,
+          storyProgress: saveData.storyProgress,
+          defeatedRival: saveData.defeatedRival,
+        })
       } catch (e) {
         console.error('Auto-load failed:', e)
       }
     }
   }, [])
-
-  useEffect(() => {
-    try {
-      const savedReward = localStorage.getItem('pokemona_daily_reward')
-      if (savedReward) {
-        const parsed = JSON.parse(savedReward) as DailyRewardState
-        setDailyReward({
-          lastClaimed: parsed.lastClaimed || null,
-          streak: parsed.streak || 0,
-        })
-      }
-    } catch (e) {
-      console.error('Daily reward load failed:', e)
-    }
-  }, [])
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('pokemona_daily_reward', JSON.stringify(dailyReward))
-    } catch (e) {
-      console.error('Daily reward save failed:', e)
-    }
-  }, [dailyReward])
 
   // Intro animation effect
   useEffect(() => {
@@ -681,6 +283,7 @@ function GameScreen() {
     const frame = INTRO_FRAMES[introFrame]
     if (!frame) {
       setShowIntro(false)
+      setGameStarted(true)
       return
     }
     
@@ -703,63 +306,8 @@ function GameScreen() {
   // Skip intro
   const skipIntro = () => {
     setShowIntro(false)
-  }
-
-  const beginNewGame = useCallback(() => {
-    setGs(INITIAL_GAME_STATE)
-    setAchievements([])
-    setShowStarterChoice(false)
-    setShowIdentityChoice(false)
-    setGameStarted(false)
-    setDialogs([
-      'Benvenuo nel mondo dei Besti di Venetia!',
-      'Mi son el Prof. GheSboro, studioso, dottore e rompiscatole ufficiale della regione.',
-      'Qui i Besti vivono tra canali, spritz, nebbia e scontri con la Compagnia della Polenta.',
-      'Prima di cominciare, dimmi: che persona sei?'
-    ])
-    setSpeaker('Prof. GheSboro')
-    setDialogCallback(() => {
-      setShowIdentityChoice(true)
-    })
-    setInDialog(true)
-  }, [])
-
-  const chooseIdentity = useCallback((identity: IdentityOption) => {
-    setShowIdentityChoice(false)
-    setGs(prev => ({
-      ...INITIAL_GAME_STATE,
-      player: {
-        ...INITIAL_GAME_STATE.player,
-        name: prev.player.name || INITIAL_GAME_STATE.player.name,
-        persona: identity.id,
-      },
-    }))
     setGameStarted(true)
-    setDialogs([
-      `Perfetto. Ti vedo proprio come ${identity.introLabel}.`,
-      'Adesso ascolta bene: il tuo primo Besti ti aspetta dal Dottor GheSboro al laboratorio di Canalborgo.',
-      '...MA PRIMA SVEGLIATI, CHE TE STAI ANCORA RUSSANDO!'
-    ])
-    setSpeaker('Prof. GheSboro')
-    setDialogCallback(() => {
-      setGs(prev => ({
-        ...prev,
-        map: 'casa',
-        player: { ...prev.player, x: 4, y: 4 },
-      }))
-      setDialogs([
-        'FEDERICOOO! IN PIEDI!',
-        'Te sveio mi con la scopa se resti ancora sotto le coperte!',
-        `Su, ${identity.introLabel}! ${identity.flavor}`,
-        'Lavete la faccia e corri dal Dottor GheSboro.',
-        'Oggi scegli il tuo primo Besti, e no sta far tardi!'
-      ])
-      setSpeaker('Mamma')
-      setDialogCallback(null)
-      setInDialog(true)
-    })
-    setInDialog(true)
-  }, [])
+  }
 
   // Create a Bestia with stats (including legendary starters)
   const createBesti = useCallback((id: string, lvl: number): PartyBestia => {
@@ -893,11 +441,11 @@ function GameScreen() {
 
     // Draw events with Pokemon-style sprites
     map.events?.forEach((e: MapEvent) => {
-      if ((e.x ?? -1) >= sx && (e.x ?? -1) < sx + MAPW && (e.y ?? -1) >= sy && (e.y ?? -1) < sy + MAPH) {
-        const ex = ((e.x ?? 0) - sx) * TILE
-        const ey = ((e.y ?? 0) - sy) * TILE
+      if (e.x >= sx && e.x < sx + MAPW && e.y >= sy && e.y < sy + MAPH) {
+        const ex = (e.x - sx) * TILE
+        const ey = (e.y - sy) * TILE
         
-        if (e.type === 'trainer' || e.type === 'gym' || e.type === 'gymLeader' || e.type === 'npc') {
+        if (e.type === 'trainer' || e.type === 'gym' || e.type === 'npc') {
           // NPC with shadow
           ctx.fillStyle = 'rgba(0,0,0,0.3)'
           ctx.beginPath()
@@ -905,7 +453,7 @@ function GameScreen() {
           ctx.fill()
           
           // Body
-          ctx.fillStyle = e.isEnemy ? '#8B0000' : (e.type === 'gym' || e.type === 'gymLeader') ? '#FFD700' : '#3f51b5'
+          ctx.fillStyle = e.isEnemy ? '#8B0000' : e.type === 'gym' ? '#FFD700' : '#3f51b5'
           ctx.fillRect(ex + 2, ey + 4, 12, 10)
           
           // Head
@@ -915,7 +463,7 @@ function GameScreen() {
           ctx.fill()
           
           // Hair/hat
-          ctx.fillStyle = e.isEnemy ? '#5d0000' : (e.type === 'gym' || e.type === 'gymLeader') ? '#b8860b' : '#333'
+          ctx.fillStyle = e.isEnemy ? '#5d0000' : e.type === 'gym' ? '#b8860b' : '#333'
           ctx.fillRect(ex + 3, ey - 2, 10, 4)
         }
         
@@ -1022,7 +570,7 @@ function GameScreen() {
     if (dir === 'right') nx++
 
     const map = MAPS[gs.map]
-    if (!map.tiles[ny] || typeof map.tiles[ny][nx] === 'undefined') return
+    if (!map.tiles[ny] || !map.tiles[ny][nx]) return
     
     const tile = map.tiles[ny][nx]
     if (!canMoveOnTile(tile, gs.vehicle)) return
@@ -1044,27 +592,16 @@ function GameScreen() {
           setDialogs(ev.dialog)
           setSpeaker(ev.name || '')
           setDialogCallback(() => {
-            if (ev.name === 'Infermiera') {
-              setGs(prev => ({
-                ...prev,
-                party: prev.party.map(p => ({ ...p, hp: p.maxHp, status: undefined })),
-              }))
-              soundManager.heal()
-              setNotification('I tuoi Besti sono in forma smagliante!')
-            }
             if (ev.gift) {
               if (ev.gift === 'starter') {
                 setShowStarterChoice(true)
                 return
               }
-              if (ev.gift in VEHICLES) {
-                grantVehicle(ev.gift as VehicleType)
+              if (ev.gift === 'biciRubata') {
+                setGs(prev => ({ ...prev, vehicle: 'biciRubata' as VehicleType, flags: { ...prev.flags, hasBike: true } }))
+                setNotification('Ottenuto: Bici Rubata!')
                 return
               }
-              grantItem(ev.gift)
-            }
-            if (ev.vehicle && ev.vehicle in VEHICLES) {
-              grantVehicle(ev.vehicle as VehicleType)
             }
           })
           setInDialog(true)
@@ -1076,18 +613,6 @@ function GameScreen() {
         setInDialog(true)
         break
       case 'warp':
-        if (ev.requires === 'league' && !hasAllMainBadges(gs.player.badges)) {
-          setDialogs(['Ti servono tutti i badge principali per entrare nella Lega Besti.'])
-          setSpeaker('Guardia')
-          setInDialog(true)
-          break
-        }
-        if (ev.requires === 'elite' && !gs.player.badges.map(normalizeBadgeId).includes('league_pass')) {
-          setDialogs(['Prima devi sconfiggere tutti gli Elite della Lega.'])
-          setSpeaker('Guardia')
-          setInDialog(true)
-          break
-        }
         setGs(prev => ({ ...prev, map: ev.dest!, player: { ...prev.player, x: ev.dx!, y: ev.dy! } }))
         break
       case 'heal':
@@ -1102,15 +627,14 @@ function GameScreen() {
         break
       case 'shop':
         if (ev.items) {
-          setCurrentShopItems(ev.items.map(i => findItemByName(i.name)).filter((item): item is GameItem => Boolean(item)))
+          setCurrentShopItems(ev.items.map(i => ITEMS[i.name.toLowerCase().replace(/ /g, '')]).filter(Boolean))
         } else {
           setCurrentShopItems(SHOP_ITEMS.basics)
         }
         setInShop(true)
         break
       case 'gym':
-      case 'gymLeader':
-        if (ev.badge && gs.player.badges.map(normalizeBadgeId).includes(normalizeBadgeId(ev.badge))) {
+        if (gs.player.badges.includes(ev.badge!)) {
           setDialogs(['Hai già questo badge!'])
           setSpeaker('')
           setInDialog(true)
@@ -1122,16 +646,16 @@ function GameScreen() {
         startTrainerBattle(ev)
         break
     }
-  }, [gs, grantItem, grantVehicle])
+  }, [gs])
 
   // Check for events at current position
   const checkEvents = useCallback(() => {
     const map = MAPS[gs.map]
     
     // Item pickup
-    const itemEv = map.events?.find((e: MapEvent) => e.type === 'item' && (e.x ?? -1) === gs.player.x && (e.y ?? -1) === gs.player.y)
+    const itemEv = map.events?.find((e: MapEvent) => e.type === 'item' && e.x === gs.player.x && e.y === gs.player.y)
     if (itemEv && itemEv.item) {
-      const foundItem = findItemByName(itemEv.item.name)
+      const foundItem = ITEMS[itemEv.item.name.toLowerCase().replace(/ /g, '')] || Object.values(ITEMS).find(i => i.name === itemEv.item!.name)
       if (foundItem) {
         const existing = gs.inv.find(i => i.item.name === foundItem.name)
         if (existing) {
@@ -1150,11 +674,11 @@ function GameScreen() {
 
     // Event interaction
     const ev = map.events?.find((e: MapEvent) => {
-      if (e.type === 'npc' || e.type === 'trainer' || e.type === 'gym' || e.type === 'gymLeader') {
-        return (e.x ?? -1) === gs.player.x && (e.y ?? -1) === gs.player.y
+      if (e.type === 'npc' || e.type === 'trainer' || e.type === 'gym') {
+        return e.x === gs.player.x && e.y === gs.player.y
       }
       if (e.type === 'sign' || e.type === 'warp' || e.type === 'heal' || e.type === 'shop') {
-        return (e.x ?? 0) === gs.player.x && (e.y ?? 0) === gs.player.y
+        return e.x === gs.player.x && e.y === gs.player.y
       }
       return false
     })
@@ -1254,7 +778,7 @@ function GameScreen() {
       enemyIdx: 0,
       isWild: false,
       over: false,
-      badge: ev.badge ? normalizeBadgeId(ev.badge) : undefined,
+      badge: ev.badge,
       trainerName: ev.name,
     })
     setDialogs(ev.dialog || [`${ev.name} vuole combattere!`])
@@ -1490,37 +1014,18 @@ function GameScreen() {
         }
         
         // Check if this is an Elite battle
-        const eliteBadge = getEliteBadgeId(battleState!.trainerName)
-        if (eliteBadge) {
+        if (['Il Fuocoso', "L'Acquoso", 'Il Naturale', 'Il Magico'].includes(battleState!.trainerName || '')) {
           soundManager.success()
           setBattleMsg(`Hai sconfitto ${battleState!.trainerName}!`)
-          setGs(prev => ({
-            ...prev,
-            player: (() => {
-              const normalizedBadges = prev.player.badges.map(normalizeBadgeId)
-              const updatedBadges = normalizedBadges.includes(eliteBadge)
-                ? prev.player.badges
-                : [...prev.player.badges, eliteBadge]
-              const updatedNormalized = updatedBadges.map(normalizeBadgeId)
-              const hasAllEliteBadges = ELITE_BADGES.every(badge => updatedNormalized.includes(badge))
-
-              return {
-                ...prev.player,
-                money: prev.player.money + reward,
-                badges: hasAllEliteBadges && !updatedNormalized.includes('league_pass')
-                  ? [...updatedBadges, 'league_pass']
-                  : updatedBadges,
-              }
-            })(),
-          }))
+          setGs(prev => ({ ...prev, player: { ...prev.player, money: prev.player.money + reward, badges: ['league_pass', ...prev.player.badges] } }))
           setTimeout(() => {
             setInBattle(false)
             setShowBattleMsg(false)
             setAnimating(false)
             setDialogs([
-              `${battleState!.trainerName}: Xe stata una gran sfida.`,
-              `Hai ottenuto il ${getBadgeLabel(eliteBadge)}.`,
-              'Quando avrai tutti e quattro i sigilli, otterrai il Pass della Lega.',
+              `${battleState!.trainerName}: Sei forte...`,
+              `Ma gli altri Elite sono più forti di me!`,
+              `Continua il tuo cammino!`,
             ])
             setSpeaker(battleState!.trainerName || '')
             setInDialog(true)
@@ -1532,20 +1037,13 @@ function GameScreen() {
         setBattleMsg(`Hai vinto! +₿${reward}`)
         setGs(prev => ({
           ...prev,
-          player: {
-            ...prev.player,
-            money: prev.player.money + reward,
-            badges: battleState!.badge && !prev.player.badges.map(normalizeBadgeId).includes(battleState!.badge)
-              ? [...prev.player.badges, battleState!.badge]
-              : prev.player.badges,
-          },
+          player: { ...prev.player, money: prev.player.money + reward, badges: battleState!.badge ? [...prev.player.badges, battleState!.badge!] : prev.player.badges },
         }))
         
         if (battleState!.badge) {
-          const earnedBadge = battleState!.badge
           soundManager.badgeGet()
           setTimeout(() => {
-            setBattleMsg(`Hai ottenuto il ${getBadgeLabel(earnedBadge)}!`)
+            setBattleMsg(`Hai ottenuto il ${battleState!.badge}!`)
             setTimeout(() => {
               setInBattle(false)
               setShowBattleMsg(false)
@@ -1792,24 +1290,10 @@ function GameScreen() {
   }
 
   const showPokedex = () => {
-    if (!hasInventoryItem('pokedex')) {
-      setNotification('Ti serve il PokeDioex. Prova al Centro Besti o in bottega.')
-      return
-    }
-
-    const allBesti = Object.values(BESTI)
-
-    setOverlayTitle(`POKEDIOEX ${allBesti.length}`)
+    setOverlayTitle('BESTIDEX')
     setOverlayContent(
-      <div>
-        <div className="dex-summary">
-          <div className="dex-summary-title">Catalogo Besti di Venetia</div>
-          <div className="dex-summary-copy">
-            Consulta i Besti conosciuti della regione. Nuove zone e nuove Bestie possono essere aggiunte nel tempo.
-          </div>
-        </div>
-        <div className="dex-grid">
-        {allBesti.map(b => (
+      <div className="dex-grid">
+        {Object.values(BESTI).slice(0, 50).map(b => (
           <div key={b.id} className="dex-entry">
             <img src={getBestiaIcon(b.id)} className="dex-sprite" alt={b.name} />
             <div className="dex-num">#{String(b.id).padStart(3, '0')}</div>
@@ -1817,7 +1301,6 @@ function GameScreen() {
             <div className="dex-types">{b.types.map(t => <span key={t} className={`type-badge type-${t}`}>{t}</span>)}</div>
           </div>
         ))}
-        </div>
       </div>
     )
     setShowOverlay(true)
@@ -1922,12 +1405,11 @@ function GameScreen() {
     
     setTimeout(() => {
       // Perform evolution
-      const evolvedData = BESTI[newForm]
       setGs(prev => ({
         ...prev,
         party: prev.party.map(p => p === bestia ? {
           ...p,
-          id: evolvedData?.id ?? newForm,
+          id: newForm,
           name: evolved.name,
           types: evolved.types,
           maxHp: Math.floor(evolved.bs.hp * 1.5),
@@ -2009,78 +1491,6 @@ function GameScreen() {
     setInMenu(false)
   }
 
-  const claimDailyReward = useCallback(() => {
-    const today = getTodayKey()
-    if (dailyReward.lastClaimed === today) {
-      setNotification('Premio giornaliero gia riscosso. Torna domani, mona!')
-      setTimeout(() => setNotification(''), 2500)
-      return
-    }
-
-    const isConsecutive = dailyReward.lastClaimed === getYesterdayKey()
-    const newStreak = isConsecutive ? dailyReward.streak + 1 : 1
-    const monthlyEvent = getMonthlyEvent()
-    const dailyMoney = 300 + newStreak * 100
-    const rewardItem = ITEMS[monthlyEvent.rewardItem] || ITEMS.gondolball
-
-    setGs(prev => {
-      const existing = prev.inv.find(entry => entry.item.id === rewardItem.id)
-      return {
-        ...prev,
-        player: { ...prev.player, money: prev.player.money + dailyMoney },
-        inv: existing
-          ? prev.inv.map(entry => entry.item.id === rewardItem.id ? { ...entry, qty: entry.qty + 1 } : entry)
-          : [...prev.inv, { item: rewardItem, qty: 1 }],
-      }
-    })
-
-    setDailyReward({ lastClaimed: today, streak: newStreak })
-    setNotification(`Ricompensa riscossa! +₿${dailyMoney} e ${rewardItem.name}. Giorni di fila: ${newStreak}`)
-    setTimeout(() => setNotification(''), 3000)
-  }, [dailyReward])
-
-  const showAdventureBoard = useCallback(() => {
-    const monthlyEvent = getMonthlyEvent()
-    const dailyClaimed = dailyReward.lastClaimed === getTodayKey()
-    const leagueReady = hasAllMainBadges(gs.player.badges)
-
-    setOverlayTitle('BACHECA AVVENTURA')
-    setOverlayContent(
-      <div className="adventure-board">
-        <div className="board-card">
-          <div className="board-title">Ricompensa Giornaliera</div>
-          <div className="board-subtitle">Torna ogni giorno per tenere viva la run</div>
-          <div className="board-text">
-            Serie attuale: {dailyReward.streak} giorni. Oggi {dailyClaimed ? 'hai gia riscosso il premio' : 'puoi ritirare il premio del giorno'}.
-          </div>
-          <div className="board-reward">Ricompensa di oggi: soldi, consumabili e una spinta per continuare a girare Venetia.</div>
-          <button className="board-btn" onClick={claimDailyReward} disabled={dailyClaimed}>
-            {dailyClaimed ? 'Premio gia preso' : 'Riscuoti premio'}
-          </button>
-        </div>
-
-        <div className="board-card">
-          <div className="board-title">Evento Del Mese</div>
-          <div className="board-subtitle">{monthlyEvent.title}</div>
-          <div className="board-text">{monthlyEvent.description}</div>
-          <div className="board-task">Voce di corridoio: {monthlyEvent.rumor}</div>
-          <div className="board-reward">Ricompensa tema del mese: {monthlyEvent.rewardLabel}</div>
-        </div>
-
-        <div className="board-card">
-          <div className="board-title">Venetia Viva</div>
-          <div className="board-text">
-            La Compagnia della Polenta e ancora in giro con grint, pacchi sospetti e storie secondarie sparse tra Spritzia, Padoana e la base finale.
-          </div>
-          <div className="board-task">Tracce aperte: palestra di {MAPS[gs.map]?.name || 'zona attuale'}, rivali da riaffrontare, villanate della Polenta, ricompense giornaliere e collezione Besti.</div>
-          <div className="board-task">Stato mondo: {leagueReady ? 'hai i badge principali e la Lega ti aspetta' : 'prima chiudi i badge principali e poi punta alla Lega'}.</div>
-        </div>
-      </div>
-    )
-    setShowOverlay(true)
-    setInMenu(false)
-  }, [claimDailyReward, dailyReward, gs.map, gs.player.badges])
-
   const teleportTo = (loc: TeleportLocation) => {
     soundManager.teleport()
     setGs(prev => ({
@@ -2105,13 +1515,12 @@ function GameScreen() {
         <div className="menu-options">
           <div className="menu-option" onClick={() => { showParty(); setInMenu(false) }}>Squadra</div>
           <div className="menu-option" onClick={() => { showBag(); setInMenu(false) }}>Zaino</div>
-          <div className="menu-option" onClick={() => { showPokedex(); setInMenu(false) }}>PokeDioex</div>
+          <div className="menu-option" onClick={() => { showPokedex(); setInMenu(false) }}>BestiDex</div>
           <div className="menu-option" onClick={() => { showTeleport(); }}>Teletrasporto</div>
-          <div className="menu-option" onClick={() => { showAdventureBoard(); }}>📜 Bacheca</div>
           <div className="menu-option" onClick={() => { showAchievements(); }}>🏆 Trofei</div>
           <div className="menu-option" onClick={() => { showSave(); }}>💾 Salva</div>
           <div className="menu-option" onClick={() => { showLoad(); }}>📂 Carica</div>
-          <div className="menu-option" onClick={() => { closeOverlay() }}>❌ Chiudi</div>
+          <div className="menu-option" onClick={() => { setInMenu(false) }}>❌ Chiudi</div>
         </div>
       )
       setShowOverlay(true)
@@ -2155,7 +1564,7 @@ function GameScreen() {
       return
     }
     if (showOverlay) {
-      closeOverlay()
+      setShowOverlay(false)
       return
     }
     checkEvents()
@@ -2174,7 +1583,7 @@ function GameScreen() {
       return
     }
     if (showOverlay) {
-      closeOverlay()
+      setShowOverlay(false)
       return
     }
     toggleMenu()
@@ -2245,7 +1654,7 @@ function GameScreen() {
   return (
     <div className="game-wrapper">
       <div className="gba-console">
-        {/* TOP SCREEN - Game Area */}
+        {/* TOP SCREEN */}
         <div className="top-screen">
           <div className="screen-bezel">
             <div className={`game-container top ${gs.map.includes('canalborgo') || gs.map === 'casa' ? 'city-canalborgo' : gs.map.includes('spritzia') ? 'city-spritzia' : gs.map.includes('veronara') ? 'city-veronara' : gs.map.includes('padoana') ? 'city-padoana' : gs.map.includes('trevisella') ? 'city-trevisella' : gs.map.includes('dolomax') ? 'city-dolomax' : gs.map.includes('gardalago') ? 'city-gardalago' : ''}`}>
@@ -2259,7 +1668,11 @@ function GameScreen() {
                       <div 
                         key={i} 
                         className="star" 
-                        style={getIntroStarStyle(i)}
+                        style={{
+                          left: `${Math.random() * 100}%`,
+                          top: `${Math.random() * 100}%`,
+                          animationDelay: `${Math.random() * 2}s`
+                        }}
                       />
                     ))}
                   </div>
@@ -2293,42 +1706,44 @@ function GameScreen() {
                       <div 
                         key={i} 
                         className="particle"
-                        style={getTitleParticleStyle(i)}
+                        style={{
+                          left: `${Math.random() * 100}%`,
+                          animationDelay: `${Math.random() * 3}s`
+                        }}
                       />
                     ))}
                   </div>
-                  <div className="title-card">
-                    <div className="title-crest">GBA MONADEX</div>
-                    <div className="fire-banner">BESTI DI VENETIA VERSIONE FUCO</div>
-                    <div className="title-logo">POKEMONA</div>
-                    <div className="title-subtitle">Besti di Venetia</div>
-                    <div className="title-bestia">
-                      <img src={getBestiaSprite('dolomitor')} alt="Dolomitor" className="title-sprite-float pixel-sprite" />
-                      <img src={getBestiaSprite('lagorion')} alt="Lagorion" className="title-sprite-float pixel-sprite" style={{animationDelay: '0.5s'}} />
-                      <img src={getBestiaSprite('serenissima')} alt="Serenissima" className="title-sprite-float pixel-sprite" style={{animationDelay: '1s'}} />
-                      <img src={getBestiaSprite('ombradriz')} alt="OmbraSpritz" className="title-sprite-float pixel-sprite" style={{animationDelay: '1.5s'}} />
-                    </div>
-                    <div className="title-menu">
-                      <button className="start-btn-large" onClick={beginNewGame}>
-                        NUOVA PARTITA
-                      </button>
-                      <button
-                        className="start-btn-large secondary"
-                        onClick={() => {
-                          if (loadGame()) {
-                            setShowIntro(false)
-                            setGameStarted(true)
-                          } else {
-                            setNotification('Nessun salvataggio disponibile!')
-                            setTimeout(() => setNotification(''), 2000)
-                          }
-                        }}
-                      >
-                        CARICA
-                      </button>
-                    </div>
-                    <div className="title-hint">Premi A per cominciare il casino veneto</div>
+                  <div className="title-logo">POKEMONA</div>
+                  <div className="title-subtitle">Besti di Venetia</div>
+                  <div className="title-bestia">
+                    <img src={getBestiaSprite('dolomitor')} alt="Dolomitor" className="title-sprite-float pixel-sprite" />
+                    <img src={getBestiaSprite('lagorion')} alt="Lagorion" className="title-sprite-float pixel-sprite" style={{animationDelay: '0.5s'}} />
+                    <img src={getBestiaSprite('serenissima')} alt="Serenissima" className="title-sprite-float pixel-sprite" style={{animationDelay: '1s'}} />
+                    <img src={getBestiaSprite('ombradriz')} alt="OmbraSpritz" className="title-sprite-float pixel-sprite" style={{animationDelay: '1.5s'}} />
                   </div>
+                  <button className="start-btn-large" onClick={() => {
+                    setGameStarted(true)
+                    // Start intro dialog
+                    setDialogs([
+                      'Buongiorno, tesoro mio!',
+                      'Oggi è il giorno importante!',
+                      'Devi andare dal Professor Barcaro!',
+                    ])
+                    setSpeaker('Mamma')
+                    setDialogCallback(() => {
+                      setDialogs([
+                        'Ah, sei arrivato finalmente!',
+                        'Sono il Prof. Barcaro!',
+                        'Ho 4 Besti leggendari per te!',
+                        'Scegli il tuo compagno!',
+                      ])
+                      setSpeaker('Prof. Barcaro')
+                      setInDialog(true)
+                    })
+                    setInDialog(true)
+                  }}>
+                    NUOVA PARTITA
+                  </button>
                 </div>
               )}
 
@@ -2381,8 +1796,8 @@ function GameScreen() {
                     const playerTile = currentMap?.tiles?.[gs.player.y]?.[gs.player.x]
                     const hasStairsNearby = currentMap?.events?.some(e => 
                       e.type === 'warp' && 
-                      Math.abs((e.x ?? 0) - gs.player.x) <= 1 && 
-                      Math.abs((e.y ?? 0) - gs.player.y) <= 1
+                      Math.abs(e.x - gs.player.x) <= 1 && 
+                      Math.abs(e.y - gs.player.y) <= 1
                     )
                     if (playerTile === 9 || playerTile === 10 || hasStairsNearby) {
                       return (
@@ -2399,17 +1814,6 @@ function GameScreen() {
               {/* Dialog */}
               {inDialog && (
                 <div className="dialog-box">
-                  {speaker && (() => {
-                    const portrait = getSpeakerPortrait(speaker)
-                    if (!portrait) return null
-                    return (
-                      <div className={`dialog-portrait ${portrait.side}`} style={{ borderColor: portrait.accent }}>
-                        <div className="dialog-portrait-inner" style={{ background: `linear-gradient(180deg, ${portrait.accent} 0%, #1f2430 100%)` }}>
-                          <span>{portrait.icon}</span>
-                        </div>
-                      </div>
-                    )
-                  })()}
                   {speaker && <div className="dialog-speaker">{speaker}</div>}
                   <div className="dialog-text">{dialogs[0]}</div>
                   <div className="dialog-arrow">▼</div>
@@ -2531,8 +1935,8 @@ function GameScreen() {
               {/* Starter Choice - 4 LEGENDARY STARTERS */}
               {showStarterChoice && (
                 <div className="starter-choice">
-                  <h2>Laboratorio GheSboro</h2>
-                  <p className="starter-subtitle">Il Dottore ti affida il tuo primo Besti</p>
+                  <h2>Scegli il tuo Besti!</h2>
+                  <p className="starter-subtitle">4 Besti Leggendari</p>
                   <div className="starter-container legendary">
                     <div className="starter-btn legendary" onClick={() => selectStarter('dolomitor')}>
                       <img src={getBestiaSprite('dolomitor')} alt="Dolomitor" className="pixel-sprite" />
@@ -2558,26 +1962,6 @@ function GameScreen() {
                       <span className="type-badge type-magic">Magico</span>
                       <span className="type-badge type-poison">Veleno</span>
                     </div>
-                  </div>
-                </div>
-              )}
-
-              {showIdentityChoice && (
-                <div className="starter-choice identity-choice">
-                  <h2>Chi sei?</h2>
-                  <p className="starter-subtitle">Scegli come il mondo ti vedra in questa avventura</p>
-                  <div className="identity-grid">
-                    {IDENTITY_OPTIONS.map(option => (
-                      <button
-                        key={option.id}
-                        className="identity-card"
-                        onClick={() => chooseIdentity(option)}
-                      >
-                        <div className="identity-icon">{option.icon}</div>
-                        <div className="identity-name">{option.label}</div>
-                        <div className="identity-flavor">{option.flavor}</div>
-                      </button>
-                    ))}
                   </div>
                 </div>
               )}
@@ -2629,7 +2013,7 @@ function GameScreen() {
               {showOverlay && (
                 <div className="overlay">
                   <div className="overlay-header">{overlayTitle}</div>
-                  <button className="close-btn" onClick={closeOverlay}>✕</button>
+                  <button className="close-btn" onClick={() => setShowOverlay(false)}>✕</button>
                   <div className="overlay-content">{overlayContent}</div>
                 </div>
               )}
@@ -2644,11 +2028,6 @@ function GameScreen() {
               {/* Info Panel */}
               <div className="info-panel">
                 <div className="location">{MAPS[gs.map]?.name || '???'}</div>
-                <div className="info-subline">
-                  {gs.party[0]
-                    ? `${gs.party[0].name} Lv.${gs.party[0].level}  PS ${gs.party[0].hp}/${gs.party[0].maxHp}`
-                    : 'Premi NUOVA PARTITA e scegli il tuo Besti'}
-                </div>
                 <div className="party-preview">
                   {gs.party.slice(0, 3).map((b, i) => (
                     <div key={i} className="preview-bestia">
@@ -2658,67 +2037,59 @@ function GameScreen() {
                 </div>
               </div>
 
-              {/* Controls - Bottom Area */}
-              <div className="bottom-controls">
-                <div className="controls-area">
-                <div className="controls-left">
-                  {/* D-Pad with MOBILE support */}
-                  <div className="dpad-container">
-                    <div className="dpad">
-                      <button 
-                        className="dpad-btn dpad-up" 
-                        onTouchStart={(e) => { e.preventDefault(); move('up'); }}
-                        onMouseDown={() => move('up')}
-                      >▲</button>
-                      <button 
-                        className="dpad-btn dpad-down" 
-                        onTouchStart={(e) => { e.preventDefault(); move('down'); }}
-                        onMouseDown={() => move('down')}
-                      >▼</button>
-                      <button 
-                        className="dpad-btn dpad-left" 
-                        onTouchStart={(e) => { e.preventDefault(); move('left'); }}
-                        onMouseDown={() => move('left')}
-                      >◀</button>
-                      <button 
-                        className="dpad-btn dpad-right" 
-                        onTouchStart={(e) => { e.preventDefault(); move('right'); }}
-                        onMouseDown={() => move('right')}
-                      >▶</button>
-                      <div className="dpad-center"></div>
-                    </div>
+              {/* Controls */}
+              <div className="controls-area">
+                {/* D-Pad with MOBILE support */}
+                <div className="dpad-container">
+                  <div className="dpad">
+                    <button 
+                      className="dpad-btn dpad-up" 
+                      onTouchStart={(e) => { e.preventDefault(); move('up'); }}
+                      onMouseDown={() => move('up')}
+                    >▲</button>
+                    <button 
+                      className="dpad-btn dpad-down" 
+                      onTouchStart={(e) => { e.preventDefault(); move('down'); }}
+                      onMouseDown={() => move('down')}
+                    >▼</button>
+                    <button 
+                      className="dpad-btn dpad-left" 
+                      onTouchStart={(e) => { e.preventDefault(); move('left'); }}
+                      onMouseDown={() => move('left')}
+                    >◀</button>
+                    <button 
+                      className="dpad-btn dpad-right" 
+                      onTouchStart={(e) => { e.preventDefault(); move('right'); }}
+                      onMouseDown={() => move('right')}
+                    >▶</button>
+                    <div className="dpad-center"></div>
                   </div>
-
-                  <div className="control-caption">MOVE</div>
                 </div>
 
-                <div className="controls-right">
-                  {/* Action Buttons - MOBILE TOUCH */}
-                  <div className="action-btns">
-                    <button 
-                      className="action-btn" 
-                      id="btn-a" 
-                      onClick={handleA}
-                      onTouchEnd={(e) => { e.preventDefault(); handleA(); }}
-                    >A</button>
-                    <button 
-                      className="action-btn" 
-                      id="btn-b" 
-                      onClick={handleB}
-                      onTouchEnd={(e) => { e.preventDefault(); handleB(); }}
-                    >B</button>
-                  </div>
+                {/* Action Buttons - MOBILE TOUCH */}
+                <div className="action-btns">
+                  <button 
+                    className="action-btn" 
+                    id="btn-a" 
+                    onClick={handleA}
+                    onTouchEnd={(e) => { e.preventDefault(); handleA(); }}
+                  >A</button>
+                  <button 
+                    className="action-btn" 
+                    id="btn-b" 
+                    onClick={handleB}
+                    onTouchEnd={(e) => { e.preventDefault(); handleB(); }}
+                  >B</button>
+                </div>
 
-                  {/* Start/Select */}
-                  <div className="start-select">
-                    <button 
-                      className="start-btn" 
-                      onClick={toggleMenu}
-                      onTouchEnd={(e) => { e.preventDefault(); toggleMenu(); }}
-                    ></button>
-                    <button className="select-btn"></button>
-                  </div>
-                  <div className="control-caption right">ACT</div>
+                {/* Start/Select */}
+                <div className="start-select">
+                  <button 
+                    className="start-btn" 
+                    onClick={toggleMenu}
+                    onTouchEnd={(e) => { e.preventDefault(); toggleMenu(); }}
+                  ></button>
+                  <button className="select-btn"></button>
                 </div>
               </div>
             </div>
@@ -2729,16 +2100,8 @@ function GameScreen() {
       {/* CSS Styles */}
       <style jsx global>{`
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { 
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-          touch-action: none;
-        }
         body { 
-          background:
-            radial-gradient(circle at top, rgba(78, 116, 201, 0.22), transparent 38%),
-            linear-gradient(180deg, #182445 0%, #10203d 55%, #0a1630 100%);
+          background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
           min-height: 100vh; 
           display: flex; 
           justify-content: center; 
@@ -2747,128 +2110,43 @@ function GameScreen() {
         }
 
         .game-wrapper {
-          width: 100%;
-          height: 100%;
-          min-height: 100vh;
           display: flex;
-          justify-content: center;
+          flex-direction: column;
           align-items: center;
-          padding: 0;
+          padding: 20px;
         }
 
         .gba-console {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          max-width: 100vw;
-          max-height: 100vh;
-          background:
-            radial-gradient(circle at 50% 6%, rgba(255,255,255,0.12) 0%, transparent 18%),
-            linear-gradient(180deg, #3a3c42 0%, #2a2c32 50%, #1a1c22 100%);
-          border-radius: 0;
-          padding: clamp(6px, 1.5vw, 14px);
-          border: none;
-          box-shadow: none;
-          display: flex;
-          flex-direction: column;
-          gap: clamp(4px, 1vw, 10px);
+          background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+          border-radius: 20px;
+          padding: 20px;
+          box-shadow: 
+            0 10px 40px rgba(0,0,0,0.5),
+            inset 0 2px 0 rgba(255,255,255,0.1);
+          max-width: 320px;
         }
 
-        .gba-console::before {
-          content: 'POKEMONA - BESTI DI VENETIA';
-          position: absolute;
-          top: 2px;
-          left: 50%;
-          transform: translateX(-50%);
-          font-size: clamp(4px, 1vw, 7px);
-          letter-spacing: 0.2em;
-          color: rgba(255,255,255,0.12);
-        }
-
-        .top-screen {
-          flex: 1;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          min-height: 0;
-          position: relative;
+        .top-screen, .bottom-screen {
+          margin-bottom: 15px;
         }
 
         .screen-bezel {
-          width: 100%;
-          height: 100%;
-          max-width: calc(100% - 8px);
-          max-height: calc(100% - 8px);
-          aspect-ratio: 3 / 2;
-          margin: auto;
-          background: linear-gradient(180deg, #060608 0%, #0e0e12 100%);
-          border-radius: 6px;
-          padding: clamp(3px, 1vw, 6px);
-          box-shadow:
-            inset 0 0 16px rgba(0,0,0,0.95),
-            0 1px 0 rgba(255,255,255,0.05);
-          position: relative;
-        }
-
-        .screen-bezel::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: repeating-linear-gradient(
-            0deg,
-            rgba(0,0,0,0.03) 0px,
-            rgba(0,0,0,0.03) 1px,
-            transparent 1px,
-            transparent 2px
-          );
-          pointer-events: none;
-          border-radius: 4px;
+          background: #111;
+          border-radius: 10px;
+          padding: 8px;
+          box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
 
         .game-container {
           position: relative;
-          width: 100%;
-          height: 100%;
+          width: 240px;
+          height: 160px;
           background: #000;
-          border-radius: 3px;
           overflow: hidden;
-          box-shadow:
-            inset 0 0 0 1px rgba(73, 100, 62, 0.3),
-            inset 0 0 16px rgba(0,0,0,0.2);
-        }
-
-        /* Bottom Controls Area */
-        .bottom-controls {
-          flex: 0 0 auto;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          padding: clamp(2px, 0.8vw, 6px) 0;
         }
 
         .game-canvas {
           display: block;
-        }
-
-        .game-container::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background:
-            linear-gradient(180deg, rgba(255,255,255,0.06), transparent 22%, transparent 78%, rgba(0,0,0,0.08)),
-            repeating-linear-gradient(180deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 4px);
-          pointer-events: none;
-          z-index: 2;
-        }
-
-        .game-container::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          border: 2px solid rgba(16, 40, 18, 0.28);
-          box-shadow: inset 0 0 26px rgba(0,0,0,0.18);
-          pointer-events: none;
-          z-index: 1;
         }
 
         .game-canvas.shake {
@@ -2976,38 +2254,13 @@ function GameScreen() {
         .title-screen {
           position: absolute;
           inset: 0;
-          background:
-            radial-gradient(circle at 50% 18%, rgba(255,255,255,0.1), transparent 20%),
-            linear-gradient(180deg, #24538f 0%, #173866 45%, #112947 100%);
+          background: linear-gradient(180deg, #1e3a5f 0%, #0d1b2a 100%);
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           color: white;
           overflow: hidden;
-        }
-
-        .title-card {
-          position: relative;
-          z-index: 1;
-          width: 194px;
-          padding: 12px 12px 10px;
-          border-radius: 12px;
-          background:
-            linear-gradient(180deg, rgba(255,255,255,0.08), transparent 18%),
-            linear-gradient(180deg, rgba(11, 26, 52, 0.92) 0%, rgba(9, 19, 37, 0.95) 100%);
-          border: 2px solid rgba(201, 221, 255, 0.22);
-          box-shadow:
-            0 10px 22px rgba(0,0,0,0.24),
-            inset 0 1px 0 rgba(255,255,255,0.1);
-          text-align: center;
-        }
-
-        .title-crest {
-          font-size: 5px;
-          color: #bdd8ff;
-          letter-spacing: 0.18em;
-          margin-bottom: 8px;
         }
 
         .title-particles {
@@ -3031,37 +2284,25 @@ function GameScreen() {
         }
 
         .title-logo {
-          font-size: 25px;
-          color: #ffe58f;
-          text-shadow: 0 2px 0 #9a4c00, 2px 4px 0 #6f2d00, 0 0 16px rgba(255,213,79,0.25);
+          font-size: 24px;
+          color: #ffd700;
+          text-shadow: 2px 2px 0 #b8860b, 4px 4px 0 #8b6914;
           animation: pulse 2s infinite;
-          z-index: 1;
-        }
-
-        .fire-banner {
-          padding: 6px 12px;
-          border-radius: 999px;
-          margin-bottom: 10px;
-          background: linear-gradient(180deg, #ffcf66 0%, #ff8c42 48%, #d94b1f 100%);
-          color: #3b1804;
-          font-size: 6px;
-          letter-spacing: 0.12em;
-          box-shadow: 0 6px 18px rgba(0,0,0,0.25);
           z-index: 1;
         }
 
         .title-subtitle {
           font-size: 8px;
-          margin-top: 8px;
-          color: #d5ecff;
+          margin-top: 10px;
+          color: #87ceeb;
           z-index: 1;
         }
 
         .title-bestia {
           display: flex;
           gap: 10px;
-          margin-top: 16px;
-          justify-content: center;
+          margin-top: 20px;
+          z-index: 1;
         }
 
         .title-sprite-float {
@@ -3077,47 +2318,23 @@ function GameScreen() {
         }
 
         .start-btn-large {
-          margin-top: 0;
-          padding: 9px 14px;
-          background: linear-gradient(180deg, #f8f8f8 0%, #d7dfeb 100%);
-          border: 2px solid #2c3d5f;
-          border-radius: 8px;
-          color: #193052;
+          margin-top: 30px;
+          padding: 10px 20px;
+          background: linear-gradient(180deg, #4caf50, #2e7d32);
+          border: none;
+          border-radius: 5px;
+          color: white;
           font-family: inherit;
-          font-size: 7px;
+          font-size: 8px;
           cursor: pointer;
-          box-shadow: 0 4px 0 rgba(18,30,50,0.38);
+          box-shadow: 0 4px 0 #1b5e20;
           z-index: 1;
           transition: all 0.2s;
         }
 
-        .title-menu {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-          margin-top: 18px;
-          width: 142px;
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        .title-hint {
-          margin-top: 10px;
-          font-size: 5px;
-          color: #adc8ea;
-          letter-spacing: 0.08em;
-        }
-
-        .start-btn-large.secondary {
-          margin-top: 0;
-          background: linear-gradient(180deg, #fff0c1 0%, #ffd56f 100%);
-          color: #4b2b03;
-          border-color: #7c4d11;
-        }
-
         .start-btn-large:hover {
-          background: linear-gradient(180deg, #ffffff 0%, #e2ecfa 100%);
-          transform: translateY(-1px);
+          background: linear-gradient(180deg, #66bb6a, #4caf50);
+          transform: scale(1.05);
         }
 
         .hud-top {
@@ -3127,15 +2344,10 @@ function GameScreen() {
           right: 5px;
           display: flex;
           justify-content: space-between;
-          font-size: 7px;
+          font-size: 8px;
           color: white;
           text-shadow: 1px 1px 0 #000;
           z-index: 10;
-          background: linear-gradient(180deg, rgba(18,43,30,0.78) 0%, rgba(13,29,20,0.68) 100%);
-          border: 2px solid rgba(180, 228, 157, 0.28);
-          border-radius: 8px;
-          padding: 4px 6px;
-          box-shadow: 0 2px 0 rgba(0,0,0,0.18);
         }
 
         .dialog-box {
@@ -3143,58 +2355,23 @@ function GameScreen() {
           bottom: 5px;
           left: 5px;
           right: 5px;
-          background: linear-gradient(180deg, #f8fbff 0%, #dfe8f6 100%);
-          border: 3px solid #304a70;
-          border-radius: 10px;
-          padding: 10px 10px 12px;
-          min-height: 56px;
+          background: white;
+          border: 2px solid #333;
+          border-radius: 5px;
+          padding: 8px;
+          min-height: 50px;
           z-index: 20;
-          box-shadow:
-            0 4px 0 rgba(15,26,46,0.25),
-            inset 0 1px 0 rgba(255,255,255,0.85);
-        }
-
-        .dialog-portrait {
-          position: absolute;
-          top: -18px;
-          width: 34px;
-          height: 34px;
-          border: 3px solid #90a4ae;
-          background: #121826;
-          border-radius: 8px;
-          padding: 2px;
-          box-shadow: 0 4px 0 rgba(0,0,0,0.22);
-        }
-
-        .dialog-portrait.left {
-          left: 10px;
-        }
-
-        .dialog-portrait.right {
-          right: 10px;
-        }
-
-        .dialog-portrait-inner {
-          width: 100%;
-          height: 100%;
-          border-radius: 4px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 16px;
         }
 
         .dialog-speaker {
           font-size: 7px;
-          color: #1b3d74;
-          margin-bottom: 5px;
-          letter-spacing: 0.04em;
+          color: #1976d2;
+          margin-bottom: 4px;
         }
 
         .dialog-text {
-          font-size: 7px;
-          line-height: 1.6;
-          color: #20283a;
+          font-size: 8px;
+          line-height: 1.4;
         }
 
         .dialog-arrow {
@@ -3400,51 +2577,6 @@ function GameScreen() {
           margin-bottom: 10px;
         }
 
-        .identity-choice {
-          padding: 18px;
-        }
-
-        .identity-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 10px;
-          width: 100%;
-        }
-
-        .identity-card {
-          width: 100%;
-          text-align: left;
-          padding: 10px;
-          border: 2px solid #4f5f86;
-          border-radius: 12px;
-          background: linear-gradient(180deg, rgba(41, 53, 88, 0.98) 0%, rgba(20, 28, 53, 0.98) 100%);
-          color: white;
-          font-family: inherit;
-          cursor: pointer;
-        }
-
-        .identity-card:hover {
-          border-color: #ffd700;
-          transform: translateY(-1px);
-        }
-
-        .identity-icon {
-          font-size: 24px;
-          margin-bottom: 6px;
-        }
-
-        .identity-name {
-          font-size: 8px;
-          color: #ffd770;
-          margin-bottom: 6px;
-        }
-
-        .identity-flavor {
-          font-size: 6px;
-          line-height: 1.6;
-          color: #d8dfef;
-        }
-
         .starter-container.legendary {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -3613,66 +2745,6 @@ function GameScreen() {
           font-size: 7px;
         }
 
-        .adventure-board {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-
-        .board-card {
-          background: linear-gradient(180deg, #fffaf1 0%, #f4ede1 100%);
-          border: 2px solid #7b5e3b;
-          border-radius: 8px;
-          padding: 8px;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
-        }
-
-        .board-title {
-          font-size: 8px;
-          color: #5b3a1f;
-          margin-bottom: 4px;
-        }
-
-        .board-subtitle {
-          font-size: 6px;
-          color: #8b6b4b;
-          margin-bottom: 6px;
-        }
-
-        .board-text,
-        .board-task,
-        .board-reward {
-          line-height: 1.5;
-          margin-bottom: 5px;
-          color: #2f2a23;
-        }
-
-        .board-task {
-          color: #4b3a2a;
-        }
-
-        .board-reward {
-          color: #2e7d32;
-        }
-
-        .board-btn {
-          width: 100%;
-          margin-top: 4px;
-          padding: 8px;
-          border: none;
-          border-radius: 6px;
-          background: linear-gradient(180deg, #c96d1f 0%, #a65316 100%);
-          color: white;
-          font-family: inherit;
-          font-size: 7px;
-          cursor: pointer;
-        }
-
-        .board-btn:disabled {
-          background: #9e9e9e;
-          cursor: default;
-        }
-
         .menu-grid {
           display: flex;
           flex-direction: column;
@@ -3777,26 +2849,6 @@ function GameScreen() {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 5px;
-        }
-
-        .dex-summary {
-          margin-bottom: 8px;
-          padding: 6px 8px;
-          background: linear-gradient(180deg, #f7f4da 0%, #ebe4b3 100%);
-          border: 2px solid #b7aa62;
-          border-radius: 5px;
-        }
-
-        .dex-summary-title {
-          font-size: 7px;
-          color: #5d4e11;
-          margin-bottom: 4px;
-        }
-
-        .dex-summary-copy {
-          font-size: 5px;
-          line-height: 1.5;
-          color: #675c29;
         }
 
         .dex-entry {
@@ -4058,45 +3110,27 @@ function GameScreen() {
 
         /* Bottom Screen */
         .screen-bezel-bottom {
-          background: linear-gradient(180deg, #24262b 0%, #1c1d21 100%);
-          border-radius: 14px 14px 18px 18px;
-          padding: 12px;
-          box-shadow:
-            inset 0 1px 0 rgba(255,255,255,0.05),
-            inset 0 -4px 10px rgba(0,0,0,0.28);
+          background: #222;
+          border-radius: 10px;
+          padding: 10px;
         }
 
         .bottom-content {
-          display: grid;
-          grid-template-columns: 1fr;
-          grid-template-rows: auto auto;
-          gap: 12px;
-          width: 100%;
+          display: flex;
+          gap: 10px;
         }
 
         .info-panel {
-          min-height: 82px;
-          background: linear-gradient(180deg, #3c3d42 0%, #2e2f34 100%);
-          border-radius: 10px;
-          padding: 10px;
+          flex: 1;
+          background: #333;
+          border-radius: 5px;
+          padding: 8px;
           color: white;
-          border: 1px solid rgba(255,255,255,0.05);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
         }
 
         .location {
-          font-size: 9px;
-          margin-bottom: 6px;
-          color: #fff8d6;
-          letter-spacing: 0.04em;
-        }
-
-        .info-subline {
-          font-size: 6px;
-          line-height: 1.5;
-          color: #b9c0d0;
-          margin-bottom: 10px;
-          min-height: 18px;
+          font-size: 8px;
+          margin-bottom: 8px;
         }
 
         .party-preview {
@@ -4105,15 +3139,14 @@ function GameScreen() {
         }
 
         .preview-bestia {
-          width: 26px;
-          height: 26px;
-          background: linear-gradient(180deg, #565961 0%, #43454c 100%);
-          border-radius: 6px;
+          width: 24px;
+          height: 24px;
+          background: #555;
+          border-radius: 3px;
           display: flex;
           align-items: center;
           justify-content: center;
           overflow: hidden;
-          border: 1px solid rgba(255,255,255,0.06);
         }
 
         .preview-bestia img {
@@ -4123,39 +3156,15 @@ function GameScreen() {
         }
 
         .controls-area {
-          display: grid;
-          grid-template-columns: 1fr auto 1fr;
-          align-items: end;
-          justify-items: center;
-          gap: clamp(4px, 2vw, 12px);
-          width: 100%;
-          flex: 0 0 auto;
-          padding: clamp(2px, 1vw, 4px) clamp(2px, 1vw, 0) 0;
-        }
-
-        .controls-left,
-        .controls-right {
           display: flex;
-          flex-direction: column;
+          gap: 15px;
           align-items: center;
-          gap: clamp(4px, 2vw, 10px);
-          width: 100%;
-        }
-
-        .control-caption {
-          font-size: clamp(4px, 1.5vw, 7px);
-          color: #8d93a1;
-          letter-spacing: 0.2em;
-        }
-
-        .control-caption.right {
-          color: #b7a68e;
         }
 
         .dpad-container {
           position: relative;
-          width: clamp(60px, 20vw, 90px);
-          height: clamp(60px, 20vw, 90px);
+          width: 90px;
+          height: 90px;
           touch-action: none;
         }
 
@@ -4167,13 +3176,13 @@ function GameScreen() {
 
         .dpad-btn {
           position: absolute;
-          width: clamp(20px, 7vw, 32px);
-          height: clamp(20px, 7vw, 32px);
-          background: linear-gradient(180deg, #5b5e66 0%, #34363c 100%);
-          border: 1px solid #1b1d21;
+          width: 32px;
+          height: 32px;
+          background: linear-gradient(145deg, #555, #333);
+          border: 2px solid #222;
           border-radius: 6px;
           color: white;
-          font-size: clamp(8px, 3vw, 14px);
+          font-size: 14px;
           cursor: pointer;
           display: flex;
           align-items: center;
@@ -4182,7 +3191,7 @@ function GameScreen() {
           -webkit-user-select: none;
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
-          box-shadow: 0 3px 0 rgba(0,0,0,0.38);
+          box-shadow: 0 3px 0 #222;
         }
 
         .dpad-btn:active, .dpad-btn.pressed {
@@ -4220,33 +3229,32 @@ function GameScreen() {
           top: 50%; 
           left: 50%; 
           transform: translate(-50%, -50%);
-          width: 24px;
-          height: 24px;
-          background: linear-gradient(180deg, #44474f 0%, #26282d 100%);
+          width: 26px;
+          height: 26px;
+          background: linear-gradient(145deg, #444, #222);
           border-radius: 50%;
-          border: 1px solid #191b1f;
+          border: 2px solid #333;
         }
 
         .action-btns {
-          position: relative;
-          width: 92px;
-          height: 68px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
         }
 
         .action-btn {
-          position: absolute;
-          width: clamp(32px, 12vw, 48px);
-          height: clamp(32px, 12vw, 48px);
+          width: 40px;
+          height: 40px;
           border-radius: 50%;
-          border: 2px solid rgba(0,0,0,0.35);
+          border: 3px solid #222;
           font-family: 'Press Start 2P', monospace;
-          font-size: clamp(8px, 3vw, 13px);
+          font-size: 12px;
           cursor: pointer;
           user-select: none;
           -webkit-user-select: none;
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
-          box-shadow: 0 5px 0 rgba(0,0,0,0.28);
+          box-shadow: 0 4px 0 #222;
         }
 
         .action-btn:active {
@@ -4255,15 +3263,11 @@ function GameScreen() {
         }
 
         #btn-a {
-          right: 8px;
-          top: 0;
           background: linear-gradient(145deg, #e53935, #b71c1c);
           color: white;
         }
 
         #btn-b {
-          left: 0;
-          bottom: 0;
           background: linear-gradient(145deg, #fb8c00, #e65100);
           color: white;
         }
@@ -4282,18 +3286,16 @@ function GameScreen() {
         .start-select {
           display: flex;
           gap: 10px;
-          margin-top: 2px;
-          justify-content: center;
+          margin-left: 10px;
         }
 
         .start-btn, .select-btn {
           width: 30px;
           height: 10px;
-          background: linear-gradient(180deg, #6b6d74 0%, #45474d 100%);
+          background: #555;
           border: none;
           border-radius: 5px;
           cursor: pointer;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
         }
 
         .start-btn:hover, .select-btn:hover {
@@ -4334,42 +3336,48 @@ function GameScreen() {
           position: absolute;
           top: 5px;
           right: 5px;
-          background: linear-gradient(180deg, rgba(31,44,67,0.92) 0%, rgba(20,28,41,0.92) 100%);
-          padding: 4px 8px;
+          background: rgba(0,0,0,0.7);
+          padding: 3px 8px;
           border-radius: 10px;
-          border: 2px solid rgba(137, 183, 255, 0.2);
           font-size: 6px;
-          color: #f9df84;
+          color: #ffd700;
           z-index: 5;
         }
 
-        /* Responsive - Fluid scaling */
+        /* Responsive GameBoy */
         @media (max-width: 400px) {
           .gba-console {
-            border-radius: 16px 16px 18px 18px;
+            transform: scale(1);
+            transform-origin: top center;
+            padding: 10px;
           }
           
-          .dpad-btn {
-            width: clamp(24px, 8vw, 36px) !important;
-            height: clamp(24px, 8vw, 36px) !important;
-            font-size: clamp(10px, 3vw, 14px) !important;
+          .game-wrapper {
+            padding: 5px;
           }
           
           .dpad-container {
-            width: clamp(70px, 25vw, 100px) !important;
-            height: clamp(70px, 25vw, 100px) !important;
+            width: 100px !important;
+            height: 100px !important;
+          }
+          
+          .dpad-btn {
+            width: 36px !important;
+            height: 36px !important;
+            font-size: 16px !important;
           }
           
           .action-btn {
-            width: clamp(36px, 12vw, 48px) !important;
-            height: clamp(36px, 12vw, 48px) !important;
-            font-size: clamp(11px, 3vw, 14px) !important;
+            width: 45px !important;
+            height: 45px !important;
+            font-size: 14px !important;
           }
         }
 
-        @media (min-width: 600px) {
+        @media (min-width: 800px) {
           .gba-console {
-            max-width: 560px;
+            transform: scale(1.2);
+            transform-origin: top center;
           }
         }
         
@@ -4395,13 +3403,5 @@ function GameScreen() {
         }
       `}</style>
     </div>
-  )
-}
-
-export default function Game() {
-  return (
-    <RuntimeErrorBoundary>
-      <GameScreen />
-    </RuntimeErrorBoundary>
   )
 }
