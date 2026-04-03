@@ -34,8 +34,8 @@ function createPixelArt(pixels: number[][], scale = 1): ImageData {
   
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      const color = pixels[y][x]
-      if (color !== 0) {
+      const color = pixels[y]?.[x]
+      if (typeof color === 'number' && color !== 0) {
         ctx.fillStyle = '#' + color.toString(16).padStart(6, '0')
         ctx.fillRect(x * scale, y * scale, scale, scale)
       }
