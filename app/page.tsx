@@ -236,6 +236,7 @@ const OPENING_STORY: StoryIntroScene[] = [
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const lastVirtualPressRef = useRef<Record<string, number>>({})
+  const lastMoveAtRef = useRef(0)
 
   const normalizePlayer = useCallback((player: Partial<GameState['player']> | undefined): GameState['player'] => ({
     name: player?.name || 'Federico',
@@ -869,7 +870,9 @@ export default function Game() {
   // Move player
   const move = useCallback((dir: string) => {
     try {
-      if (inBattle || inDialog || inShop || animating || !gameStarted || showStoryIntro || showPlayerSetup) return
+      const now = Date.now()
+      if (now - lastMoveAtRef.current < 90) return
+      if (inBattle || inDialog || inShop || inMenu || showOverlay || mapTransition || animating || !gameStarted || showStoryIntro || showPlayerSetup) return
 
       setGs(prev => {
         let nx = prev.player.x
@@ -888,11 +891,12 @@ export default function Game() {
         return { ...prev, player: { ...prev.player, x: nx, y: ny } }
       })
 
+      lastMoveAtRef.current = now
       soundManager.footstep()
     } catch (error) {
       console.error('Move failed:', error)
     }
-  }, [animating, gameStarted, inBattle, inDialog, inShop, showPlayerSetup, showStoryIntro])
+  }, [animating, gameStarted, inBattle, inDialog, inMenu, inShop, mapTransition, showOverlay, showPlayerSetup, showStoryIntro])
 
   // Handle map events
   const handleEvent = useCallback((ev: MapEvent) => {
@@ -2116,10 +2120,10 @@ export default function Game() {
     if (!gameStarted || showStoryIntro) return
     checkAutoEvents()
     const map = MAPS[gs.map]
-    if (map.wild && map.wild.length && Math.random() * 100 < (map.wildRate || 10)) {
+    if (gs.flags.hasStarter && map.wild && map.wild.length && Math.random() * 100 < (map.wildRate || 10)) {
       startWild()
     }
-  }, [checkAutoEvents, gameStarted, gs.map, gs.player.x, gs.player.y, showStoryIntro, startWild])
+  }, [checkAutoEvents, gameStarted, gs.flags.hasStarter, gs.map, gs.player.x, gs.player.y, showStoryIntro, startWild])
 
   useEffect(() => {
     if (battleState) {
@@ -2151,24 +2155,24 @@ export default function Game() {
       const target = e.target as HTMLElement | null
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return
       try {
-        if (e.repeat && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D'].includes(e.key)) {
+        if (e.repeat && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
           e.preventDefault()
           return
         }
         switch (e.key) {
-          case 'ArrowUp': case 'w': case 'W':
+          case 'ArrowUp':
             e.preventDefault()
             handleDirectionInput('up')
             break
-          case 'ArrowDown': case 's': case 'S':
+          case 'ArrowDown':
             e.preventDefault()
             handleDirectionInput('down')
             break
-          case 'ArrowLeft': case 'a': case 'A':
+          case 'ArrowLeft':
             e.preventDefault()
             handleDirectionInput('left')
             break
-          case 'ArrowRight': case 'd': case 'D':
+          case 'ArrowRight':
             e.preventDefault()
             handleDirectionInput('right')
             break
@@ -2179,6 +2183,14 @@ export default function Game() {
           case 'Escape': case 'x': case 'X':
             e.preventDefault()
             handleB()
+            break
+          case 'Shift':
+            e.preventDefault()
+            handleStartButton()
+            break
+          case 'Control':
+            e.preventDefault()
+            handleSelectButton()
             break
           case ' ':
             e.preventDefault()
@@ -2191,7 +2203,7 @@ export default function Game() {
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [advanceDialog, gameStarted, handleA, handleB, handleDirectionInput, inDialog, showStoryIntro])
+  }, [advanceDialog, handleA, handleB, handleDirectionInput, handleSelectButton, handleStartButton, inDialog])
 
   return (
     <div className="game-wrapper">
@@ -2389,26 +2401,6 @@ export default function Game() {
                     </div>
                   )}
                   
-                  {/* Stairs Indicator - show when player is near stairs */}
-                  {(() => {
-                    const currentMap = MAPS[gs.map]
-                    const playerTile = currentMap?.tiles?.[gs.player.y]?.[gs.player.x]
-                    const hasStairsNearby = currentMap?.events?.some(e => 
-                      e.type === 'warp' && 
-                      typeof e.x === 'number' &&
-                      typeof e.y === 'number' &&
-                      Math.abs(e.x - gs.player.x) <= 1 && 
-                      Math.abs(e.y - gs.player.y) <= 1
-                    )
-                    if (playerTile === 9 || playerTile === 10 || hasStairsNearby) {
-                      return (
-                        <div className="stairs-indicator">
-                          ⬆️ Premi SPACE per salire/scendere
-                        </div>
-                      )
-                    }
-                    return null
-                  })()}
                 </>
               )}
 
