@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { BESTI, Bestia, MOVES, MapEvent, LEGENDARY_STARTERS } from '@/lib/besti'
 import { MAPS } from '@/lib/maps'
 import { ITEMS, SHOP_ITEMS, GameItem } from '@/lib/items'
@@ -264,6 +264,82 @@ const getTitleParticleStyle = (index: number) => ({
   animationDelay: `${(index % 6) * 0.4}s`,
 })
 
+class RuntimeErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; message: string }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props)
+    this.state = { hasError: false, message: '' }
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return {
+      hasError: true,
+      message: error?.message || 'Errore sconosciuto',
+    }
+  }
+
+  componentDidCatch(error: Error) {
+    console.error('Pokemona runtime crash:', error)
+  }
+
+  private resetGame = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('pokemona_save')
+      localStorage.removeItem('pokemona_daily_reward')
+      window.location.reload()
+    }
+  }
+
+  render() {
+    if (!this.state.hasError) {
+      return this.props.children
+    }
+
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+        color: '#fff',
+        fontFamily: "'Press Start 2P', monospace",
+        padding: '24px',
+      }}>
+        <div style={{
+          maxWidth: '420px',
+          background: 'rgba(0,0,0,0.72)',
+          border: '2px solid #ffd700',
+          borderRadius: '14px',
+          padding: '20px',
+          textAlign: 'center',
+          lineHeight: 1.8,
+        }}>
+          <div style={{ fontSize: '14px', marginBottom: '12px', color: '#ffd700' }}>POKEMONA SI E INCIAMPATO</div>
+          <div style={{ fontSize: '11px', marginBottom: '12px' }}>Il gioco e andato in crash nel browser invece di restare visibile.</div>
+          <div style={{ fontSize: '10px', marginBottom: '16px', color: '#ffccbc' }}>{this.state.message}</div>
+          <button
+            onClick={this.resetGame}
+            style={{
+              border: 'none',
+              borderRadius: '8px',
+              padding: '12px 16px',
+              background: '#c96d1f',
+              color: '#fff',
+              fontFamily: 'inherit',
+              cursor: 'pointer',
+            }}
+          >
+            Reset salvataggio e ricarica
+          </button>
+        </div>
+      </div>
+    )
+  }
+}
+
 const INITIAL_GAME_STATE: GameState = {
   player: { name: 'Federico', x: 7, y: 9, money: 3000, badges: [] },
   party: [],
@@ -324,7 +400,7 @@ const hydrateSaveData = (saveData: PartialSaveData): GameState => {
   }
 }
 
-export default function Game() {
+function GameScreen() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
   // Game states
@@ -3849,5 +3925,13 @@ export default function Game() {
         }
       `}</style>
     </div>
+  )
+}
+
+export default function Game() {
+  return (
+    <RuntimeErrorBoundary>
+      <GameScreen />
+    </RuntimeErrorBoundary>
   )
 }
