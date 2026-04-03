@@ -131,13 +131,14 @@ export const renderTile = (
 ) => {
   const tiles = isIndoor ? INDOOR_TILES : OUTDOOR_TILES
   const tile = tiles[tileType] || { base: '#ff00ff', detail: '#ff00ff', walkable: true, type: 'grass' }
+  const detailColor = tile.detail ?? tile.base
   
   // Base color
   ctx.fillStyle = tile.base
   ctx.fillRect(x, y, size, size)
   
   // Tile detail pattern
-  ctx.fillStyle = tile.detail
+  ctx.fillStyle = detailColor
   if (tile.type === 'grass') {
     // Grass blades
     if ((x + y) % (size / 2) === 0) {
@@ -171,7 +172,7 @@ export const renderTile = (
   if (tile.type === 'floor' || tile.type === 'carpet') {
     // Floor pattern
     if ((x + y) % (size * 2) === 0) {
-      ctx.fillStyle = tile.detail
+      ctx.fillStyle = detailColor
       ctx.fillRect(x, y, 2, 2)
     }
   }
