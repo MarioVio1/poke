@@ -78,6 +78,27 @@ interface MonthlyEvent {
   rewardLabel: string
 }
 
+interface SavedInventoryEntry {
+  item: string | GameItem
+  qty: number
+}
+
+interface PartialSaveData {
+  player?: Partial<GameState['player']>
+  party?: PartyBestia[]
+  rival?: PartyBestia
+  pc?: PartyBestia[]
+  inv?: SavedInventoryEntry[]
+  flags?: Partial<GameFlags>
+  map?: string
+  vehicle?: string
+  storyProgress?: number
+  defeatedRival?: boolean
+  achievements?: string[]
+  evolutions?: number
+  citiesVisited?: string[]
+}
+
 // Intro animation frames
 const INTRO_FRAMES = [
   { text: '★ POKEMONA ★', subtext: 'Besti di Venetia', delay: 2000 },
@@ -243,6 +264,66 @@ const getTitleParticleStyle = (index: number) => ({
   animationDelay: `${(index % 6) * 0.4}s`,
 })
 
+const INITIAL_GAME_STATE: GameState = {
+  player: { name: 'Federico', x: 7, y: 9, money: 3000, badges: [] },
+  party: [],
+  rival: undefined,
+  pc: [],
+  inv: [
+    { item: ITEMS.pozioncino, qty: 5 },
+    { item: ITEMS.gondolball, qty: 5 },
+    { item: ITEMS.caffette, qty: 3 },
+  ],
+  flags: { hasStarter: false, hasBike: false, hasBoat: false, defeatedRival: false },
+  map: 'canalborgo',
+  vehicle: 'none',
+  storyProgress: 0,
+  defeatedRival: false,
+  achievements: [],
+  evolutions: 0,
+  citiesVisited: [],
+}
+
+const hydrateSaveData = (saveData: PartialSaveData): GameState => {
+  const safeInv = Array.isArray(saveData.inv)
+    ? saveData.inv.map((entry): { item: GameItem; qty: number } => ({
+        item: typeof entry.item === 'string'
+          ? ITEMS[entry.item] || findItemByName(entry.item) || ITEMS.pozioncino
+          : entry.item,
+        qty: typeof entry.qty === 'number' && entry.qty > 0 ? entry.qty : 1,
+      }))
+    : INITIAL_GAME_STATE.inv
+
+  const safeMap = typeof saveData.map === 'string' && MAPS[saveData.map]
+    ? saveData.map
+    : INITIAL_GAME_STATE.map
+
+  return {
+    player: {
+      name: saveData.player?.name || INITIAL_GAME_STATE.player.name,
+      x: typeof saveData.player?.x === 'number' ? saveData.player.x : INITIAL_GAME_STATE.player.x,
+      y: typeof saveData.player?.y === 'number' ? saveData.player.y : INITIAL_GAME_STATE.player.y,
+      money: typeof saveData.player?.money === 'number' ? saveData.player.money : INITIAL_GAME_STATE.player.money,
+      badges: Array.isArray(saveData.player?.badges) ? saveData.player!.badges : INITIAL_GAME_STATE.player.badges,
+    },
+    party: Array.isArray(saveData.party) ? saveData.party : INITIAL_GAME_STATE.party,
+    rival: saveData.rival,
+    pc: Array.isArray(saveData.pc) ? saveData.pc : INITIAL_GAME_STATE.pc,
+    inv: safeInv,
+    flags: {
+      ...INITIAL_GAME_STATE.flags,
+      ...(saveData.flags || {}),
+    },
+    map: safeMap,
+    vehicle: normalizeVehicleId(saveData.vehicle),
+    storyProgress: typeof saveData.storyProgress === 'number' ? saveData.storyProgress : INITIAL_GAME_STATE.storyProgress,
+    defeatedRival: typeof saveData.defeatedRival === 'boolean' ? saveData.defeatedRival : INITIAL_GAME_STATE.defeatedRival,
+    achievements: Array.isArray(saveData.achievements) ? saveData.achievements : INITIAL_GAME_STATE.achievements,
+    evolutions: typeof saveData.evolutions === 'number' ? saveData.evolutions : INITIAL_GAME_STATE.evolutions,
+    citiesVisited: Array.isArray(saveData.citiesVisited) ? saveData.citiesVisited : INITIAL_GAME_STATE.citiesVisited,
+  }
+}
+
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
@@ -305,25 +386,7 @@ export default function Game() {
   const [showEvolve, setShowEvolve] = useState(false)
   const [evolvingBestia, setEvolvingBestia] = useState<PartyBestia | null>(null)
 
-  const [gs, setGs] = useState<GameState>({
-    player: { name: 'Federico', x: 7, y: 9, money: 3000, badges: [] },
-    party: [],
-    rival: undefined,
-    pc: [],
-    inv: [
-      { item: ITEMS.pozioncino, qty: 5 },
-      { item: ITEMS.gondolball, qty: 5 },
-      { item: ITEMS.caffette, qty: 3 },
-    ],
-    flags: { hasStarter: false, hasBike: false, hasBoat: false, defeatedRival: false },
-    map: 'canalborgo',
-    vehicle: 'none',
-    storyProgress: 0,
-    defeatedRival: false,
-    achievements: [],
-    evolutions: 0,
-    citiesVisited: [],
-  })
+  const [gs, setGs] = useState<GameState>(INITIAL_GAME_STATE)
 
   const grantVehicle = useCallback((vehicleId: VehicleType) => {
     const vehicleData = VEHICLES[vehicleId]
@@ -402,28 +465,10 @@ export default function Game() {
     try {
       const saved = localStorage.getItem('pokemona_save')
       if (saved) {
-        const saveData = JSON.parse(saved)
-        setGs({
-          player: saveData.player,
-          party: saveData.party,
-          rival: saveData.rival,
-          pc: saveData.pc,
-          inv: saveData.inv.map((i: { item: string | GameItem; qty: number }) => ({
-            item: typeof i.item === 'string'
-              ? ITEMS[i.item] || findItemByName(i.item) || ITEMS.pozioncino
-              : i.item,
-            qty: i.qty
-          })),
-          flags: saveData.flags,
-          map: saveData.map,
-          vehicle: normalizeVehicleId(saveData.vehicle),
-          storyProgress: saveData.storyProgress,
-          defeatedRival: saveData.defeatedRival,
-          achievements: saveData.achievements || [],
-          evolutions: saveData.evolutions || 0,
-          citiesVisited: saveData.citiesVisited || [],
-        })
-        setAchievements(saveData.achievements || [])
+        const saveData = JSON.parse(saved) as PartialSaveData
+        const hydratedSave = hydrateSaveData(saveData)
+        setGs(hydratedSave)
+        setAchievements(hydratedSave.achievements || [])
         setNotification('Partita caricata!')
         return true
       }
@@ -467,24 +512,10 @@ export default function Game() {
     const saved = localStorage.getItem('pokemona_save')
     if (saved) {
       try {
-        const saveData = JSON.parse(saved)
-        setGs({
-          player: saveData.player,
-          party: saveData.party,
-          rival: saveData.rival,
-          pc: saveData.pc,
-          inv: saveData.inv.map((i: { item: string | GameItem; qty: number }) => ({
-            item: typeof i.item === 'string'
-              ? ITEMS[i.item] || findItemByName(i.item) || ITEMS.pozioncino
-              : i.item,
-            qty: i.qty
-          })),
-          flags: saveData.flags,
-          map: saveData.map,
-          vehicle: normalizeVehicleId(saveData.vehicle),
-          storyProgress: saveData.storyProgress,
-          defeatedRival: saveData.defeatedRival,
-        })
+        const saveData = JSON.parse(saved) as PartialSaveData
+        const hydratedSave = hydrateSaveData(saveData)
+        setGs(hydratedSave)
+        setAchievements(hydratedSave.achievements || [])
       } catch (e) {
         console.error('Auto-load failed:', e)
       }
