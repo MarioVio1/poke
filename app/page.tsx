@@ -67,6 +67,13 @@ interface BattleState {
   trainerName?: string
 }
 
+interface StoryIntroScene {
+  speaker: string
+  title: string
+  text: string
+  accent: string
+}
+
 // Intro animation frames
 const INTRO_FRAMES = [
   { text: '★ POKEMONA ★', subtext: 'Besti di Venetia', delay: 2000 },
@@ -85,6 +92,27 @@ const getTitleParticleStyle = (index: number) => ({
   left: `${(index * 11 + 7) % 100}%`,
   animationDelay: `${(index % 6) * 0.4}s`,
 })
+
+const OPENING_STORY: StoryIntroScene[] = [
+  {
+    speaker: 'Prof. GheSboro',
+    title: 'Benvenuto a Venetia',
+    text: 'Questa e una terra di canali, colline, lagune e Besti strani. Ogni citta ha le sue abitudini, le sue palestre e le sue leggende.',
+    accent: '#4f8cff',
+  },
+  {
+    speaker: 'Prof. GheSboro',
+    title: 'I Besti di Venetia',
+    text: 'Alcuni nascono tra i campi, altri nei canali, altri ancora tra nebbia, neve e spritz. Per capirli serve curiosita, coraggio e un buon compagno.',
+    accent: '#68c16f',
+  },
+  {
+    speaker: 'Mamma',
+    title: 'Sveglia, Federico',
+    text: 'Il Dottor GheSboro ti aspetta. Muoviti, vestite e va in laboratorio: oggi scegli il tuo primo Besti e inizi davvero il viaggio.',
+    accent: '#f28cae',
+  },
+]
 
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -109,6 +137,8 @@ export default function Game() {
   const [showIntro, setShowIntro] = useState(true)
   const [introFrame, setIntroFrame] = useState(0)
   const [showIntroText, setShowIntroText] = useState(false)
+  const [showStoryIntro, setShowStoryIntro] = useState(false)
+  const [storyIntroStep, setStoryIntroStep] = useState(0)
   
   // Battle states
   const [battleState, setBattleState] = useState<BattleState | null>(null)
@@ -279,28 +309,12 @@ export default function Game() {
     })
     setAchievements([])
     setShowIntro(false)
+    setStoryIntroStep(0)
+    setShowStoryIntro(true)
     setShowStarterChoice(false)
     setShowOverlay(false)
     setInMenu(false)
     setGameStarted(true)
-    setDialogs([
-      'Benvenuto nel mondo dei Besti di Venetia!',
-      'Io sono il Prof. GheSboro.',
-      'Qui ogni citta ha i suoi Besti, le sue ciacole e le sue palestre.',
-      'Ma prima di partire... svegliate dal letto, fiolo.',
-    ])
-    setSpeaker('Prof. GheSboro')
-    setDialogCallback(() => {
-      setDialogs([
-        'Federico! In piedi subito!',
-        'Oggi vai dal Dottor GheSboro a scegliere il tuo primo Besti.',
-        'Se resti ancora sotto le coperte, te svejo con la scopa, ostrega!',
-      ])
-      setSpeaker('Mamma')
-      setDialogCallback(null)
-      setInDialog(true)
-    })
-    setInDialog(true)
   }, [])
 
   const startSavedGame = useCallback(() => {
@@ -321,6 +335,24 @@ export default function Game() {
     localStorage.removeItem('pokemona_save')
     setNotification('Salvataggio eliminato!')
   }, [])
+
+  const advanceStoryIntro = useCallback(() => {
+    const nextStep = storyIntroStep + 1
+    if (nextStep >= OPENING_STORY.length) {
+      setShowStoryIntro(false)
+      setDialogs([
+        'Federico! In piedi subito!',
+        'Il Dottor GheSboro ti aspetta al laboratorio.',
+        'E porta rispetto, che no semo in vacanza!',
+      ])
+      setSpeaker('Mamma')
+      setDialogCallback(null)
+      setInDialog(true)
+      return
+    }
+    setStoryIntroStep(nextStep)
+    soundManager.dialogText()
+  }, [storyIntroStep])
 
   // Auto-load on mount
   useEffect(() => {
@@ -1630,6 +1662,10 @@ export default function Game() {
   // Handle A button
   const handleA = () => {
     soundManager.buttonPress()
+    if (showStoryIntro) {
+      advanceStoryIntro()
+      return
+    }
     if (inDialog) {
       advanceDialog()
       return
@@ -1648,6 +1684,7 @@ export default function Game() {
   // Handle B button
   const handleB = () => {
     soundManager.menuBack()
+    if (showStoryIntro) return
     if (inDialog) {
       setInDialog(false)
       setDialogs([])
@@ -1674,13 +1711,13 @@ export default function Game() {
   }, [gameStarted, inBattle, inDialog, inShop, draw])
 
   useEffect(() => {
-    if (!gameStarted) return
+    if (!gameStarted || showStoryIntro) return
     checkEvents()
     const map = MAPS[gs.map]
     if (map.wild && map.wild.length && Math.random() * 100 < (map.wildRate || 10)) {
       startWild()
     }
-  }, [gs.player.x, gs.player.y, gs.map, gameStarted])
+  }, [gs.player.x, gs.player.y, gs.map, gameStarted, showStoryIntro])
 
   useEffect(() => {
     if (battleState) {
@@ -1691,21 +1728,21 @@ export default function Game() {
 
   // Day/Night cycle - update every minute
   useEffect(() => {
-    if (!gameStarted) return
+    if (!gameStarted || showStoryIntro) return
     const updateTime = () => setTimeOfDay(getTimeOfDay())
     updateTime()
     const interval = setInterval(updateTime, 60000) // Update every minute
     return () => clearInterval(interval)
-  }, [gameStarted])
+  }, [gameStarted, showStoryIntro])
 
   // Auto-save every 5 minutes
   useEffect(() => {
-    if (!gameStarted) return
+    if (!gameStarted || showStoryIntro) return
     const interval = setInterval(() => {
       if (gs.party.length > 0) saveGame(true)
     }, 300000)
     return () => clearInterval(interval)
-  }, [gameStarted, gs])
+  }, [gameStarted, gs, showStoryIntro])
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -1724,7 +1761,7 @@ export default function Game() {
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [gameStarted, inDialog, move, handleA, handleB, advanceDialog])
+  }, [gameStarted, inDialog, move, handleA, handleB, advanceDialog, showStoryIntro])
 
   return (
     <div className="game-wrapper">
@@ -1811,8 +1848,26 @@ export default function Game() {
                 </div>
               )}
 
+              {gameStarted && showStoryIntro && (
+                <div className="story-intro-screen" onClick={advanceStoryIntro}>
+                  <div className="story-intro-card" style={{ borderColor: OPENING_STORY[storyIntroStep]?.accent }}>
+                    <div className="story-intro-speaker" style={{ color: OPENING_STORY[storyIntroStep]?.accent }}>
+                      {OPENING_STORY[storyIntroStep]?.speaker}
+                    </div>
+                    <div className="story-intro-title">{OPENING_STORY[storyIntroStep]?.title}</div>
+                    <div className="story-intro-visual">
+                      <div className="story-silhouette professor"></div>
+                      <div className="story-silhouette bestia"></div>
+                      <div className="story-silhouette home"></div>
+                    </div>
+                    <div className="story-intro-text">{OPENING_STORY[storyIntroStep]?.text}</div>
+                    <div className="story-intro-hint">Premi A o tocca per continuare</div>
+                  </div>
+                </div>
+              )}
+
               {/* HUD */}
-              {gameStarted && !inBattle && !showIntro && (
+              {gameStarted && !inBattle && !showIntro && !showStoryIntro && (
                 <div className="hud-top">
                   <span className="hud-name">{gs.player.name}</span>
                   <span className="hud-money">₿{gs.player.money}</span>
@@ -1820,14 +1875,14 @@ export default function Game() {
               )}
               
               {/* City Badge */}
-              {gameStarted && !inBattle && !inDialog && !showOverlay && !showIntro && (
+              {gameStarted && !inBattle && !inDialog && !showOverlay && !showIntro && !showStoryIntro && (
                 <div className="city-badge">
                   {MAPS[gs.map]?.name || '???'}
                 </div>
               )}
 
               {/* Time of Day Indicator */}
-              {gameStarted && !inBattle && !inDialog && !showOverlay && !showIntro && (
+              {gameStarted && !inBattle && !inDialog && !showOverlay && !showIntro && !showStoryIntro && (
                 <div className="time-indicator">
                   {timeOfDay === 'morning' && '☀️'}
                   {timeOfDay === 'afternoon' && '🌤️'}
@@ -1837,7 +1892,7 @@ export default function Game() {
               )}
               
               {/* Floor Indicator for Multi-floor Buildings */}
-              {gameStarted && !inBattle && !inDialog && !showIntro && (
+              {gameStarted && !inBattle && !inDialog && !showIntro && !showStoryIntro && (
                 <>
                   {gs.map.includes('_') && (
                     <div className="floor-indicator">
@@ -2358,6 +2413,93 @@ export default function Game() {
           color: #fff;
         }
 
+        .story-intro-screen {
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(circle at 20% 20%, rgba(255,220,160,0.18) 0%, rgba(255,220,160,0) 28%),
+            linear-gradient(180deg, #18385f 0%, #1d5c7d 42%, #8ccf86 42%, #78b96f 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 90;
+          padding: 18px;
+        }
+
+        .story-intro-card {
+          width: min(100%, 480px);
+          min-height: 260px;
+          background: rgba(247,246,238,0.97);
+          border: 4px solid #4f8cff;
+          border-radius: 18px;
+          box-shadow: 0 10px 0 rgba(0,0,0,0.2);
+          padding: 18px 18px 14px;
+          display: grid;
+          gap: 10px;
+        }
+
+        .story-intro-speaker {
+          font-size: 8px;
+          letter-spacing: 1px;
+        }
+
+        .story-intro-title {
+          font-size: 16px;
+          color: #1f2e4f;
+          line-height: 1.2;
+        }
+
+        .story-intro-visual {
+          height: 88px;
+          border-radius: 12px;
+          background: linear-gradient(180deg, #98d8ec 0%, #c5f1eb 56%, #87c96f 56%, #6ab45a 100%);
+          position: relative;
+          overflow: hidden;
+          border: 3px solid #20324a;
+        }
+
+        .story-silhouette {
+          position: absolute;
+          bottom: 0;
+        }
+
+        .story-silhouette.professor {
+          left: 18px;
+          width: 34px;
+          height: 62px;
+          background: linear-gradient(180deg, #f2f2f2 0%, #d8d8d8 100%);
+          clip-path: polygon(30% 0%, 70% 0%, 86% 16%, 84% 46%, 100% 100%, 0% 100%, 16% 46%, 14% 16%);
+        }
+
+        .story-silhouette.bestia {
+          left: 96px;
+          width: 54px;
+          height: 54px;
+          background: linear-gradient(180deg, #ffca57 0%, #f28b2f 100%);
+          clip-path: polygon(50% 0%, 74% 14%, 100% 58%, 82% 100%, 18% 100%, 0% 58%, 26% 14%);
+        }
+
+        .story-silhouette.home {
+          right: 16px;
+          width: 92px;
+          height: 58px;
+          background: #d9dee7;
+          border-top: 20px solid #d56c52;
+          box-shadow: inset 0 -10px 0 #acb7ca;
+        }
+
+        .story-intro-text {
+          font-size: 10px;
+          line-height: 1.65;
+          color: #1d1d1d;
+        }
+
+        .story-intro-hint {
+          font-size: 7px;
+          text-align: right;
+          color: #526179;
+        }
+
         .title-screen {
           position: absolute;
           inset: 0;
@@ -2369,7 +2511,8 @@ export default function Game() {
           align-items: center;
           justify-content: center;
           color: white;
-          overflow: hidden;
+          overflow: auto;
+          padding: 10px;
         }
 
         .title-particles {
@@ -2395,65 +2538,68 @@ export default function Game() {
         .title-frame {
           position: relative;
           z-index: 1;
-          width: min(560px, 86%);
+          width: min(440px, 92%);
+          max-height: 100%;
           display: grid;
-          gap: 18px;
+          grid-template-rows: auto 1fr auto;
+          gap: 10px;
           justify-items: center;
+          align-items: start;
         }
 
         .firered-brand {
           width: 100%;
-          padding: 16px 18px 12px;
+          padding: 10px 12px 8px;
           border: 4px solid #1b1b1b;
-          border-radius: 18px;
+          border-radius: 14px;
           background: linear-gradient(180deg, rgba(24,50,89,0.95) 0%, rgba(15,25,53,0.94) 100%);
-          box-shadow: 0 12px 0 rgba(16,24,42,0.45);
+          box-shadow: 0 6px 0 rgba(16,24,42,0.45);
           text-align: center;
         }
 
         .firered-brand-top {
-          font-size: 8px;
+          font-size: 6px;
           color: #ffdd77;
-          margin-bottom: 8px;
+          margin-bottom: 4px;
           letter-spacing: 1px;
         }
 
         .title-logo {
-          font-size: clamp(24px, 4vw, 40px);
+          font-size: clamp(18px, 6vw, 28px);
           color: #ffe082;
           text-shadow: 2px 2px 0 #7a3212, 5px 5px 0 #3c1c12;
           line-height: 1.05;
         }
 
         .title-subtitle {
-          font-size: 8px;
-          margin-top: 10px;
+          font-size: 6px;
+          margin-top: 6px;
           color: #d5f7ff;
         }
 
         .title-hero {
           width: 100%;
-          min-height: 140px;
+          min-height: 92px;
           display: grid;
           grid-template-columns: 1fr auto 1fr;
           align-items: end;
           justify-items: center;
-          padding: 0 18px;
+          padding: 0 8px;
         }
 
         .title-hero-main {
-          width: 120px;
-          height: 120px;
+          width: 78px;
+          height: 78px;
           grid-column: 2;
-          filter: drop-shadow(0 10px 0 rgba(0,0,0,0.25));
+          filter: drop-shadow(0 6px 0 rgba(0,0,0,0.25));
           animation: titleFloat 2.4s ease-in-out infinite;
         }
 
         .title-hero-side {
-          width: 76px;
-          height: 76px;
+          width: 48px;
+          height: 48px;
           opacity: 0.95;
-          filter: drop-shadow(0 8px 0 rgba(0,0,0,0.22));
+          filter: drop-shadow(0 5px 0 rgba(0,0,0,0.22));
           animation: titleFloat 2.8s ease-in-out infinite;
         }
 
@@ -2468,24 +2614,24 @@ export default function Game() {
 
         .title-menu-card {
           width: 100%;
-          padding: 14px;
+          padding: 10px;
           border: 4px solid #1b1b1b;
-          border-radius: 14px;
+          border-radius: 12px;
           background: rgba(250,250,242,0.96);
           display: grid;
-          gap: 10px;
-          box-shadow: 0 10px 0 rgba(28,28,28,0.2);
+          gap: 8px;
+          box-shadow: 0 6px 0 rgba(28,28,28,0.2);
         }
 
         .start-btn-large {
           width: 100%;
-          padding: 12px 16px;
+          padding: 9px 12px;
           background: linear-gradient(180deg, #f0f4ff, #c7d7ff);
           border: 3px solid #19243f;
           border-radius: 10px;
           color: #162241;
           font-family: inherit;
-          font-size: 9px;
+          font-size: 7px;
           text-align: left;
           cursor: pointer;
           box-shadow: 0 4px 0 rgba(25,36,63,0.32);
@@ -2515,14 +2661,14 @@ export default function Game() {
         }
 
         .title-save-info {
-          min-height: 28px;
-          padding: 8px 10px;
+          min-height: 24px;
+          padding: 6px 8px;
           border-radius: 8px;
           background: #dde7d8;
           border: 2px solid #52614b;
-          font-size: 7px;
+          font-size: 6px;
           color: #243120;
-          line-height: 1.6;
+          line-height: 1.45;
         }
 
         .hud-top {

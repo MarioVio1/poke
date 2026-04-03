@@ -167,6 +167,17 @@ export const renderTile = (
     ctx.fillRect(x + 7, y, 1, size)
     ctx.fillRect(x, y + 7, size, 1)
   }
+
+  if (tile.type === 'building') {
+    // Outdoor building facade / roof hint
+    ctx.fillStyle = '#9f7d58'
+    ctx.fillRect(x, y, size, 3)
+    ctx.fillStyle = '#cbb08b'
+    ctx.fillRect(x + 2, y + 4, size - 4, size - 6)
+    ctx.fillStyle = '#6d5741'
+    ctx.fillRect(x + 4, y + 6, 4, 6)
+    ctx.fillRect(x + 9, y + 6, 4, 6)
+  }
   
   if (tile.type === 'floor' || tile.type === 'carpet') {
     // GBA floor diagonals
@@ -188,6 +199,15 @@ export const renderTile = (
     gradient.addColorStop(1, 'rgba(129,199,132,0)')
     ctx.fillStyle = gradient
     ctx.fillRect(x, y, size, size)
+  }
+
+  if (tile.type === 'counter') {
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(x, y, size, 3)
+    ctx.fillStyle = '#a39ab4'
+    ctx.fillRect(x, y + 3, size, size - 3)
+    ctx.fillStyle = '#6d6480'
+    ctx.fillRect(x, y + size - 2, size, 2)
   }
   
   if (tile.type === 'tree') {
