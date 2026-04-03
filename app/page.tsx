@@ -236,7 +236,6 @@ const OPENING_STORY: StoryIntroScene[] = [
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const lastVirtualPressRef = useRef<Record<string, number>>({})
-  const activeVirtualControlRef = useRef<VirtualControl | null>(null)
 
   const normalizePlayer = useCallback((player: Partial<GameState['player']> | undefined): GameState['player'] => ({
     name: player?.name || 'Federico',
@@ -986,8 +985,8 @@ export default function Game() {
     }
   }, [gs])
 
-  // Check for events at current position
-  const checkEvents = useCallback(() => {
+  // Automatic tile events only
+  const checkAutoEvents = useCallback(() => {
     const map = MAPS[gs.map]
     
     // Item pickup
@@ -1010,15 +1009,25 @@ export default function Game() {
       }
     }
 
-    // Event interaction
+    const ev = map.events?.find((e: MapEvent) => {
+      if (e.type === 'warp' || e.type === 'heal' || e.type === 'shop') {
+        if (typeof e.x !== 'number' || typeof e.y !== 'number') return false
+        return e.x === gs.player.x && e.y === gs.player.y
+      }
+      return false
+    })
+
+    if (ev) handleEvent(ev)
+  }, [gs, handleEvent])
+
+  // Manual interaction with A button
+  const checkInteractionEvents = useCallback(() => {
+    const map = MAPS[gs.map]
+
     const ev = map.events?.find((e: MapEvent) => {
       if (e.type === 'npc' || e.type === 'trainer' || e.type === 'gym' || e.type === 'sign') {
         if (typeof e.x !== 'number' || typeof e.y !== 'number') return false
         return Math.abs(e.x - gs.player.x) + Math.abs(e.y - gs.player.y) <= 1
-      }
-      if (e.type === 'warp' || e.type === 'heal' || e.type === 'shop') {
-        if (typeof e.x !== 'number' || typeof e.y !== 'number') return false
-        return e.x === gs.player.x && e.y === gs.player.y
       }
       return false
     })
@@ -2041,7 +2050,7 @@ export default function Game() {
           return
         }
         if (control === 'a') {
-          checkEvents()
+          checkInteractionEvents()
           return
         }
         if (control === 'start') {
@@ -2053,7 +2062,7 @@ export default function Game() {
         }
         return
     }
-  }, [advanceDialog, advanceStoryIntro, checkEvents, confirmNewGameSetup, cycleSetupIdentity, getControlMode, hasSave, menuSelection, move, runMenuAction, showObjectiveHint, skipIntro, startNewGame, startSavedGame, titleSelection, toggleMenu])
+  }, [advanceDialog, advanceStoryIntro, checkInteractionEvents, confirmNewGameSetup, cycleSetupIdentity, getControlMode, hasSave, menuSelection, move, runMenuAction, showObjectiveHint, skipIntro, startNewGame, startSavedGame, titleSelection, toggleMenu])
 
   const handleA = useCallback(() => {
     handleControlAction('a')
@@ -2078,48 +2087,16 @@ export default function Game() {
   const handleVirtualPress = useCallback((control: VirtualControl) => {
     const now = Date.now()
     const last = lastVirtualPressRef.current[control] || 0
-    if (now - last < 220) return
+    if (now - last < 120) return
     lastVirtualPressRef.current[control] = now
     handleControlAction(control)
   }, [handleControlAction])
 
   const bindVirtualControl = useCallback((control: VirtualControl) => ({
-    onPointerDown: (e: React.PointerEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      e.stopPropagation()
-      if (activeVirtualControlRef.current === control) return
-      activeVirtualControlRef.current = control
-      e.currentTarget.setPointerCapture?.(e.pointerId)
-      handleVirtualPress(control)
-    },
-    onPointerUp: (e: React.PointerEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      e.stopPropagation()
-      if (activeVirtualControlRef.current === control) {
-        activeVirtualControlRef.current = null
-      }
-      if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
-        e.currentTarget.releasePointerCapture(e.pointerId)
-      }
-    },
-    onPointerCancel: (e: React.PointerEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      e.stopPropagation()
-      if (activeVirtualControlRef.current === control) {
-        activeVirtualControlRef.current = null
-      }
-      if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
-        e.currentTarget.releasePointerCapture(e.pointerId)
-      }
-    },
-    onPointerLeave: () => {
-      if (activeVirtualControlRef.current === control) {
-        activeVirtualControlRef.current = null
-      }
-    },
     onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
       e.stopPropagation()
+      handleVirtualPress(control)
     },
     onContextMenu: (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
@@ -2137,12 +2114,12 @@ export default function Game() {
 
   useEffect(() => {
     if (!gameStarted || showStoryIntro) return
-    checkEvents()
+    checkAutoEvents()
     const map = MAPS[gs.map]
     if (map.wild && map.wild.length && Math.random() * 100 < (map.wildRate || 10)) {
       startWild()
     }
-  }, [gs.player.x, gs.player.y, gs.map, gameStarted, showStoryIntro])
+  }, [checkAutoEvents, gameStarted, gs.map, gs.player.x, gs.player.y, showStoryIntro, startWild])
 
   useEffect(() => {
     if (battleState) {
@@ -4335,6 +4312,7 @@ export default function Game() {
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
           box-shadow: 0 4px 0 #181818;
+          outline: none;
         }
 
         .dpad-btn:active, .dpad-btn.pressed {
@@ -4398,6 +4376,7 @@ export default function Game() {
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
           box-shadow: 0 6px 0 #141414, inset 0 2px 0 rgba(255,255,255,0.35);
+          outline: none;
         }
 
         #btn-a {
@@ -4456,6 +4435,7 @@ export default function Game() {
           border-radius: 999px;
           cursor: pointer;
           transform: rotate(-10deg);
+          outline: none;
         }
 
         .start-btn::after,
