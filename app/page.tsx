@@ -2245,7 +2245,7 @@ function GameScreen() {
   return (
     <div className="game-wrapper">
       <div className="gba-console">
-        {/* TOP SCREEN */}
+        {/* TOP SCREEN - Game Area */}
         <div className="top-screen">
           <div className="screen-bezel">
             <div className={`game-container top ${gs.map.includes('canalborgo') || gs.map === 'casa' ? 'city-canalborgo' : gs.map.includes('spritzia') ? 'city-spritzia' : gs.map.includes('veronara') ? 'city-veronara' : gs.map.includes('padoana') ? 'city-padoana' : gs.map.includes('trevisella') ? 'city-trevisella' : gs.map.includes('dolomax') ? 'city-dolomax' : gs.map.includes('gardalago') ? 'city-gardalago' : ''}`}>
@@ -2658,8 +2658,9 @@ function GameScreen() {
                 </div>
               </div>
 
-              {/* Controls */}
-              <div className="controls-area">
+              {/* Controls - Bottom Area */}
+              <div className="bottom-controls">
+                <div className="controls-area">
                 <div className="controls-left">
                   {/* D-Pad with MOBILE support */}
                   <div className="dpad-container">
@@ -2728,6 +2729,12 @@ function GameScreen() {
       {/* CSS Styles */}
       <style jsx global>{`
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { 
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          touch-action: none;
+        }
         body { 
           background:
             radial-gradient(circle at top, rgba(78, 116, 201, 0.22), transparent 38%),
@@ -2740,60 +2747,103 @@ function GameScreen() {
         }
 
         .game-wrapper {
+          width: 100%;
+          height: 100%;
+          min-height: 100vh;
           display: flex;
-          flex-direction: column;
+          justify-content: center;
           align-items: center;
-          padding: 24px;
+          padding: 0;
         }
 
         .gba-console {
-          width: 320px;
+          position: relative;
+          width: 100%;
+          height: 100%;
+          max-width: 100vw;
+          max-height: 100vh;
           background:
-            radial-gradient(circle at 50% 12%, rgba(255,255,255,0.08), transparent 24%),
-            linear-gradient(180deg, #2f3137 0%, #212226 55%, #17181c 100%);
-          border-radius: 30px 30px 34px 34px;
-          padding: 18px 18px 22px;
-          border: 1px solid rgba(255,255,255,0.08);
-          box-shadow: 
-            0 24px 55px rgba(0,0,0,0.45),
-            inset 0 2px 0 rgba(255,255,255,0.08),
-            inset 0 -8px 14px rgba(0,0,0,0.35);
+            radial-gradient(circle at 50% 6%, rgba(255,255,255,0.12) 0%, transparent 18%),
+            linear-gradient(180deg, #3a3c42 0%, #2a2c32 50%, #1a1c22 100%);
+          border-radius: 0;
+          padding: clamp(6px, 1.5vw, 14px);
+          border: none;
+          box-shadow: none;
+          display: flex;
+          flex-direction: column;
+          gap: clamp(4px, 1vw, 10px);
         }
 
-        .top-screen, .bottom-screen {
-          margin-bottom: 12px;
+        .gba-console::before {
+          content: 'POKEMONA - BESTI DI VENETIA';
+          position: absolute;
+          top: 2px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: clamp(4px, 1vw, 7px);
+          letter-spacing: 0.2em;
+          color: rgba(255,255,255,0.12);
         }
 
-        .screen-bezel {
-          background: linear-gradient(180deg, #0a0a0b 0%, #181818 100%);
-          border-radius: 14px;
-          padding: 8px;
-          box-shadow:
-            inset 0 0 24px rgba(0,0,0,0.9),
-            0 1px 0 rgba(255,255,255,0.06);
+        .top-screen {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 0;
           position: relative;
         }
 
-        .screen-bezel::before {
-          content: 'DOT MATRIX WITH STEREO SOUND';
+        .screen-bezel {
+          width: 100%;
+          height: 100%;
+          max-width: calc(100% - 8px);
+          max-height: calc(100% - 8px);
+          aspect-ratio: 3 / 2;
+          margin: auto;
+          background: linear-gradient(180deg, #060608 0%, #0e0e12 100%);
+          border-radius: 6px;
+          padding: clamp(3px, 1vw, 6px);
+          box-shadow:
+            inset 0 0 16px rgba(0,0,0,0.95),
+            0 1px 0 rgba(255,255,255,0.05);
+          position: relative;
+        }
+
+        .screen-bezel::after {
+          content: '';
           position: absolute;
-          top: -10px;
-          left: 12px;
-          font-size: 5px;
-          letter-spacing: 0.12em;
-          color: rgba(255,255,255,0.22);
+          inset: 0;
+          background: repeating-linear-gradient(
+            0deg,
+            rgba(0,0,0,0.03) 0px,
+            rgba(0,0,0,0.03) 1px,
+            transparent 1px,
+            transparent 2px
+          );
+          pointer-events: none;
+          border-radius: 4px;
         }
 
         .game-container {
           position: relative;
-          width: 240px;
-          height: 160px;
+          width: 100%;
+          height: 100%;
           background: #000;
-          border-radius: 6px;
+          border-radius: 3px;
           overflow: hidden;
           box-shadow:
-            inset 0 0 0 2px rgba(73, 100, 62, 0.35),
-            inset 0 0 24px rgba(0,0,0,0.25);
+            inset 0 0 0 1px rgba(73, 100, 62, 0.3),
+            inset 0 0 16px rgba(0,0,0,0.2);
+        }
+
+        /* Bottom Controls Area */
+        .bottom-controls {
+          flex: 0 0 auto;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: clamp(2px, 0.8vw, 6px) 0;
         }
 
         .game-canvas {
@@ -4074,13 +4124,13 @@ function GameScreen() {
 
         .controls-area {
           display: grid;
-          grid-template-columns: 1fr 72px 1fr;
+          grid-template-columns: 1fr auto 1fr;
           align-items: end;
           justify-items: center;
-          gap: 8px;
+          gap: clamp(4px, 2vw, 12px);
           width: 100%;
-          min-height: 118px;
-          padding: 2px 4px 0;
+          flex: 0 0 auto;
+          padding: clamp(2px, 1vw, 4px) clamp(2px, 1vw, 0) 0;
         }
 
         .controls-left,
@@ -4088,12 +4138,12 @@ function GameScreen() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 8px;
+          gap: clamp(4px, 2vw, 10px);
           width: 100%;
         }
 
         .control-caption {
-          font-size: 6px;
+          font-size: clamp(4px, 1.5vw, 7px);
           color: #8d93a1;
           letter-spacing: 0.2em;
         }
@@ -4104,8 +4154,8 @@ function GameScreen() {
 
         .dpad-container {
           position: relative;
-          width: 86px;
-          height: 86px;
+          width: clamp(60px, 20vw, 90px);
+          height: clamp(60px, 20vw, 90px);
           touch-action: none;
         }
 
@@ -4117,13 +4167,13 @@ function GameScreen() {
 
         .dpad-btn {
           position: absolute;
-          width: 30px;
-          height: 30px;
+          width: clamp(20px, 7vw, 32px);
+          height: clamp(20px, 7vw, 32px);
           background: linear-gradient(180deg, #5b5e66 0%, #34363c 100%);
           border: 1px solid #1b1d21;
           border-radius: 6px;
           color: white;
-          font-size: 13px;
+          font-size: clamp(8px, 3vw, 14px);
           cursor: pointer;
           display: flex;
           align-items: center;
@@ -4185,12 +4235,12 @@ function GameScreen() {
 
         .action-btn {
           position: absolute;
-          width: 42px;
-          height: 42px;
+          width: clamp(32px, 12vw, 48px);
+          height: clamp(32px, 12vw, 48px);
           border-radius: 50%;
           border: 2px solid rgba(0,0,0,0.35);
           font-family: 'Press Start 2P', monospace;
-          font-size: 12px;
+          font-size: clamp(8px, 3vw, 13px);
           cursor: pointer;
           user-select: none;
           -webkit-user-select: none;
@@ -4293,46 +4343,33 @@ function GameScreen() {
           z-index: 5;
         }
 
-        /* Responsive GameBoy */
+        /* Responsive - Fluid scaling */
         @media (max-width: 400px) {
           .gba-console {
-            width: 304px;
-            transform: scale(0.96);
-            transform-origin: top center;
-            padding: 14px 14px 18px;
-          }
-          
-          .game-wrapper {
-            padding: 5px;
-          }
-          
-          .dpad-container {
-            width: 100px !important;
-            height: 100px !important;
+            border-radius: 16px 16px 18px 18px;
           }
           
           .dpad-btn {
-            width: 36px !important;
-            height: 36px !important;
-            font-size: 16px !important;
+            width: clamp(24px, 8vw, 36px) !important;
+            height: clamp(24px, 8vw, 36px) !important;
+            font-size: clamp(10px, 3vw, 14px) !important;
+          }
+          
+          .dpad-container {
+            width: clamp(70px, 25vw, 100px) !important;
+            height: clamp(70px, 25vw, 100px) !important;
           }
           
           .action-btn {
-            width: 42px !important;
-            height: 42px !important;
-            font-size: 13px !important;
-          }
-
-          .controls-area {
-            grid-template-columns: 1fr 60px 1fr;
-            min-height: 112px;
+            width: clamp(36px, 12vw, 48px) !important;
+            height: clamp(36px, 12vw, 48px) !important;
+            font-size: clamp(11px, 3vw, 14px) !important;
           }
         }
 
-        @media (min-width: 800px) {
+        @media (min-width: 600px) {
           .gba-console {
-            transform: scale(1.08);
-            transform-origin: top center;
+            max-width: 560px;
           }
         }
         
