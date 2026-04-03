@@ -75,6 +75,17 @@ const INTRO_FRAMES = [
   { text: 'La tua avventura inizia ora!', subtext: '', delay: 2000 },
 ]
 
+const getIntroStarStyle = (index: number) => ({
+  left: `${(index * 17 + 9) % 100}%`,
+  top: `${(index * 29 + 11) % 100}%`,
+  animationDelay: `${(index % 5) * 0.35}s`,
+})
+
+const getTitleParticleStyle = (index: number) => ({
+  left: `${(index * 11 + 7) % 100}%`,
+  animationDelay: `${(index % 6) * 0.4}s`,
+})
+
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
@@ -222,11 +233,13 @@ export default function Game() {
   }, [])
 
   const hasSave = useCallback(() => {
+    if (typeof window === 'undefined') return false
     return localStorage.getItem('pokemona_save') !== null
   }, [])
 
   const getSaveInfo = useCallback(() => {
     try {
+      if (typeof window === 'undefined') return null
       const saved = localStorage.getItem('pokemona_save')
       if (saved) {
         const saveData = JSON.parse(saved)
@@ -243,6 +256,66 @@ export default function Game() {
     }
     return null
   }, [])
+
+  const startNewGame = useCallback(() => {
+    setGs({
+      player: { name: 'Federico', x: 4, y: 4, money: 3000, badges: [] },
+      party: [],
+      rival: undefined,
+      pc: [],
+      inv: [
+        { item: ITEMS.pozioncino, qty: 5 },
+        { item: ITEMS.gondolball, qty: 5 },
+        { item: ITEMS.caffe, qty: 3 },
+      ],
+      flags: { hasStarter: false, hasBike: false, hasBoat: false, defeatedRival: false },
+      map: 'casa',
+      vehicle: 'none',
+      storyProgress: 0,
+      defeatedRival: false,
+      achievements: [],
+      evolutions: 0,
+      citiesVisited: [],
+    })
+    setAchievements([])
+    setShowIntro(false)
+    setShowStarterChoice(false)
+    setShowOverlay(false)
+    setInMenu(false)
+    setGameStarted(true)
+    setDialogs([
+      'Benvenuto nel mondo dei Besti di Venetia!',
+      'Io sono il Prof. GheSboro.',
+      'Qui ogni citta ha i suoi Besti, le sue ciacole e le sue palestre.',
+      'Ma prima di partire... svegliate dal letto, fiolo.',
+    ])
+    setSpeaker('Prof. GheSboro')
+    setDialogCallback(() => {
+      setDialogs([
+        'Federico! In piedi subito!',
+        'Oggi vai dal Dottor GheSboro a scegliere il tuo primo Besti.',
+        'Se resti ancora sotto le coperte, te svejo con la scopa, ostrega!',
+      ])
+      setSpeaker('Mamma')
+      setDialogCallback(null)
+      setInDialog(true)
+    })
+    setInDialog(true)
+  }, [])
+
+  const startSavedGame = useCallback(() => {
+    if (!hasSave()) {
+      setNotification('Nessun salvataggio trovato.')
+      return
+    }
+    if (loadGame()) {
+      setShowIntro(false)
+      setShowStarterChoice(false)
+      setGameStarted(true)
+      setInDialog(false)
+      setShowOverlay(false)
+    }
+  }, [hasSave, loadGame])
 
   const deleteSave = useCallback(() => {
     localStorage.removeItem('pokemona_save')
@@ -283,7 +356,6 @@ export default function Game() {
     const frame = INTRO_FRAMES[introFrame]
     if (!frame) {
       setShowIntro(false)
-      setGameStarted(true)
       return
     }
     
@@ -306,7 +378,6 @@ export default function Game() {
   // Skip intro
   const skipIntro = () => {
     setShowIntro(false)
-    setGameStarted(true)
   }
 
   // Create a Bestia with stats (including legendary starters)
@@ -447,25 +518,26 @@ export default function Game() {
         const ey = (e.y - sy) * TILE
         
         if (e.type === 'trainer' || e.type === 'gym' || e.type === 'npc') {
-          // NPC with shadow
           ctx.fillStyle = 'rgba(0,0,0,0.3)'
           ctx.beginPath()
-          ctx.ellipse(ex + 8, ey + 14, 6, 3, 0, 0, Math.PI * 2)
+          ctx.ellipse(ex + 8, ey + 13, 5, 3, 0, 0, Math.PI * 2)
           ctx.fill()
-          
-          // Body
-          ctx.fillStyle = e.isEnemy ? '#8B0000' : e.type === 'gym' ? '#FFD700' : '#3f51b5'
-          ctx.fillRect(ex + 2, ey + 4, 12, 10)
-          
-          // Head
+
           ctx.fillStyle = '#ffcc80'
-          ctx.beginPath()
-          ctx.arc(ex + 8, ey + 3, 5, 0, Math.PI * 2)
-          ctx.fill()
-          
-          // Hair/hat
-          ctx.fillStyle = e.isEnemy ? '#5d0000' : e.type === 'gym' ? '#b8860b' : '#333'
-          ctx.fillRect(ex + 3, ey - 2, 10, 4)
+          ctx.fillRect(ex + 4, ey + 2, 8, 5)
+
+          ctx.fillStyle = e.isEnemy ? '#5d0000' : e.type === 'gym' ? '#2f2f2f' : '#333'
+          ctx.fillRect(ex + 3, ey + 1, 10, 3)
+
+          ctx.fillStyle = e.isEnemy ? '#d54b4b' : e.type === 'gym' ? '#ffd54f' : '#3f51b5'
+          ctx.fillRect(ex + 4, ey + 7, 8, 5)
+
+          ctx.fillStyle = e.type === 'gym' ? '#4056b7' : '#2947b6'
+          ctx.fillRect(ex + 3, ey + 8, 10, 4)
+
+          ctx.fillStyle = '#1f1f1f'
+          ctx.fillRect(ex + 4, ey + 12, 3, 3)
+          ctx.fillRect(ex + 9, ey + 12, 3, 3)
         }
         
         if (e.type === 'sign') {
@@ -535,29 +607,29 @@ export default function Game() {
     const px = (gs.player.x - sx) * TILE
     const py = (gs.player.y - sy) * TILE
     
-    // Shadow
     ctx.fillStyle = 'rgba(0,0,0,0.3)'
     ctx.beginPath()
-    ctx.ellipse(px + 8, py + 14, 6, 3, 0, 0, Math.PI * 2)
+    ctx.ellipse(px + 8, py + 13, 5, 3, 0, 0, Math.PI * 2)
     ctx.fill()
-    
-    // Body
-    ctx.fillStyle = '#2196f3'
-    ctx.fillRect(px + 4, py + 6 + bobOffset, 8, 8)
-    
-    // Head
+
     ctx.fillStyle = '#ffcc80'
-    ctx.beginPath()
-    ctx.arc(px + 8, py + 5 + bobOffset, 4, 0, Math.PI * 2)
-    ctx.fill()
-    
-    // Hair
+    ctx.fillRect(px + 4, py + 3 + bobOffset, 8, 5)
+
     ctx.fillStyle = '#5d4037'
-    ctx.fillRect(px + 5, py + 1 + bobOffset, 6, 3)
-    
-    // Backpack
-    ctx.fillStyle = '#f44336'
-    ctx.fillRect(px + 2, py + 8 + bobOffset, 3, 5)
+    ctx.fillRect(px + 3, py + 2 + bobOffset, 10, 3)
+
+    ctx.fillStyle = '#4fc3f7'
+    ctx.fillRect(px + 4, py + 8 + bobOffset, 8, 5)
+
+    ctx.fillStyle = '#ef5350'
+    ctx.fillRect(px + 2, py + 8 + bobOffset, 2, 5)
+
+    ctx.fillStyle = '#2947b6'
+    ctx.fillRect(px + 3, py + 8 + bobOffset, 10, 4)
+
+    ctx.fillStyle = '#1f1f1f'
+    ctx.fillRect(px + 4, py + 12 + bobOffset, 3, 3)
+    ctx.fillRect(px + 9, py + 12 + bobOffset, 3, 3)
   }, [gs])
 
   // Move player
@@ -1669,21 +1741,12 @@ export default function Game() {
                       <div 
                         key={i} 
                         className="star" 
-                        style={{
-                          left: `${Math.random() * 100}%`,
-                          top: `${Math.random() * 100}%`,
-                          animationDelay: `${Math.random() * 2}s`
-                        }}
+                        style={getIntroStarStyle(i)}
                       />
                     ))}
                   </div>
                   <div className="intro-content">
-                    <img 
-                      src={BESTI_SVG_SPRITES.serenissima?.front} 
-                      alt="Serenissima"
-                      className="intro-sprite"
-                    />
-{showIntroText && (
+                    {showIntroText && (
                       <>
                         <img 
                           src={getBestiaSprite('serenissima')} 
@@ -1707,44 +1770,42 @@ export default function Game() {
                       <div 
                         key={i} 
                         className="particle"
-                        style={{
-                          left: `${Math.random() * 100}%`,
-                          animationDelay: `${Math.random() * 3}s`
-                        }}
+                        style={getTitleParticleStyle(i)}
                       />
                     ))}
                   </div>
-                  <div className="title-logo">POKEMONA</div>
-                  <div className="title-subtitle">Besti di Venetia</div>
-                  <div className="title-bestia">
-                    <img src={getBestiaSprite('dolomitor')} alt="Dolomitor" className="title-sprite-float pixel-sprite" />
-                    <img src={getBestiaSprite('lagorion')} alt="Lagorion" className="title-sprite-float pixel-sprite" style={{animationDelay: '0.5s'}} />
-                    <img src={getBestiaSprite('serenissima')} alt="Serenissima" className="title-sprite-float pixel-sprite" style={{animationDelay: '1s'}} />
-                    <img src={getBestiaSprite('ombradriz')} alt="OmbraSpritz" className="title-sprite-float pixel-sprite" style={{animationDelay: '1.5s'}} />
+                  <div className="title-frame">
+                    <div className="firered-brand">
+                      <div className="firered-brand-top">POKEMONA VERSIONE</div>
+                      <div className="title-logo">ROSSO SPRITZ</div>
+                      <div className="title-subtitle">Besti di Venetia</div>
+                    </div>
+
+                    <div className="title-hero">
+                      <img src={getBestiaSprite('serenissima')} alt="Serenissima" className="title-hero-main pixel-sprite" />
+                      <img src={getBestiaSprite('lagorion')} alt="Lagorion" className="title-hero-side pixel-sprite" />
+                      <img src={getBestiaSprite('ombradriz')} alt="Ombradriz" className="title-hero-side pixel-sprite" />
+                    </div>
+
+                    <div className="title-menu-card">
+                      <button className="start-btn-large" onClick={startNewGame}>
+                        NUOVA PARTITA
+                      </button>
+                      <button className="start-btn-large secondary" onClick={startSavedGame} disabled={!hasSave()}>
+                        CARICA PARTITA
+                      </button>
+                      <div className="title-save-info">
+                        {hasSave() ? (
+                          <>
+                            <div>{getSaveInfo()?.playerName || 'Allenatore'}</div>
+                            <div>{getSaveInfo()?.map || 'Venetia'} · Lv {getSaveInfo()?.level || 1}</div>
+                          </>
+                        ) : (
+                          <div>Nessun salvataggio disponibile</div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <button className="start-btn-large" onClick={() => {
-                    setGameStarted(true)
-                    // Start intro dialog
-                    setDialogs([
-                      'Buongiorno, tesoro mio!',
-                      'Oggi è il giorno importante!',
-                      'Devi andare dal Professor Barcaro!',
-                    ])
-                    setSpeaker('Mamma')
-                    setDialogCallback(() => {
-                      setDialogs([
-                        'Ah, sei arrivato finalmente!',
-                        'Sono il Prof. Barcaro!',
-                        'Ho 4 Besti leggendari per te!',
-                        'Scegli il tuo compagno!',
-                      ])
-                      setSpeaker('Prof. Barcaro')
-                      setInDialog(true)
-                    })
-                    setInDialog(true)
-                  }}>
-                    NUOVA PARTITA
-                  </button>
                 </div>
               )}
 
@@ -2114,37 +2175,44 @@ export default function Game() {
         }
 
         .game-wrapper {
-          width: min(1100px, 96vw);
+          width: min(1500px, 98vw);
+          min-height: calc(100vh - 32px);
           display: flex;
           flex-direction: column;
           align-items: center;
+          justify-content: center;
         }
 
         .gba-console {
           width: 100%;
+          min-height: calc(100vh - 32px);
+          display: grid;
+          grid-template-rows: minmax(0, 1fr) auto;
+          gap: 20px;
           background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
           border-radius: 26px;
-          padding: 18px;
+          padding: 24px;
           box-shadow: 
             0 10px 40px rgba(0,0,0,0.6),
             inset 0 2px 0 rgba(255,255,255,0.06);
         }
 
         .top-screen, .bottom-screen {
-          margin-bottom: 14px;
           width: 100%;
         }
 
         .screen-bezel {
           background: #111;
           border-radius: 14px;
-          padding: 10px;
+          padding: 14px;
+          height: 100%;
           box-shadow: inset 0 0 24px rgba(0,0,0,0.85);
         }
 
         .game-container {
           position: relative;
           width: 100%;
+          min-height: min(72vh, 860px);
           aspect-ratio: 3 / 2;
           background: #000;
           overflow: hidden;
@@ -2263,7 +2331,9 @@ export default function Game() {
         .title-screen {
           position: absolute;
           inset: 0;
-          background: linear-gradient(180deg, #1e3a5f 0%, #0d1b2a 100%);
+          background:
+            radial-gradient(circle at 50% 18%, rgba(255,239,170,0.35) 0%, rgba(255,239,170,0) 24%),
+            linear-gradient(180deg, #7cc9d3 0%, #b5ece2 32%, #8fd37c 32%, #6db25c 100%);
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -2279,11 +2349,11 @@ export default function Game() {
 
         .particle {
           position: absolute;
-          width: 4px;
-          height: 4px;
-          background: #ffd700;
+          width: 6px;
+          height: 6px;
+          background: rgba(255,255,255,0.55);
           border-radius: 50%;
-          animation: rise 4s infinite;
+          animation: rise 5s infinite;
         }
 
         @keyframes rise {
@@ -2292,58 +2362,137 @@ export default function Game() {
           100% { transform: translateY(-20px) scale(1); opacity: 0; }
         }
 
-        .title-logo {
-          font-size: 24px;
-          color: #ffd700;
-          text-shadow: 2px 2px 0 #b8860b, 4px 4px 0 #8b6914;
-          animation: pulse 2s infinite;
+        .title-frame {
+          position: relative;
           z-index: 1;
+          width: min(560px, 86%);
+          display: grid;
+          gap: 18px;
+          justify-items: center;
+        }
+
+        .firered-brand {
+          width: 100%;
+          padding: 16px 18px 12px;
+          border: 4px solid #1b1b1b;
+          border-radius: 18px;
+          background: linear-gradient(180deg, rgba(24,50,89,0.95) 0%, rgba(15,25,53,0.94) 100%);
+          box-shadow: 0 12px 0 rgba(16,24,42,0.45);
+          text-align: center;
+        }
+
+        .firered-brand-top {
+          font-size: 8px;
+          color: #ffdd77;
+          margin-bottom: 8px;
+          letter-spacing: 1px;
+        }
+
+        .title-logo {
+          font-size: clamp(24px, 4vw, 40px);
+          color: #ffe082;
+          text-shadow: 2px 2px 0 #7a3212, 5px 5px 0 #3c1c12;
+          line-height: 1.05;
         }
 
         .title-subtitle {
           font-size: 8px;
           margin-top: 10px;
-          color: #87ceeb;
-          z-index: 1;
+          color: #d5f7ff;
         }
 
-        .title-bestia {
-          display: flex;
-          gap: 10px;
-          margin-top: 20px;
-          z-index: 1;
+        .title-hero {
+          width: 100%;
+          min-height: 140px;
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
+          align-items: end;
+          justify-items: center;
+          padding: 0 18px;
         }
 
-        .title-sprite-float {
-          width: 40px;
-          height: 40px;
-          animation: titleFloat 2s ease-in-out infinite;
-          filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+        .title-hero-main {
+          width: 120px;
+          height: 120px;
+          grid-column: 2;
+          filter: drop-shadow(0 10px 0 rgba(0,0,0,0.25));
+          animation: titleFloat 2.4s ease-in-out infinite;
+        }
+
+        .title-hero-side {
+          width: 76px;
+          height: 76px;
+          opacity: 0.95;
+          filter: drop-shadow(0 8px 0 rgba(0,0,0,0.22));
+          animation: titleFloat 2.8s ease-in-out infinite;
+        }
+
+        .title-hero-side:last-child {
+          animation-delay: 0.8s;
         }
 
         @keyframes titleFloat {
-          0%, 100% { transform: translateY(0) rotate(-5deg); }
-          50% { transform: translateY(-8px) rotate(5deg); }
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-6px); }
+        }
+
+        .title-menu-card {
+          width: 100%;
+          padding: 14px;
+          border: 4px solid #1b1b1b;
+          border-radius: 14px;
+          background: rgba(250,250,242,0.96);
+          display: grid;
+          gap: 10px;
+          box-shadow: 0 10px 0 rgba(28,28,28,0.2);
         }
 
         .start-btn-large {
-          margin-top: 30px;
-          padding: 10px 20px;
-          background: linear-gradient(180deg, #4caf50, #2e7d32);
-          border: none;
-          border-radius: 5px;
-          color: white;
+          width: 100%;
+          padding: 12px 16px;
+          background: linear-gradient(180deg, #f0f4ff, #c7d7ff);
+          border: 3px solid #19243f;
+          border-radius: 10px;
+          color: #162241;
           font-family: inherit;
-          font-size: 8px;
+          font-size: 9px;
+          text-align: left;
           cursor: pointer;
-          box-shadow: 0 4px 0 #1b5e20;
-          z-index: 1;
-          transition: all 0.2s;
+          box-shadow: 0 4px 0 rgba(25,36,63,0.32);
+          transition: transform 0.15s ease, background 0.15s ease;
         }
 
-        .start-btn-large:hover {
-          background: linear-gradient(180deg, #66bb6a, #4caf50);
-          transform: scale(1.05);
+        .start-btn-large.secondary {
+          background: linear-gradient(180deg, #fff7d4, #ffe18d);
+          color: #5e4300;
+          border-color: #6f4f08;
+          box-shadow: 0 4px 0 rgba(111,79,8,0.3);
+        }
+
+        .start-btn-large:disabled {
+          opacity: 0.55;
+          cursor: default;
+          transform: none;
+        }
+
+        .start-btn-large:hover:not(:disabled) {
+          transform: translateY(-1px);
+          background: linear-gradient(180deg, #ffffff, #dae5ff);
+        }
+
+        .start-btn-large.secondary:hover:not(:disabled) {
+          background: linear-gradient(180deg, #fffbe7, #ffe9a7);
+        }
+
+        .title-save-info {
+          min-height: 28px;
+          padding: 8px 10px;
+          border-radius: 8px;
+          background: #dde7d8;
+          border: 2px solid #52614b;
+          font-size: 7px;
+          color: #243120;
+          line-height: 1.6;
         }
 
         .hud-top {
@@ -2361,33 +2510,35 @@ export default function Game() {
 
         .dialog-box {
           position: absolute;
-          bottom: 5px;
-          left: 5px;
-          right: 5px;
-          background: white;
-          border: 2px solid #333;
-          border-radius: 5px;
-          padding: 8px;
-          min-height: 50px;
+          left: 12px;
+          right: 12px;
+          bottom: 12px;
+          min-height: 86px;
+          background: #f8f8f0;
+          border: 4px solid #1b1b1b;
+          border-radius: 10px;
+          padding: 12px 16px 18px;
           z-index: 20;
+          box-shadow: 0 8px 0 rgba(0,0,0,0.22);
         }
 
         .dialog-speaker {
-          font-size: 7px;
-          color: #1976d2;
-          margin-bottom: 4px;
+          font-size: 8px;
+          color: #304f9c;
+          margin-bottom: 6px;
         }
 
         .dialog-text {
-          font-size: 8px;
-          line-height: 1.4;
+          font-size: 10px;
+          line-height: 1.55;
+          color: #202020;
         }
 
         .dialog-arrow {
           position: absolute;
-          bottom: 5px;
-          right: 5px;
-          font-size: 8px;
+          bottom: 6px;
+          right: 10px;
+          font-size: 10px;
           animation: blink 0.5s infinite;
         }
 
@@ -3136,31 +3287,35 @@ export default function Game() {
 
         /* Bottom Screen */
         .screen-bezel-bottom {
-          background: #0d0d0d;
-          border-radius: 16px;
-          padding: 14px 16px;
+          background: linear-gradient(180deg, #1a1a1a 0%, #101010 100%);
+          border-radius: 18px;
+          padding: 20px 24px;
           box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
 
         .bottom-content {
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
+          grid-template-columns: minmax(210px, 0.9fr) minmax(0, 1.1fr);
+          gap: 24px;
           align-items: center;
           width: 100%;
         }
 
         .info-panel {
-          flex: 1;
-          background: #333;
-          border-radius: 5px;
-          padding: 8px;
+          background: linear-gradient(180deg, #2f2f35 0%, #242429 100%);
+          border-radius: 10px;
+          padding: 14px;
+          min-height: 132px;
           color: white;
+          border: 2px solid #3d3d42;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
         }
 
         .location {
-          font-size: 8px;
-          margin-bottom: 8px;
+          font-size: 10px;
+          margin-bottom: 12px;
         }
 
         .party-preview {
@@ -3187,17 +3342,19 @@ export default function Game() {
 
         .controls-area {
           display: grid;
-          grid-template-columns: 1fr auto 1fr;
+          grid-template-columns: auto 1fr auto;
           align-items: center;
-          gap: 18px;
+          gap: 28px;
           width: 100%;
         }
 
         .dpad-container {
           position: relative;
-          width: 110px;
-          height: 110px;
+          width: 148px;
+          height: 148px;
           touch-action: none;
+          grid-column: 1;
+          justify-self: start;
         }
 
         .dpad {
@@ -3208,13 +3365,13 @@ export default function Game() {
 
         .dpad-btn {
           position: absolute;
-          width: 42px;
-          height: 42px;
-          background: linear-gradient(145deg, #555, #333);
-          border: 2px solid #222;
-          border-radius: 6px;
+          width: 56px;
+          height: 56px;
+          background: linear-gradient(145deg, #5a5a5a, #2d2d2d);
+          border: 3px solid #1b1b1b;
+          border-radius: 10px;
           color: white;
-          font-size: 14px;
+          font-size: 18px;
           cursor: pointer;
           display: flex;
           align-items: center;
@@ -3223,7 +3380,7 @@ export default function Game() {
           -webkit-user-select: none;
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
-          box-shadow: 0 3px 0 #222;
+          box-shadow: 0 4px 0 #181818;
         }
 
         .dpad-btn:active, .dpad-btn.pressed {
@@ -3261,32 +3418,35 @@ export default function Game() {
           top: 50%; 
           left: 50%; 
           transform: translate(-50%, -50%);
-          width: 26px;
-          height: 26px;
-          background: linear-gradient(145deg, #444, #222);
+          width: 34px;
+          height: 34px;
+          background: linear-gradient(145deg, #505050, #242424);
           border-radius: 50%;
-          border: 2px solid #333;
+          border: 3px solid #222;
         }
 
         .action-btns {
           display: flex;
-          gap: 16px;
+          gap: 18px;
+          grid-column: 3;
           justify-content: flex-end;
+          justify-self: end;
+          align-items: center;
         }
 
         .action-btn {
-          width: 60px;
-          height: 60px;
+          width: 78px;
+          height: 78px;
           border-radius: 50%;
-          border: none;
+          border: 4px solid #181818;
           font-family: 'Press Start 2P', monospace;
-          font-size: 18px;
+          font-size: 22px;
           cursor: pointer;
           user-select: none;
           -webkit-user-select: none;
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
-          box-shadow: 0 5px 0 #222, inset 0 2px 0 rgba(255,255,255,0.35);
+          box-shadow: 0 6px 0 #141414, inset 0 2px 0 rgba(255,255,255,0.35);
           transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
 
@@ -3318,18 +3478,21 @@ export default function Game() {
 
         .start-select {
           display: flex;
-          flex-direction: column;
-          gap: 12px;
+          flex-direction: row;
+          gap: 18px;
+          grid-column: 2;
           align-items: center;
+          justify-content: center;
         }
 
         .start-btn, .select-btn {
-          width: 30px;
-          height: 10px;
-          background: #555;
-          border: none;
-          border-radius: 5px;
+          width: 58px;
+          height: 16px;
+          background: linear-gradient(180deg, #767676 0%, #4d4d4d 100%);
+          border: 2px solid #1b1b1b;
+          border-radius: 999px;
           cursor: pointer;
+          transform: rotate(-16deg);
         }
 
         .start-btn:hover, .select-btn:hover {
@@ -3380,38 +3543,58 @@ export default function Game() {
 
         /* Responsive GameBoy */
         @media (max-width: 400px) {
+          body {
+            padding: 8px;
+          }
+
           .gba-console {
-            transform: scale(1);
-            transform-origin: top center;
-            padding: 10px;
+            min-height: auto;
+            padding: 12px;
+            gap: 12px;
           }
           
           .game-wrapper {
-            padding: 5px;
+            width: 100%;
+            min-height: auto;
+          }
+
+          .game-container {
+            min-height: 320px;
+          }
+
+          .bottom-content {
+            grid-template-columns: 1fr;
+            gap: 14px;
+          }
+
+          .controls-area {
+            grid-template-columns: 1fr;
+            justify-items: center;
+            gap: 18px;
+          }
+
+          .dpad-container,
+          .action-btns,
+          .start-select {
+            grid-column: auto;
+            justify-self: center;
           }
           
           .dpad-container {
-            width: 100px !important;
-            height: 100px !important;
+            width: 116px !important;
+            height: 116px !important;
           }
           
           .dpad-btn {
-            width: 36px !important;
-            height: 36px !important;
+            width: 44px !important;
+            height: 44px !important;
             font-size: 16px !important;
           }
           
           .action-btn {
-            width: 45px !important;
-            height: 45px !important;
-            font-size: 14px !important;
-          }
-        }
-
-        @media (min-width: 800px) {
-          .gba-console {
-            transform: scale(1.2);
-            transform-origin: top center;
+            width: 62px !important;
+            height: 62px !important;
+            font-size: 18px !important;
           }
         }
         
