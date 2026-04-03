@@ -117,7 +117,8 @@ export const VEHICLES: Record<string, Vehicle> = {
 }
 
 // Water tiles that require vehicles
-export const WATER_TILES = [2, 20, 21, 22] // regular water, deep water, canal, lagoon
+export const WATER_TILES = [2, 20] // regular water and canals
+export const DEEP_WATER_TILES = [21, 22] // lagoon/deep water reserved for the gondola
 
 // Check if player can move on tile
 export const canMoveOnTile = (
@@ -128,16 +129,15 @@ export const canMoveOnTile = (
   if (tile === 1 || tile === 3) return false
   
   // Water tiles
+  if (DEEP_WATER_TILES.includes(tile)) {
+    return currentVehicle === 'gondola_oro'
+  }
+
   if (WATER_TILES.includes(tile)) {
     if (currentVehicle === 'barchino' || currentVehicle === 'gondola_oro') {
       return true
     }
     return false
-  }
-  
-  // Surf tiles (deep water for gondola)
-  if (tile === 21 || tile === 22) {
-    return currentVehicle === 'gondola_oro'
   }
   
   return true

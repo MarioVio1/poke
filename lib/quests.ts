@@ -276,7 +276,7 @@ export const GAME_CHAPTERS: GameChapter[] = [
       "Diventa CAMPIONE di Venetia!"
     ],
     quests: ["gardalago_intro", "elite_four_challenge", "champion_battle"],
-    unlockedMaps: ["gardalago", "league_champions"],
+    unlockedMaps: ["gardalago", "league_champion"],
     unlockedGyms: ["gym_gardalago"],
     storyDialog: [
       { speaker: "", text: "Benvenuto a GARDALAGO! L'ultima tappa!", emotion: "excited" },
@@ -680,10 +680,10 @@ export const MAIN_QUESTS: Quest[] = [
     description: "Affronta la Elite Four!",
     type: "main",
     chapter: 9,
-    location: "league_champions",
+    location: "league_champion",
     giver: "Gondoliere",
     objectives: [
-      { type: "visit", target: "league_champions", description: "Entra nella Lega" },
+      { type: "visit", target: "league_champion", description: "Entra nella Lega" },
       { type: "defeat", target: "Elite_1", description: "Sconfiggi Elite 1 - Il Fuocoso" },
       { type: "defeat", target: "Elite_2", description: "Sconfiggi Elite 2 - L'Acquoso" },
       { type: "defeat", target: "Elite_3", description: "Sconfiggi Elite 3 - Il Naturale" },
@@ -701,7 +701,7 @@ export const MAIN_QUESTS: Quest[] = [
     description: "Affronta Maestro Marco e diventa Campione!",
     type: "main",
     chapter: 9,
-    location: "league_champions",
+    location: "league_champion",
     giver: "Maestro Marco",
     objectives: [
       { type: "defeat", target: "Maestro Marco", description: "Sconfiggi Maestro Marco" }

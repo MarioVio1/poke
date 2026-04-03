@@ -147,6 +147,24 @@ const hasAllMainBadges = (badges: string[]) => {
   return MAIN_GYM_BADGES.every(badge => normalizedBadges.includes(badge))
 }
 
+const normalizeVehicleId = (value?: string): VehicleType => {
+  switch (value) {
+    case 'bici':
+    case 'biciRubata':
+      return 'biciRubata'
+    case 'barchino':
+      return 'barchino'
+    case 'gondola':
+    case 'gondola_oro':
+      return 'gondola_oro'
+    case 'scooter':
+    case 'scooterino':
+      return 'scooterino'
+    default:
+      return 'none'
+  }
+}
+
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
@@ -244,6 +262,26 @@ export default function Game() {
     setNotification(`Ottenuto: ${vehicleData.name}!`)
   }, [])
 
+  const grantItem = useCallback((itemKey: string) => {
+    const giftedItem =
+      findItemByName(itemKey) ||
+      (itemKey === 'camera' ? ITEMS.foto_souvenir : undefined)
+
+    if (!giftedItem) return
+
+    setGs(prev => {
+      const existing = prev.inv.find(entry => entry.item.id === giftedItem.id)
+
+      return {
+        ...prev,
+        inv: existing
+          ? prev.inv.map(entry => entry.item.id === giftedItem.id ? { ...entry, qty: entry.qty + 1 } : entry)
+          : [...prev.inv, { item: giftedItem, qty: 1 }],
+      }
+    })
+    setNotification(`Ottenuto: ${giftedItem.name}!`)
+  }, [])
+
   // Save/Load System with Auto-Save
   const saveGame = useCallback((autoSave = false) => {
     try {
@@ -285,13 +323,15 @@ export default function Game() {
           party: saveData.party,
           rival: saveData.rival,
           pc: saveData.pc,
-          inv: saveData.inv.map((i: { item: string; qty: number }) => ({
-            item: ITEMS[i.item] || ITEMS.pozioncino,
+          inv: saveData.inv.map((i: { item: string | GameItem; qty: number }) => ({
+            item: typeof i.item === 'string'
+              ? ITEMS[i.item] || findItemByName(i.item) || ITEMS.pozioncino
+              : i.item,
             qty: i.qty
           })),
           flags: saveData.flags,
           map: saveData.map,
-          vehicle: saveData.vehicle,
+          vehicle: normalizeVehicleId(saveData.vehicle),
           storyProgress: saveData.storyProgress,
           defeatedRival: saveData.defeatedRival,
           achievements: saveData.achievements || [],
@@ -348,13 +388,15 @@ export default function Game() {
           party: saveData.party,
           rival: saveData.rival,
           pc: saveData.pc,
-          inv: saveData.inv.map((i: { item: string; qty: number }) => ({
-            item: ITEMS[i.item] || ITEMS.pozioncino,
+          inv: saveData.inv.map((i: { item: string | GameItem; qty: number }) => ({
+            item: typeof i.item === 'string'
+              ? ITEMS[i.item] || findItemByName(i.item) || ITEMS.pozioncino
+              : i.item,
             qty: i.qty
           })),
           flags: saveData.flags,
           map: saveData.map,
-          vehicle: saveData.vehicle,
+          vehicle: normalizeVehicleId(saveData.vehicle),
           storyProgress: saveData.storyProgress,
           defeatedRival: saveData.defeatedRival,
         })
@@ -689,6 +731,7 @@ export default function Game() {
                 grantVehicle(ev.gift as VehicleType)
                 return
               }
+              grantItem(ev.gift)
             }
             if (ev.vehicle && ev.vehicle in VEHICLES) {
               grantVehicle(ev.vehicle as VehicleType)
@@ -749,7 +792,7 @@ export default function Game() {
         startTrainerBattle(ev)
         break
     }
-  }, [gs, grantVehicle])
+  }, [gs, grantItem, grantVehicle])
 
   // Check for events at current position
   const checkEvents = useCallback(() => {
@@ -1120,7 +1163,16 @@ export default function Game() {
         if (['Il Fuocoso', "L'Acquoso", 'Il Naturale', 'Il Magico'].includes(battleState!.trainerName || '')) {
           soundManager.success()
           setBattleMsg(`Hai sconfitto ${battleState!.trainerName}!`)
-          setGs(prev => ({ ...prev, player: { ...prev.player, money: prev.player.money + reward, badges: ['league_pass', ...prev.player.badges] } }))
+          setGs(prev => ({
+            ...prev,
+            player: {
+              ...prev.player,
+              money: prev.player.money + reward,
+              badges: prev.player.badges.includes('league_pass')
+                ? prev.player.badges
+                : ['league_pass', ...prev.player.badges],
+            },
+          }))
           setTimeout(() => {
             setInBattle(false)
             setShowBattleMsg(false)
