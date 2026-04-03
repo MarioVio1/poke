@@ -130,7 +130,7 @@ export const MAPS: Record<string, GameMap> = {
     events: [
       // Professor's Lab (center)
       { type: 'npc', x: 10, y: 7, name: 'Dottor GheSboro', npcId: 'prof_barcaro', 
-        dialog: ['Finalmente sei arrivato!', 'Sono il Dottor GheSboro, e oggi ti affido il tuo primo Besti!', 'Scegli con criterio: il viaggio sara lungo e pieno di monade.'], givesStarter: true },
+        dialog: ['Finalmente te son rivà fin qua!', 'Sono il Dottor GheSboro, e oggi ti affido il tuo primo Besti!', 'Scegli con criterio: el viaggio sarà longo e pien de monade.'], givesStarter: true },
       
       // Mom (home)
       { type: 'npc', x: 4, y: 9, name: 'Mamma', npcId: 'mamma',

@@ -487,6 +487,7 @@ export default function Game() {
   const advanceStoryIntro = useCallback(() => {
     const nextStep = storyIntroStep + 1
     if (nextStep >= OPENING_STORY.length) {
+      setGs(prev => ({ ...prev, storyProgress: Math.max(prev.storyProgress, 1) }))
       setShowStoryIntro(false)
       setDialogs([
         `${gs.player.name}! In piedi subito, son qua in camera.`,
@@ -880,10 +881,20 @@ export default function Game() {
   const handleEvent = useCallback((ev: MapEvent) => {
     switch (ev.type) {
       case 'npc':
-        if (ev.givesStarter && !gs.flags.hasStarter) {
+        if (gs.map === 'casa' && ev.name === 'Mamma' && !gs.flags.hasStarter) {
           setDialogs(ev.dialog || [])
           setSpeaker(ev.name || '')
-          setDialogCallback(() => setShowStarterChoice(true))
+          setDialogCallback(() => {
+            setGs(prev => ({ ...prev, storyProgress: Math.max(prev.storyProgress, 2) }))
+          })
+          setInDialog(true)
+        } else if (ev.givesStarter && !gs.flags.hasStarter) {
+          setDialogs(ev.dialog || [])
+          setSpeaker(ev.name || '')
+          setDialogCallback(() => {
+            setGs(prev => ({ ...prev, storyProgress: Math.max(prev.storyProgress, 3) }))
+            setShowStarterChoice(true)
+          })
           setInDialog(true)
         } else if (ev.dialog) {
           setDialogs(ev.dialog)
@@ -910,6 +921,24 @@ export default function Game() {
         setInDialog(true)
         break
       case 'warp':
+        if (gs.map === 'casa' && ev.dest === 'canalborgo' && !gs.flags.hasStarter && gs.storyProgress < 2) {
+          setDialogs([
+            'Aspeta un secondo.',
+            'Prima parla con la Mamma che xe vegnua in camera a sveiarte.',
+          ])
+          setSpeaker('Narratore')
+          setInDialog(true)
+          break
+        }
+        if (gs.map === 'canalborgo' && ev.dest === 'route1' && !gs.flags.hasStarter) {
+          setDialogs([
+            'No xe ora de andar via.',
+            'Prima passa dal Dottor GheSboro e scegli il tuo primo Besti.',
+          ])
+          setSpeaker('Narratore')
+          setInDialog(true)
+          break
+        }
         setGs(prev => ({ ...prev, map: ev.dest!, player: { ...prev.player, x: ev.dx!, y: ev.dy! } }))
         break
       case 'heal':
@@ -1012,6 +1041,7 @@ export default function Game() {
       party: [...prev.party, b],
       rival: rivalStarter,
       flags: { ...prev.flags, hasStarter: true },
+      storyProgress: Math.max(prev.storyProgress, 4),
     }))
     
     setShowStarterChoice(false)
@@ -1946,17 +1976,42 @@ export default function Game() {
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return
       if (!gameStarted) return
-      switch (e.key) {
-        case 'ArrowUp': case 'w': case 'W': move('up'); break
-        case 'ArrowDown': case 's': case 'S': move('down'); break
-        case 'ArrowLeft': case 'a': case 'A': move('left'); break
-        case 'ArrowRight': case 'd': case 'D': move('right'); break
-        case 'Enter': case 'z': case 'Z': handleA(); break
-        case 'Escape': case 'x': case 'X': handleB(); break
-        case ' ':
-          if (inDialog) advanceDialog()
-          break
+      try {
+        switch (e.key) {
+          case 'ArrowUp': case 'w': case 'W':
+            e.preventDefault()
+            move('up')
+            break
+          case 'ArrowDown': case 's': case 'S':
+            e.preventDefault()
+            move('down')
+            break
+          case 'ArrowLeft': case 'a': case 'A':
+            e.preventDefault()
+            move('left')
+            break
+          case 'ArrowRight': case 'd': case 'D':
+            e.preventDefault()
+            move('right')
+            break
+          case 'Enter': case 'z': case 'Z':
+            e.preventDefault()
+            handleA()
+            break
+          case 'Escape': case 'x': case 'X':
+            e.preventDefault()
+            handleB()
+            break
+          case ' ':
+            e.preventDefault()
+            if (inDialog) advanceDialog()
+            break
+        }
+      } catch (error) {
+        console.error('Keyboard input failed:', error)
       }
     }
     window.addEventListener('keydown', handleKey)
@@ -2407,6 +2462,11 @@ export default function Game() {
                 {gameStarted ? (
                   <>
                     <div className="location">{MAPS[gs.map]?.name || '???'}</div>
+                    {!gs.flags.hasStarter && (
+                      <div className="current-objective">
+                        {gs.storyProgress < 2 ? 'Parla con la Mamma in camera' : 'Vai dal Dottor GheSboro'}
+                      </div>
+                    )}
                     <div className="party-preview">
                       {gs.party.slice(0, 3).map((b, i) => (
                         <div key={i} className="preview-bestia">
@@ -2431,25 +2491,29 @@ export default function Game() {
                     <button 
                       type="button"
                       className="dpad-btn dpad-up" 
-                      onPointerDown={(e) => { e.preventDefault(); move('up'); }}
+                      onTouchStart={(e) => { e.preventDefault(); move('up'); }}
+                      onMouseDown={() => move('up')}
                       onClick={() => move('up')}
                     >▲</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-down" 
-                      onPointerDown={(e) => { e.preventDefault(); move('down'); }}
+                      onTouchStart={(e) => { e.preventDefault(); move('down'); }}
+                      onMouseDown={() => move('down')}
                       onClick={() => move('down')}
                     >▼</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-left" 
-                      onPointerDown={(e) => { e.preventDefault(); move('left'); }}
+                      onTouchStart={(e) => { e.preventDefault(); move('left'); }}
+                      onMouseDown={() => move('left')}
                       onClick={() => move('left')}
                     >◀</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-right" 
-                      onPointerDown={(e) => { e.preventDefault(); move('right'); }}
+                      onTouchStart={(e) => { e.preventDefault(); move('right'); }}
+                      onMouseDown={() => move('right')}
                       onClick={() => move('right')}
                     >▶</button>
                     <div className="dpad-center"></div>
@@ -2462,14 +2526,16 @@ export default function Game() {
                     type="button"
                     className="action-btn" 
                     id="btn-a" 
-                    onPointerDown={(e) => { e.preventDefault(); handleA(); }}
+                    onTouchStart={(e) => { e.preventDefault(); handleA(); }}
+                    onMouseDown={() => handleA()}
                     onClick={handleA}
                   >A</button>
                   <button 
                     type="button"
                     className="action-btn" 
                     id="btn-b" 
-                    onPointerDown={(e) => { e.preventDefault(); handleB(); }}
+                    onTouchStart={(e) => { e.preventDefault(); handleB(); }}
+                    onMouseDown={() => handleB()}
                     onClick={handleB}
                   >B</button>
                 </div>
@@ -2479,10 +2545,11 @@ export default function Game() {
                   <button 
                     type="button"
                     className="start-btn" 
-                    onPointerDown={(e) => { e.preventDefault(); toggleMenu(); }}
+                    onTouchStart={(e) => { e.preventDefault(); toggleMenu(); }}
+                    onMouseDown={() => toggleMenu()}
                     onClick={toggleMenu}
                   ></button>
-                  <button type="button" className="select-btn" onPointerDown={(e) => { e.preventDefault(); handleB(); }} onClick={handleB}></button>
+                  <button type="button" className="select-btn" onTouchStart={(e) => { e.preventDefault(); handleB(); }} onMouseDown={() => handleB()} onClick={handleB}></button>
                 </div>
               </div>
             </div>
@@ -3972,6 +4039,13 @@ export default function Game() {
           gap: 5px;
         }
 
+        .current-objective {
+          font-size: 6px;
+          color: #d7c8ff;
+          margin-bottom: 8px;
+          line-height: 1.5;
+        }
+
         .preview-bestia {
           width: 24px;
           height: 24px;
@@ -3993,7 +4067,7 @@ export default function Game() {
           position: absolute;
           inset: 0;
           z-index: 4;
-          pointer-events: none;
+          pointer-events: auto;
         }
 
         .dpad-container {

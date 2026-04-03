@@ -30,20 +30,28 @@ class SoundManager {
     this.initAudio()
     if (!this.audioContext || !this.enabled) return
 
-    const oscillator = this.audioContext.createOscillator()
-    const gainNode = this.audioContext.createGain()
+    try {
+      if (this.audioContext.state === 'suspended') {
+        void this.audioContext.resume().catch(() => {})
+      }
 
-    oscillator.connect(gainNode)
-    gainNode.connect(this.audioContext.destination)
+      const oscillator = this.audioContext.createOscillator()
+      const gainNode = this.audioContext.createGain()
 
-    oscillator.type = type
-    oscillator.frequency.value = frequency
+      oscillator.connect(gainNode)
+      gainNode.connect(this.audioContext.destination)
 
-    gainNode.gain.setValueAtTime(volume, this.audioContext.currentTime)
-    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration)
+      oscillator.type = type
+      oscillator.frequency.value = frequency
 
-    oscillator.start(this.audioContext.currentTime)
-    oscillator.stop(this.audioContext.currentTime + duration)
+      gainNode.gain.setValueAtTime(volume, this.audioContext.currentTime)
+      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration)
+
+      oscillator.start(this.audioContext.currentTime)
+      oscillator.stop(this.audioContext.currentTime + duration)
+    } catch (error) {
+      console.error('Audio play failed:', error)
+    }
   }
 
   // Button press - short beep
