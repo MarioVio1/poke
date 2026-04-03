@@ -2177,26 +2177,55 @@ export default function Game() {
         }
 
         .game-wrapper {
-          width: min(1500px, 98vw);
+          width: min(430px, 94vw);
           min-height: calc(100vh - 32px);
           display: flex;
-          flex-direction: column;
           align-items: center;
           justify-content: center;
         }
 
         .gba-console {
+          position: relative;
           width: 100%;
-          min-height: calc(100vh - 32px);
+          min-height: min(900px, calc(100vh - 24px));
           display: grid;
-          grid-template-rows: minmax(0, 1fr) auto;
-          gap: 20px;
-          background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
-          border-radius: 26px;
-          padding: 24px;
-          box-shadow: 
-            0 10px 40px rgba(0,0,0,0.6),
-            inset 0 2px 0 rgba(255,255,255,0.06);
+          grid-template-rows: auto 1fr;
+          gap: 14px;
+          background:
+            radial-gradient(circle at 35% 25%, rgba(132,90,255,0.45) 0%, rgba(132,90,255,0) 38%),
+            linear-gradient(180deg, #202026 0%, #131317 22%, #5f19d4 58%, #4d0fb9 100%);
+          border-radius: 34px;
+          padding: 18px 16px 22px;
+          border: 2px solid rgba(255,255,255,0.12);
+          box-shadow:
+            0 28px 60px rgba(0,0,0,0.45),
+            inset 0 1px 0 rgba(255,255,255,0.16),
+            inset 0 -10px 30px rgba(0,0,0,0.18);
+          overflow: hidden;
+        }
+
+        .gba-console::before {
+          content: '';
+          position: absolute;
+          top: 8px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 34%;
+          height: 5px;
+          border-radius: 999px;
+          background: rgba(255,255,255,0.12);
+        }
+
+        .gba-console::after {
+          content: 'DELTA';
+          position: absolute;
+          top: 404px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 8px;
+          letter-spacing: 2px;
+          color: rgba(255,255,255,0.8);
+          z-index: 2;
         }
 
         .top-screen, .bottom-screen {
@@ -2204,21 +2233,20 @@ export default function Game() {
         }
 
         .screen-bezel {
-          background: #111;
-          border-radius: 14px;
-          padding: 14px;
-          height: 100%;
+          background: linear-gradient(180deg, #0f0f12 0%, #050507 100%);
+          border-radius: 20px;
+          padding: 12px;
           box-shadow: inset 0 0 24px rgba(0,0,0,0.85);
         }
 
         .game-container {
           position: relative;
           width: 100%;
-          min-height: min(72vh, 860px);
           aspect-ratio: 3 / 2;
+          min-height: 0;
           background: #000;
           overflow: hidden;
-          border-radius: 10px;
+          border-radius: 12px;
         }
 
         .game-canvas {
@@ -3289,35 +3317,41 @@ export default function Game() {
 
         /* Bottom Screen */
         .screen-bezel-bottom {
-          background: linear-gradient(180deg, #1a1a1a 0%, #101010 100%);
-          border-radius: 18px;
-          padding: 20px 24px;
-          box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+          position: relative;
+          background: transparent;
+          border-radius: 24px;
+          min-height: 420px;
+          padding: 0;
+          overflow: hidden;
         }
 
         .bottom-content {
-          display: grid;
-          grid-template-columns: minmax(210px, 0.9fr) minmax(0, 1.1fr);
-          gap: 24px;
-          align-items: center;
+          position: relative;
           width: 100%;
+          min-height: 420px;
         }
 
         .info-panel {
-          background: linear-gradient(180deg, #2f2f35 0%, #242429 100%);
-          border-radius: 10px;
-          padding: 14px;
-          min-height: 132px;
+          position: absolute;
+          top: 26px;
+          left: 20px;
+          right: 20px;
+          background: linear-gradient(180deg, rgba(34,22,72,0.94) 0%, rgba(25,16,54,0.96) 100%);
+          border-radius: 16px;
+          padding: 14px 16px;
+          min-height: 92px;
           color: white;
-          border: 2px solid #3d3d42;
+          border: 1px solid rgba(255,255,255,0.12);
           display: flex;
           flex-direction: column;
           justify-content: space-between;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
         }
 
         .location {
           font-size: 10px;
           margin-bottom: 12px;
+          color: #f4ecff;
         }
 
         .party-preview {
@@ -3343,20 +3377,17 @@ export default function Game() {
         }
 
         .controls-area {
-          display: grid;
-          grid-template-columns: auto 1fr auto;
-          align-items: center;
-          gap: 28px;
-          width: 100%;
+          position: absolute;
+          inset: 0;
         }
 
         .dpad-container {
-          position: relative;
-          width: 148px;
-          height: 148px;
+          position: absolute;
+          left: 18px;
+          bottom: 22px;
+          width: 132px;
+          height: 132px;
           touch-action: none;
-          grid-column: 1;
-          justify-self: start;
         }
 
         .dpad {
@@ -3367,13 +3398,13 @@ export default function Game() {
 
         .dpad-btn {
           position: absolute;
-          width: 56px;
-          height: 56px;
+          width: 48px;
+          height: 48px;
           background: linear-gradient(145deg, #5a5a5a, #2d2d2d);
           border: 3px solid #1b1b1b;
           border-radius: 10px;
           color: white;
-          font-size: 18px;
+          font-size: 15px;
           cursor: pointer;
           display: flex;
           align-items: center;
@@ -3415,34 +3446,34 @@ export default function Game() {
           transform: translateY(-50%);
           border-radius: 0 6px 6px 0;
         }
-        .dpad-center { 
+        .dpad-center {
           position: absolute; 
           top: 50%; 
           left: 50%; 
           transform: translate(-50%, -50%);
-          width: 34px;
-          height: 34px;
+          width: 28px;
+          height: 28px;
           background: linear-gradient(145deg, #505050, #242424);
           border-radius: 50%;
           border: 3px solid #222;
         }
 
         .action-btns {
-          display: flex;
-          gap: 18px;
-          grid-column: 3;
-          justify-content: flex-end;
-          justify-self: end;
-          align-items: center;
+          position: absolute;
+          right: 18px;
+          bottom: 34px;
+          width: 138px;
+          height: 138px;
         }
 
         .action-btn {
-          width: 78px;
-          height: 78px;
+          position: absolute;
+          width: 58px;
+          height: 58px;
           border-radius: 50%;
           border: 4px solid #181818;
           font-family: 'Press Start 2P', monospace;
-          font-size: 22px;
+          font-size: 16px;
           cursor: pointer;
           user-select: none;
           -webkit-user-select: none;
@@ -3450,6 +3481,16 @@ export default function Game() {
           touch-action: manipulation;
           box-shadow: 0 6px 0 #141414, inset 0 2px 0 rgba(255,255,255,0.35);
           transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        #btn-a {
+          right: 8px;
+          bottom: 10px;
+        }
+
+        #btn-b {
+          left: 18px;
+          top: 18px;
         }
 
         .action-btn:active {
@@ -3479,17 +3520,19 @@ export default function Game() {
         }
 
         .start-select {
+          position: absolute;
+          left: 50%;
+          top: 148px;
+          transform: translateX(-50%);
           display: flex;
-          flex-direction: row;
           gap: 18px;
-          grid-column: 2;
           align-items: center;
           justify-content: center;
         }
 
         .start-btn, .select-btn {
-          width: 58px;
-          height: 16px;
+          width: 54px;
+          height: 14px;
           background: linear-gradient(180deg, #767676 0%, #4d4d4d 100%);
           border: 2px solid #1b1b1b;
           border-radius: 999px;
@@ -3560,43 +3603,62 @@ export default function Game() {
             min-height: auto;
           }
 
+          .gba-console::after {
+            top: 330px;
+          }
+
           .game-container {
-            min-height: 320px;
+            min-height: 0;
           }
 
+          .screen-bezel-bottom,
           .bottom-content {
-            grid-template-columns: 1fr;
-            gap: 14px;
+            min-height: 340px;
           }
 
-          .controls-area {
-            grid-template-columns: 1fr;
-            justify-items: center;
-            gap: 18px;
+          .info-panel {
+            left: 12px;
+            right: 12px;
+            top: 16px;
+            min-height: 78px;
+            padding: 12px;
           }
 
-          .dpad-container,
-          .action-btns,
-          .start-select {
-            grid-column: auto;
-            justify-self: center;
-          }
-          
           .dpad-container {
-            width: 116px !important;
-            height: 116px !important;
+            left: 12px;
+            bottom: 16px;
+            width: 112px !important;
+            height: 112px !important;
           }
           
           .dpad-btn {
-            width: 44px !important;
-            height: 44px !important;
-            font-size: 16px !important;
+            width: 40px !important;
+            height: 40px !important;
+            font-size: 14px !important;
           }
           
+          .action-btns {
+            right: 12px;
+            bottom: 22px;
+            width: 120px;
+            height: 120px;
+          }
+
           .action-btn {
-            width: 62px !important;
-            height: 62px !important;
-            font-size: 18px !important;
+            width: 52px !important;
+            height: 52px !important;
+            font-size: 15px !important;
+          }
+
+          .start-select {
+            top: 114px;
+            gap: 12px;
+          }
+
+          .start-btn,
+          .select-btn {
+            width: 44px;
+            height: 12px;
           }
         }
         
