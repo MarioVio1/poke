@@ -39,7 +39,7 @@ interface GameFlags {
 }
 
 interface GameState {
-  player: { name: string; x: number; y: number; money: number; badges: string[] }
+  player: { name: string; x: number; y: number; money: number; badges: string[]; persona?: string }
   party: PartyBestia[]
   rival?: PartyBestia
   pc: PartyBestia[]
@@ -76,6 +76,14 @@ interface MonthlyEvent {
   rumor: string
   rewardItem: string
   rewardLabel: string
+}
+
+interface IdentityOption {
+  id: string
+  label: string
+  introLabel: string
+  flavor: string
+  icon: string
 }
 
 interface SavedInventoryEntry {
@@ -120,6 +128,12 @@ const MONTHLY_EVENTS: MonthlyEvent[] = [
   { title: 'Mese delle Nebbie', description: 'La pianura e lattiginosa e i dialoghi diventano ancora piu strani del solito.', rumor: 'Un grint della Polenta starebbe perdendo il pacco da consegnare ogni mattina.', rewardItem: 'ultraball', rewardLabel: 'Ultra Ball' },
   { title: 'Mercatini in Piazza', description: 'Tra luci e bancarelle si scambiano pietre evolutive come fossero caramelle.', rumor: 'Cugino Max vende bici di dubbia provenienza dietro il Centro Besti.', rewardItem: 'pietra_acquatica', rewardLabel: 'Pietra Acquatica' },
   { title: 'Inverno da Ostarie', description: 'Tra osterie e stufe accese, le storie si allungano e i Besti si allenano al caldo.', rumor: 'Dux Polenta starebbe preparando un cenone decisamente poco rassicurante.', rewardItem: 'spritz_curativo', rewardLabel: 'Spritz Curativo' },
+]
+
+const IDENTITY_OPTIONS: IdentityOption[] = [
+  { id: 'maschio', label: 'Maschio', introLabel: 'un fioło tosto', flavor: 'Pronto a partire con scarpe sporche e grandi idee.', icon: '🧢' },
+  { id: 'femmina', label: 'Femmina', introLabel: 'una tosa sveglia', flavor: 'Con grinta, sguardo furbo e zero tempo per le ciacole.', icon: '🎀' },
+  { id: 'trans', label: 'Trans', introLabel: 'un mito da carnevale', flavor: 'Con la figura del pagliaccio e stile che spacca ogni piazza.', icon: '🤡' },
 ]
 
 const normalizeItemKey = (value: string) =>
@@ -341,7 +355,7 @@ class RuntimeErrorBoundary extends React.Component<
 }
 
 const INITIAL_GAME_STATE: GameState = {
-  player: { name: 'Federico', x: 7, y: 9, money: 3000, badges: [] },
+  player: { name: 'Federico', x: 4, y: 4, money: 3000, badges: [], persona: 'maschio' },
   party: [],
   rival: undefined,
   pc: [],
@@ -381,6 +395,7 @@ const hydrateSaveData = (saveData: PartialSaveData): GameState => {
       y: typeof saveData.player?.y === 'number' ? saveData.player.y : INITIAL_GAME_STATE.player.y,
       money: typeof saveData.player?.money === 'number' ? saveData.player.money : INITIAL_GAME_STATE.player.money,
       badges: Array.isArray(saveData.player?.badges) ? saveData.player!.badges : INITIAL_GAME_STATE.player.badges,
+      persona: saveData.player?.persona || INITIAL_GAME_STATE.player.persona,
     },
     party: Array.isArray(saveData.party) ? saveData.party : INITIAL_GAME_STATE.party,
     rival: saveData.rival,
@@ -412,6 +427,7 @@ function GameScreen() {
   
   // UI States
   const [showStarterChoice, setShowStarterChoice] = useState(false)
+  const [showIdentityChoice, setShowIdentityChoice] = useState(false)
   const [showOverlay, setShowOverlay] = useState(false)
   const [overlayTitle, setOverlayTitle] = useState('')
   const [overlayContent, setOverlayContent] = useState<React.ReactNode>(null)
@@ -651,8 +667,63 @@ function GameScreen() {
   // Skip intro
   const skipIntro = () => {
     setShowIntro(false)
-    setGameStarted(true)
   }
+
+  const beginNewGame = useCallback(() => {
+    setGs(INITIAL_GAME_STATE)
+    setAchievements([])
+    setShowStarterChoice(false)
+    setShowIdentityChoice(false)
+    setGameStarted(false)
+    setDialogs([
+      'Benvenuo nel mondo dei Besti di Venetia!',
+      'Mi son el Prof. GheSboro, studioso, dottore e rompiscatole ufficiale della regione.',
+      'Qui i Besti vivono tra canali, spritz, nebbia e scontri con la Compagnia della Polenta.',
+      'Prima di cominciare, dimmi: che persona sei?'
+    ])
+    setSpeaker('Prof. GheSboro')
+    setDialogCallback(() => {
+      setShowIdentityChoice(true)
+    })
+    setInDialog(true)
+  }, [])
+
+  const chooseIdentity = useCallback((identity: IdentityOption) => {
+    setShowIdentityChoice(false)
+    setGs(prev => ({
+      ...INITIAL_GAME_STATE,
+      player: {
+        ...INITIAL_GAME_STATE.player,
+        name: prev.player.name || INITIAL_GAME_STATE.player.name,
+        persona: identity.id,
+      },
+    }))
+    setGameStarted(true)
+    setDialogs([
+      `Perfetto. Ti vedo proprio come ${identity.introLabel}.`,
+      'Adesso ascolta bene: il tuo primo Besti ti aspetta dal Dottor GheSboro al laboratorio di Canalborgo.',
+      '...MA PRIMA SVEGLIATI, CHE TE STAI ANCORA RUSSANDO!'
+    ])
+    setSpeaker('Prof. GheSboro')
+    setDialogCallback(() => {
+      setGs(prev => ({
+        ...prev,
+        map: 'casa',
+        player: { ...prev.player, x: 4, y: 4 },
+      }))
+      setDialogs([
+        'FEDERICOOO! IN PIEDI!',
+        'Te sveio mi con la scopa se resti ancora sotto le coperte!',
+        `Su, ${identity.introLabel}! ${identity.flavor}`,
+        'Lavete la faccia e corri dal Dottor GheSboro.',
+        'Oggi scegli il tuo primo Besti, e no sta far tardi!'
+      ])
+      setSpeaker('Mamma')
+      setDialogCallback(null)
+      setInDialog(true)
+    })
+    setInDialog(true)
+  }, [])
 
   // Create a Bestia with stats (including legendary starters)
   const createBesti = useCallback((id: string, lvl: number): PartyBestia => {
@@ -2175,6 +2246,7 @@ function GameScreen() {
                       />
                     ))}
                   </div>
+                  <div className="fire-banner">BESTI DI VENETIA VERSIONE FUCO</div>
                   <div className="title-logo">POKEMONA</div>
                   <div className="title-subtitle">Besti di Venetia</div>
                   <div className="title-bestia">
@@ -2183,29 +2255,25 @@ function GameScreen() {
                     <img src={getBestiaSprite('serenissima')} alt="Serenissima" className="title-sprite-float pixel-sprite" style={{animationDelay: '1s'}} />
                     <img src={getBestiaSprite('ombradriz')} alt="OmbraSpritz" className="title-sprite-float pixel-sprite" style={{animationDelay: '1.5s'}} />
                   </div>
-                  <button className="start-btn-large" onClick={() => {
-                    setGameStarted(true)
-                    // Start intro dialog
-                    setDialogs([
-                      'Buongiorno, tesoro mio!',
-                      'Oggi è il giorno importante!',
-                      'Devi andare dal Professor Barcaro!',
-                    ])
-                    setSpeaker('Mamma')
-                    setDialogCallback(() => {
-                      setDialogs([
-                        'Ah, sei arrivato finalmente!',
-                        'Sono il Prof. Barcaro!',
-                        'Ho 4 Besti leggendari per te!',
-                        'Scegli il tuo compagno!',
-                      ])
-                      setSpeaker('Prof. Barcaro')
-                      setInDialog(true)
-                    })
-                    setInDialog(true)
-                  }}>
-                    NUOVA PARTITA
-                  </button>
+                  <div className="title-menu">
+                    <button className="start-btn-large" onClick={beginNewGame}>
+                      NUOVA PARTITA
+                    </button>
+                    <button
+                      className="start-btn-large secondary"
+                      onClick={() => {
+                        if (loadGame()) {
+                          setShowIntro(false)
+                          setGameStarted(true)
+                        } else {
+                          setNotification('Nessun salvataggio disponibile!')
+                          setTimeout(() => setNotification(''), 2000)
+                        }
+                      }}
+                    >
+                      CARICA
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -2397,8 +2465,8 @@ function GameScreen() {
               {/* Starter Choice - 4 LEGENDARY STARTERS */}
               {showStarterChoice && (
                 <div className="starter-choice">
-                  <h2>Scegli il tuo Besti!</h2>
-                  <p className="starter-subtitle">4 Besti Leggendari</p>
+                  <h2>Laboratorio GheSboro</h2>
+                  <p className="starter-subtitle">Il Dottore ti affida il tuo primo Besti</p>
                   <div className="starter-container legendary">
                     <div className="starter-btn legendary" onClick={() => selectStarter('dolomitor')}>
                       <img src={getBestiaSprite('dolomitor')} alt="Dolomitor" className="pixel-sprite" />
@@ -2424,6 +2492,26 @@ function GameScreen() {
                       <span className="type-badge type-magic">Magico</span>
                       <span className="type-badge type-poison">Veleno</span>
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {showIdentityChoice && (
+                <div className="starter-choice identity-choice">
+                  <h2>Chi sei?</h2>
+                  <p className="starter-subtitle">Scegli come il mondo ti vedra in questa avventura</p>
+                  <div className="identity-grid">
+                    {IDENTITY_OPTIONS.map(option => (
+                      <button
+                        key={option.id}
+                        className="identity-card"
+                        onClick={() => chooseIdentity(option)}
+                      >
+                        <div className="identity-icon">{option.icon}</div>
+                        <div className="identity-name">{option.label}</div>
+                        <div className="identity-flavor">{option.flavor}</div>
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
@@ -2490,6 +2578,11 @@ function GameScreen() {
               {/* Info Panel */}
               <div className="info-panel">
                 <div className="location">{MAPS[gs.map]?.name || '???'}</div>
+                <div className="info-subline">
+                  {gs.party[0]
+                    ? `${gs.party[0].name} Lv.${gs.party[0].level}  PS ${gs.party[0].hp}/${gs.party[0].maxHp}`
+                    : 'Premi NUOVA PARTITA e scegli il tuo Besti'}
+                </div>
                 <div className="party-preview">
                   {gs.party.slice(0, 3).map((b, i) => (
                     <div key={i} className="preview-bestia">
@@ -2501,57 +2594,64 @@ function GameScreen() {
 
               {/* Controls */}
               <div className="controls-area">
-                {/* D-Pad with MOBILE support */}
-                <div className="dpad-container">
-                  <div className="dpad">
-                    <button 
-                      className="dpad-btn dpad-up" 
-                      onTouchStart={(e) => { e.preventDefault(); move('up'); }}
-                      onMouseDown={() => move('up')}
-                    >▲</button>
-                    <button 
-                      className="dpad-btn dpad-down" 
-                      onTouchStart={(e) => { e.preventDefault(); move('down'); }}
-                      onMouseDown={() => move('down')}
-                    >▼</button>
-                    <button 
-                      className="dpad-btn dpad-left" 
-                      onTouchStart={(e) => { e.preventDefault(); move('left'); }}
-                      onMouseDown={() => move('left')}
-                    >◀</button>
-                    <button 
-                      className="dpad-btn dpad-right" 
-                      onTouchStart={(e) => { e.preventDefault(); move('right'); }}
-                      onMouseDown={() => move('right')}
-                    >▶</button>
-                    <div className="dpad-center"></div>
+                <div className="controls-left">
+                  {/* D-Pad with MOBILE support */}
+                  <div className="dpad-container">
+                    <div className="dpad">
+                      <button 
+                        className="dpad-btn dpad-up" 
+                        onTouchStart={(e) => { e.preventDefault(); move('up'); }}
+                        onMouseDown={() => move('up')}
+                      >▲</button>
+                      <button 
+                        className="dpad-btn dpad-down" 
+                        onTouchStart={(e) => { e.preventDefault(); move('down'); }}
+                        onMouseDown={() => move('down')}
+                      >▼</button>
+                      <button 
+                        className="dpad-btn dpad-left" 
+                        onTouchStart={(e) => { e.preventDefault(); move('left'); }}
+                        onMouseDown={() => move('left')}
+                      >◀</button>
+                      <button 
+                        className="dpad-btn dpad-right" 
+                        onTouchStart={(e) => { e.preventDefault(); move('right'); }}
+                        onMouseDown={() => move('right')}
+                      >▶</button>
+                      <div className="dpad-center"></div>
+                    </div>
                   </div>
+
+                  <div className="control-caption">MOVE</div>
                 </div>
 
-                {/* Action Buttons - MOBILE TOUCH */}
-                <div className="action-btns">
-                  <button 
-                    className="action-btn" 
-                    id="btn-a" 
-                    onClick={handleA}
-                    onTouchEnd={(e) => { e.preventDefault(); handleA(); }}
-                  >A</button>
-                  <button 
-                    className="action-btn" 
-                    id="btn-b" 
-                    onClick={handleB}
-                    onTouchEnd={(e) => { e.preventDefault(); handleB(); }}
-                  >B</button>
-                </div>
+                <div className="controls-right">
+                  {/* Action Buttons - MOBILE TOUCH */}
+                  <div className="action-btns">
+                    <button 
+                      className="action-btn" 
+                      id="btn-a" 
+                      onClick={handleA}
+                      onTouchEnd={(e) => { e.preventDefault(); handleA(); }}
+                    >A</button>
+                    <button 
+                      className="action-btn" 
+                      id="btn-b" 
+                      onClick={handleB}
+                      onTouchEnd={(e) => { e.preventDefault(); handleB(); }}
+                    >B</button>
+                  </div>
 
-                {/* Start/Select */}
-                <div className="start-select">
-                  <button 
-                    className="start-btn" 
-                    onClick={toggleMenu}
-                    onTouchEnd={(e) => { e.preventDefault(); toggleMenu(); }}
-                  ></button>
-                  <button className="select-btn"></button>
+                  {/* Start/Select */}
+                  <div className="start-select">
+                    <button 
+                      className="start-btn" 
+                      onClick={toggleMenu}
+                      onTouchEnd={(e) => { e.preventDefault(); toggleMenu(); }}
+                    ></button>
+                    <button className="select-btn"></button>
+                  </div>
+                  <div className="control-caption right">ACT</div>
                 </div>
               </div>
             </div>
@@ -2563,7 +2663,9 @@ function GameScreen() {
       <style jsx global>{`
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-          background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+          background:
+            radial-gradient(circle at top, rgba(78, 116, 201, 0.22), transparent 38%),
+            linear-gradient(180deg, #182445 0%, #10203d 55%, #0a1630 100%);
           min-height: 100vh; 
           display: flex; 
           justify-content: center; 
@@ -2575,28 +2677,34 @@ function GameScreen() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 20px;
+          padding: 24px;
         }
 
         .gba-console {
-          background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
-          border-radius: 20px;
-          padding: 20px;
+          width: 320px;
+          background:
+            radial-gradient(circle at 50% 12%, rgba(255,255,255,0.08), transparent 24%),
+            linear-gradient(180deg, #2f3137 0%, #212226 55%, #17181c 100%);
+          border-radius: 30px 30px 34px 34px;
+          padding: 18px 18px 22px;
+          border: 1px solid rgba(255,255,255,0.08);
           box-shadow: 
-            0 10px 40px rgba(0,0,0,0.5),
-            inset 0 2px 0 rgba(255,255,255,0.1);
-          max-width: 320px;
+            0 24px 55px rgba(0,0,0,0.45),
+            inset 0 2px 0 rgba(255,255,255,0.08),
+            inset 0 -8px 14px rgba(0,0,0,0.35);
         }
 
         .top-screen, .bottom-screen {
-          margin-bottom: 15px;
+          margin-bottom: 12px;
         }
 
         .screen-bezel {
-          background: #111;
-          border-radius: 10px;
+          background: linear-gradient(180deg, #0a0a0b 0%, #181818 100%);
+          border-radius: 14px;
           padding: 8px;
-          box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+          box-shadow:
+            inset 0 0 24px rgba(0,0,0,0.9),
+            0 1px 0 rgba(255,255,255,0.06);
         }
 
         .game-container {
@@ -2604,11 +2712,26 @@ function GameScreen() {
           width: 240px;
           height: 160px;
           background: #000;
+          border-radius: 6px;
           overflow: hidden;
+          box-shadow:
+            inset 0 0 0 2px rgba(73, 100, 62, 0.35),
+            inset 0 0 24px rgba(0,0,0,0.25);
         }
 
         .game-canvas {
           display: block;
+        }
+
+        .game-container::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,0.06), transparent 22%, transparent 78%, rgba(0,0,0,0.08)),
+            repeating-linear-gradient(180deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 4px);
+          pointer-events: none;
+          z-index: 2;
         }
 
         .game-canvas.shake {
@@ -2753,6 +2876,18 @@ function GameScreen() {
           z-index: 1;
         }
 
+        .fire-banner {
+          padding: 6px 12px;
+          border-radius: 999px;
+          margin-bottom: 10px;
+          background: linear-gradient(180deg, #ffcf66 0%, #ff8c42 48%, #d94b1f 100%);
+          color: #3b1804;
+          font-size: 6px;
+          letter-spacing: 0.12em;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+          z-index: 1;
+        }
+
         .title-subtitle {
           font-size: 8px;
           margin-top: 10px;
@@ -2792,6 +2927,20 @@ function GameScreen() {
           box-shadow: 0 4px 0 #1b5e20;
           z-index: 1;
           transition: all 0.2s;
+        }
+
+        .title-menu {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-top: 18px;
+          z-index: 1;
+        }
+
+        .start-btn-large.secondary {
+          margin-top: 0;
+          background: linear-gradient(180deg, #5f82c4, #34518a);
+          box-shadow: 0 4px 0 #21345e;
         }
 
         .start-btn-large:hover {
@@ -3037,6 +3186,51 @@ function GameScreen() {
           font-size: 7px;
           color: #87ceeb;
           margin-bottom: 10px;
+        }
+
+        .identity-choice {
+          padding: 18px;
+        }
+
+        .identity-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 10px;
+          width: 100%;
+        }
+
+        .identity-card {
+          width: 100%;
+          text-align: left;
+          padding: 10px;
+          border: 2px solid #4f5f86;
+          border-radius: 12px;
+          background: linear-gradient(180deg, rgba(41, 53, 88, 0.98) 0%, rgba(20, 28, 53, 0.98) 100%);
+          color: white;
+          font-family: inherit;
+          cursor: pointer;
+        }
+
+        .identity-card:hover {
+          border-color: #ffd700;
+          transform: translateY(-1px);
+        }
+
+        .identity-icon {
+          font-size: 24px;
+          margin-bottom: 6px;
+        }
+
+        .identity-name {
+          font-size: 8px;
+          color: #ffd770;
+          margin-bottom: 6px;
+        }
+
+        .identity-flavor {
+          font-size: 6px;
+          line-height: 1.6;
+          color: #d8dfef;
         }
 
         .starter-container.legendary {
@@ -3632,27 +3826,44 @@ function GameScreen() {
 
         /* Bottom Screen */
         .screen-bezel-bottom {
-          background: #222;
-          border-radius: 10px;
-          padding: 10px;
+          background: linear-gradient(180deg, #24262b 0%, #1c1d21 100%);
+          border-radius: 14px 14px 18px 18px;
+          padding: 12px;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.05),
+            inset 0 -4px 10px rgba(0,0,0,0.28);
         }
 
         .bottom-content {
           display: flex;
-          gap: 10px;
+          flex-direction: column;
+          gap: 12px;
+          width: 100%;
         }
 
         .info-panel {
-          flex: 1;
-          background: #333;
-          border-radius: 5px;
-          padding: 8px;
+          min-height: 82px;
+          background: linear-gradient(180deg, #3c3d42 0%, #2e2f34 100%);
+          border-radius: 10px;
+          padding: 10px;
           color: white;
+          border: 1px solid rgba(255,255,255,0.05);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
         }
 
         .location {
-          font-size: 8px;
-          margin-bottom: 8px;
+          font-size: 9px;
+          margin-bottom: 6px;
+          color: #fff8d6;
+          letter-spacing: 0.04em;
+        }
+
+        .info-subline {
+          font-size: 6px;
+          line-height: 1.5;
+          color: #b9c0d0;
+          margin-bottom: 10px;
+          min-height: 18px;
         }
 
         .party-preview {
@@ -3661,14 +3872,15 @@ function GameScreen() {
         }
 
         .preview-bestia {
-          width: 24px;
-          height: 24px;
-          background: #555;
-          border-radius: 3px;
+          width: 26px;
+          height: 26px;
+          background: linear-gradient(180deg, #565961 0%, #43454c 100%);
+          border-radius: 6px;
           display: flex;
           align-items: center;
           justify-content: center;
           overflow: hidden;
+          border: 1px solid rgba(255,255,255,0.06);
         }
 
         .preview-bestia img {
@@ -3679,14 +3891,34 @@ function GameScreen() {
 
         .controls-area {
           display: flex;
-          gap: 15px;
+          align-items: flex-end;
+          justify-content: space-between;
+          gap: 12px;
+          width: 100%;
+        }
+
+        .controls-left,
+        .controls-right {
+          display: flex;
+          flex-direction: column;
           align-items: center;
+          gap: 8px;
+        }
+
+        .control-caption {
+          font-size: 6px;
+          color: #8d93a1;
+          letter-spacing: 0.2em;
+        }
+
+        .control-caption.right {
+          color: #b7a68e;
         }
 
         .dpad-container {
           position: relative;
-          width: 90px;
-          height: 90px;
+          width: 86px;
+          height: 86px;
           touch-action: none;
         }
 
@@ -3698,13 +3930,13 @@ function GameScreen() {
 
         .dpad-btn {
           position: absolute;
-          width: 32px;
-          height: 32px;
-          background: linear-gradient(145deg, #555, #333);
-          border: 2px solid #222;
+          width: 30px;
+          height: 30px;
+          background: linear-gradient(180deg, #5b5e66 0%, #34363c 100%);
+          border: 1px solid #1b1d21;
           border-radius: 6px;
           color: white;
-          font-size: 14px;
+          font-size: 13px;
           cursor: pointer;
           display: flex;
           align-items: center;
@@ -3713,7 +3945,7 @@ function GameScreen() {
           -webkit-user-select: none;
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
-          box-shadow: 0 3px 0 #222;
+          box-shadow: 0 3px 0 rgba(0,0,0,0.38);
         }
 
         .dpad-btn:active, .dpad-btn.pressed {
@@ -3751,24 +3983,25 @@ function GameScreen() {
           top: 50%; 
           left: 50%; 
           transform: translate(-50%, -50%);
-          width: 26px;
-          height: 26px;
-          background: linear-gradient(145deg, #444, #222);
+          width: 24px;
+          height: 24px;
+          background: linear-gradient(180deg, #44474f 0%, #26282d 100%);
           border-radius: 50%;
-          border: 2px solid #333;
+          border: 1px solid #191b1f;
         }
 
         .action-btns {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
+          position: relative;
+          width: 92px;
+          height: 68px;
         }
 
         .action-btn {
-          width: 40px;
-          height: 40px;
+          position: absolute;
+          width: 42px;
+          height: 42px;
           border-radius: 50%;
-          border: 3px solid #222;
+          border: 2px solid rgba(0,0,0,0.35);
           font-family: 'Press Start 2P', monospace;
           font-size: 12px;
           cursor: pointer;
@@ -3776,7 +4009,7 @@ function GameScreen() {
           -webkit-user-select: none;
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
-          box-shadow: 0 4px 0 #222;
+          box-shadow: 0 5px 0 rgba(0,0,0,0.28);
         }
 
         .action-btn:active {
@@ -3785,11 +4018,15 @@ function GameScreen() {
         }
 
         #btn-a {
+          right: 8px;
+          top: 0;
           background: linear-gradient(145deg, #e53935, #b71c1c);
           color: white;
         }
 
         #btn-b {
+          left: 0;
+          bottom: 0;
           background: linear-gradient(145deg, #fb8c00, #e65100);
           color: white;
         }
@@ -3808,16 +4045,17 @@ function GameScreen() {
         .start-select {
           display: flex;
           gap: 10px;
-          margin-left: 10px;
+          margin-top: 2px;
         }
 
         .start-btn, .select-btn {
           width: 30px;
           height: 10px;
-          background: #555;
+          background: linear-gradient(180deg, #6b6d74 0%, #45474d 100%);
           border: none;
           border-radius: 5px;
           cursor: pointer;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
         }
 
         .start-btn:hover, .select-btn:hover {
@@ -3869,9 +4107,10 @@ function GameScreen() {
         /* Responsive GameBoy */
         @media (max-width: 400px) {
           .gba-console {
-            transform: scale(1);
+            width: 304px;
+            transform: scale(0.96);
             transform-origin: top center;
-            padding: 10px;
+            padding: 14px 14px 18px;
           }
           
           .game-wrapper {
@@ -3890,15 +4129,15 @@ function GameScreen() {
           }
           
           .action-btn {
-            width: 45px !important;
-            height: 45px !important;
-            font-size: 14px !important;
+            width: 42px !important;
+            height: 42px !important;
+            font-size: 13px !important;
           }
         }
 
         @media (min-width: 800px) {
           .gba-console {
-            transform: scale(1.2);
+            transform: scale(1.08);
             transform-origin: top center;
           }
         }
