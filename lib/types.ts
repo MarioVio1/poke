@@ -42,15 +42,15 @@ export const OUTDOOR_TILES: Record<number, {
   walkable: boolean
   type: 'grass' | 'path' | 'water' | 'tree' | 'wall' | 'building'
 }> = {
-  0: { base: '#48a148', detail: '#3d8b3d', walkable: true, type: 'grass' },      // grass
-  1: { base: '#6b5b45', detail: '#5a4a3a', walkable: false, type: 'wall' },       // wall/border
-  2: { base: '#3b8fc2', detail: '#5ba8d4', walkable: false, type: 'water' },     // water
-  3: { base: '#8b7355', detail: '#6d5a45', walkable: false, type: 'building' }, // building
-  6: { base: '#7cb342', detail: '#9ccc65', walkable: true, type: 'grass' },        // vineyard
-  7: { base: '#c62828', detail: '#d32f2f', walkable: true, type: 'grass' },        // radicchio
-  8: { base: '#cfd8dc', detail: '#eceff1', walkable: true, type: 'grass' },        // snow
-  9: { base: '#5d4037', detail: '#4e342e', walkable: false, type: 'tree' },       // tree/trunk
-  10: { base: '#2e7d32', detail: '#388e3c', walkable: false, type: 'tree' },        // tree/leaves
+  0: { base: '#8cd67d', detail: '#6fbc61', walkable: true, type: 'grass' },      // grass
+  1: { base: '#8a7a61', detail: '#6d604d', walkable: false, type: 'wall' },       // wall/border
+  2: { base: '#4db8d3', detail: '#8de4eb', walkable: false, type: 'water' },     // water
+  3: { base: '#d8c89c', detail: '#b8955f', walkable: false, type: 'building' }, // building
+  6: { base: '#74c45e', detail: '#5fa64d', walkable: true, type: 'grass' },      // vineyard
+  7: { base: '#b62d3b', detail: '#d85c64', walkable: true, type: 'grass' },      // radicchio
+  8: { base: '#d9f6e4', detail: '#bde8d0', walkable: true, type: 'grass' },      // snow / pale grass
+  9: { base: '#7c5c3a', detail: '#5f4529', walkable: false, type: 'tree' },      // tree/trunk
+  10: { base: '#7fd060', detail: '#4e9d42', walkable: false, type: 'tree' },     // tree/leaves
 }
 
 // Indoor tiles (floors, walls, furniture)
@@ -60,15 +60,15 @@ export const INDOOR_TILES: Record<number, {
   walkable: boolean
   type: 'floor' | 'wall' | 'counter' | 'carpet' | 'heal'
 }> = {
-  0: { base: '#d7ccc8', detail: '#bcaaa4', walkable: true, type: 'floor' },     // indoor floor
-  1: { base: '#6d4c41', detail: '#5d4037', walkable: false, type: 'wall' },   // wall
-  2: { base: '#a1887f', detail: '#8d6e63', walkable: false, type: 'wall' },     // wall accent
-  3: { base: '#bcaaa4', detail: '#d7ccc8', walkable: true, type: 'carpet' },    // carpet
-  4: { base: '#80cbc4', detail: '#4db6ac', walkable: true, type: 'heal' },       // healing circle
-  5: { base: '#8d6e63', detail: '#6d5a45', walkable: false, type: 'counter' }, // counter/shop
-  6: { base: '#ffcc80', detail: '#ffb74d', walkable: true, type: 'floor' },      // wooden floor
-  7: { base: '#7986cb', detail: '#5c6bc0', walkable: true, type: 'carpet' },    // blue carpet
-  8: { base: '#f44336', detail: '#e53935', walkable: false, type: 'wall' },      // red wall accent
+  0: { base: '#efeff7', detail: '#d6d8ea', walkable: true, type: 'floor' },     // indoor floor
+  1: { base: '#7d7364', detail: '#5c554a', walkable: false, type: 'wall' },      // wall
+  2: { base: '#d8c59d', detail: '#bfa468', walkable: false, type: 'wall' },      // wall accent
+  3: { base: '#b9db9e', detail: '#9dca7a', walkable: true, type: 'carpet' },     // carpet / mat
+  4: { base: '#dff8ff', detail: '#9de0f1', walkable: true, type: 'heal' },       // healing circle
+  5: { base: '#c9c6d6', detail: '#9790a9', walkable: false, type: 'counter' },   // counter/shop
+  6: { base: '#ead58f', detail: '#d1b665', walkable: true, type: 'floor' },      // wooden floor
+  7: { base: '#92a7ef', detail: '#6e82d4', walkable: true, type: 'carpet' },     // blue carpet
+  8: { base: '#d45353', detail: '#a73f3f', walkable: false, type: 'wall' },      // red wall accent
 }
 
 // Detect if map is indoor
@@ -140,41 +140,41 @@ export const renderTile = (
   // Tile detail pattern
   ctx.fillStyle = detailColor
   if (tile.type === 'grass') {
-    // Grass blades
-    if ((x + y) % (size / 2) === 0) {
-      ctx.fillRect(x + 3, y + 2, 2, 4)
-      ctx.fillRect(x + 10, y + 6, 2, 4)
-    }
-    // Random flowers
+    // FireRed-like grass streaks and flowers
+    ctx.fillRect(x + 2, y + 3, 2, 5)
+    ctx.fillRect(x + 10, y + 5, 2, 5)
+    ctx.fillRect(x + 6, y + 10, 2, 4)
     if ((x * 7 + y * 13) % 23 === 0) {
-      ctx.fillStyle = '#ffeb3b'
+      ctx.fillStyle = '#ffd95a'
       ctx.fillRect(x + 7, y + 7, 2, 2)
     }
   }
   
   if (tile.type === 'water') {
-    // Water ripples
-    const waveOffset = Math.sin(time / 300 + x / 10) * 2
-    ctx.fillRect(x + waveOffset + 2, y + 6, 5, 2)
-    ctx.fillRect(x - waveOffset + 8, y + 10, 4, 2)
+    // Water ripples and shore shimmer
+    const waveOffset = Math.sin(time / 260 + x / 11) * 2
+    ctx.fillStyle = '#9cf3f7'
+    ctx.fillRect(x + waveOffset + 2, y + 4, 5, 2)
+    ctx.fillRect(x - waveOffset + 8, y + 9, 4, 2)
+    ctx.fillStyle = '#2aa1c5'
+    ctx.fillRect(x, y + size - 2, size, 2)
   }
   
   if (tile.type === 'wall') {
-    // Brick pattern
-    if (y % (size / 2) === 0) {
-      ctx.fillRect(x, y, size, 1)
-    }
-    if (x % (size / 2) === 0) {
-      ctx.fillRect(x, y, 1, size)
-    }
+    // Brick / border pattern
+    ctx.fillRect(x, y, size, 2)
+    ctx.fillRect(x, y, 2, size)
+    ctx.fillRect(x + 7, y, 1, size)
+    ctx.fillRect(x, y + 7, size, 1)
   }
   
   if (tile.type === 'floor' || tile.type === 'carpet') {
-    // Floor pattern
-    if ((x + y) % (size * 2) === 0) {
-      ctx.fillStyle = detailColor
-      ctx.fillRect(x, y, 2, 2)
-    }
+    // GBA floor diagonals
+    ctx.fillStyle = detailColor
+    ctx.fillRect(x + 2, y + 2, 1, 1)
+    ctx.fillRect(x + 6, y + 6, 1, 1)
+    ctx.fillRect(x + 10, y + 10, 1, 1)
+    ctx.fillRect(x + 14, y + 14, 1, 1)
   }
   
   if (tile.type === 'heal') {
@@ -193,17 +193,21 @@ export const renderTile = (
   if (tile.type === 'tree') {
     if (tileType === 9) {
       // Tree trunk
-      ctx.fillStyle = '#5d4037'
-      ctx.fillRect(x + 6, y + 4, 4, 12)
+      ctx.fillStyle = '#7c5c3a'
+      ctx.fillRect(x + 5, y + 4, 6, 12)
     } else {
       // Tree leaves
-      ctx.fillStyle = '#2e7d32'
+      ctx.fillStyle = '#4e9d42'
       ctx.beginPath()
-      ctx.arc(x + 8, y + 8, 6, 0, Math.PI * 2)
+      ctx.arc(x + 8, y + 9, 7, 0, Math.PI * 2)
       ctx.fill()
-      ctx.fillStyle = '#388e3c'
+      ctx.fillStyle = '#9af06b'
       ctx.beginPath()
-      ctx.arc(x + 6, y + 6, 4, 0, Math.PI * 2)
+      ctx.arc(x + 8, y + 6, 5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#76d257'
+      ctx.beginPath()
+      ctx.arc(x + 5, y + 8, 4, 0, Math.PI * 2)
       ctx.fill()
     }
   }

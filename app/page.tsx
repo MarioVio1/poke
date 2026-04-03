@@ -726,7 +726,7 @@ export default function Game() {
     const map = MAPS[gs.map]
     
     // Item pickup
-    const itemEv = map.events?.find((e: MapEvent) => e.type === 'item' && e.x === gs.player.x && e.y === gs.player.y)
+    const itemEv = map.events?.find((e: MapEvent) => e.type === 'item' && typeof e.x === 'number' && typeof e.y === 'number' && e.x === gs.player.x && e.y === gs.player.y)
     if (itemEv && itemEv.item) {
       const foundItem = ITEMS[itemEv.item.name.toLowerCase().replace(/ /g, '')] || Object.values(ITEMS).find(i => i.name === itemEv.item!.name)
       if (foundItem) {
@@ -748,9 +748,11 @@ export default function Game() {
     // Event interaction
     const ev = map.events?.find((e: MapEvent) => {
       if (e.type === 'npc' || e.type === 'trainer' || e.type === 'gym') {
+        if (typeof e.x !== 'number' || typeof e.y !== 'number') return false
         return e.x === gs.player.x && e.y === gs.player.y
       }
       if (e.type === 'sign' || e.type === 'warp' || e.type === 'heal' || e.type === 'shop') {
+        if (typeof e.x !== 'number' || typeof e.y !== 'number') return false
         return e.x === gs.player.x && e.y === gs.player.y
       }
       return false
