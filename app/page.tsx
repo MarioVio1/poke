@@ -262,6 +262,7 @@ export default function Game() {
   const [showIntro, setShowIntro] = useState(false)
   const [introFrame, setIntroFrame] = useState(0)
   const [showIntroText, setShowIntroText] = useState(false)
+  const [titleSelection, setTitleSelection] = useState(0)
   const [showPlayerSetup, setShowPlayerSetup] = useState(false)
   const [setupName, setSetupName] = useState('Federico')
   const [setupIdentity, setSetupIdentity] = useState<PlayerIdentity>('maschio')
@@ -418,6 +419,7 @@ export default function Game() {
   const startNewGame = useCallback(() => {
     setSetupName('Federico')
     setSetupIdentity('maschio')
+    setTitleSelection(0)
     setShowPlayerSetup(true)
     setShowIntro(false)
     setShowStoryIntro(false)
@@ -432,7 +434,7 @@ export default function Game() {
   const confirmNewGameSetup = useCallback(() => {
     const playerName = setupName.trim() || 'Federico'
     setGs({
-      player: { name: playerName, x: 4, y: 4, money: 3000, badges: [], gender: setupIdentity },
+      player: { name: playerName, x: 4, y: 2, money: 3000, badges: [], gender: setupIdentity },
       party: [],
       rival: undefined,
       pc: [],
@@ -470,6 +472,7 @@ export default function Game() {
       return
     }
     if (loadGame()) {
+      setTitleSelection(0)
       setShowPlayerSetup(false)
       setShowIntro(false)
       setShowStarterChoice(false)
@@ -932,15 +935,6 @@ export default function Game() {
           setDialogs([
             'Aspeta un secondo.',
             'Prima parla con la Mamma che xe vegnua in camera a sveiarte.',
-          ])
-          setSpeaker('Narratore')
-          setInDialog(true)
-          break
-        }
-        if (gs.map === 'canalborgo' && ev.dest === 'route1' && !gs.flags.hasStarter) {
-          setDialogs([
-            'No xe ora de andar via.',
-            'Prima passa dal Dottor GheSboro e scegli il tuo primo Besti.',
           ])
           setSpeaker('Narratore')
           setInDialog(true)
@@ -1891,6 +1885,14 @@ export default function Game() {
   // Handle A button
   const handleA = () => {
     soundManager.buttonPress()
+    if (!gameStarted && !showPlayerSetup) {
+      if (titleSelection === 1 && hasSave()) {
+        startSavedGame()
+      } else {
+        startNewGame()
+      }
+      return
+    }
     if (showPlayerSetup) {
       confirmNewGameSetup()
       return
@@ -1921,6 +1923,7 @@ export default function Game() {
       setShowPlayerSetup(false)
       return
     }
+    if (!gameStarted) return
     if (showStoryIntro) return
     if (inDialog) {
       setInDialog(false)
@@ -1937,6 +1940,26 @@ export default function Game() {
     }
     toggleMenu()
   }
+
+  const handleDirectionInput = useCallback((dir: 'up' | 'down' | 'left' | 'right') => {
+    if (!gameStarted && !showPlayerSetup) {
+      if (dir === 'up' || dir === 'left') {
+        setTitleSelection(prev => (prev === 0 ? 1 : 0))
+      } else if (dir === 'down' || dir === 'right') {
+        setTitleSelection(prev => (prev === 1 ? 0 : 1))
+      }
+      return
+    }
+
+    if (showPlayerSetup) {
+      if (dir === 'left') setSetupIdentity('maschio')
+      if (dir === 'up') setSetupIdentity('femmina')
+      if (dir === 'right') setSetupIdentity('trans')
+      return
+    }
+
+    move(dir)
+  }, [gameStarted, move, showPlayerSetup])
 
   // Effects
   useEffect(() => {
@@ -1985,24 +2008,23 @@ export default function Game() {
     const handleKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return
-      if (!gameStarted) return
       try {
         switch (e.key) {
           case 'ArrowUp': case 'w': case 'W':
             e.preventDefault()
-            move('up')
+            handleDirectionInput('up')
             break
           case 'ArrowDown': case 's': case 'S':
             e.preventDefault()
-            move('down')
+            handleDirectionInput('down')
             break
           case 'ArrowLeft': case 'a': case 'A':
             e.preventDefault()
-            move('left')
+            handleDirectionInput('left')
             break
           case 'ArrowRight': case 'd': case 'D':
             e.preventDefault()
-            move('right')
+            handleDirectionInput('right')
             break
           case 'Enter': case 'z': case 'Z':
             e.preventDefault()
@@ -2023,7 +2045,7 @@ export default function Game() {
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [gameStarted, inDialog, move, handleA, handleB, advanceDialog, showStoryIntro])
+  }, [advanceDialog, gameStarted, handleA, handleB, handleDirectionInput, inDialog, showStoryIntro])
 
   return (
     <div className="game-wrapper">
@@ -2089,10 +2111,10 @@ export default function Game() {
                     </div>
 
                     <div className="title-menu-card">
-                      <button className="start-btn-large" onClick={startNewGame}>
+                      <button className={`start-btn-large ${titleSelection === 0 ? 'selected' : ''}`} onClick={startNewGame}>
                         NUOVA PARTITA
                       </button>
-                      <button className="start-btn-large secondary" onClick={startSavedGame} disabled={!hasSave()}>
+                      <button className={`start-btn-large secondary ${titleSelection === 1 ? 'selected' : ''}`} onClick={startSavedGame} disabled={!hasSave()}>
                         CARICA PARTITA
                       </button>
                       {hasSave() && (
@@ -2498,30 +2520,30 @@ export default function Game() {
                     <button 
                       type="button"
                       className="dpad-btn dpad-up" 
-                      onTouchStart={(e) => { e.preventDefault(); move('up'); }}
-                      onMouseDown={() => move('up')}
-                      onClick={() => move('up')}
+                      onTouchStart={(e) => { e.preventDefault(); handleDirectionInput('up'); }}
+                      onMouseDown={() => handleDirectionInput('up')}
+                      onClick={() => handleDirectionInput('up')}
                     >▲</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-down" 
-                      onTouchStart={(e) => { e.preventDefault(); move('down'); }}
-                      onMouseDown={() => move('down')}
-                      onClick={() => move('down')}
+                      onTouchStart={(e) => { e.preventDefault(); handleDirectionInput('down'); }}
+                      onMouseDown={() => handleDirectionInput('down')}
+                      onClick={() => handleDirectionInput('down')}
                     >▼</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-left" 
-                      onTouchStart={(e) => { e.preventDefault(); move('left'); }}
-                      onMouseDown={() => move('left')}
-                      onClick={() => move('left')}
+                      onTouchStart={(e) => { e.preventDefault(); handleDirectionInput('left'); }}
+                      onMouseDown={() => handleDirectionInput('left')}
+                      onClick={() => handleDirectionInput('left')}
                     >◀</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-right" 
-                      onTouchStart={(e) => { e.preventDefault(); move('right'); }}
-                      onMouseDown={() => move('right')}
-                      onClick={() => move('right')}
+                      onTouchStart={(e) => { e.preventDefault(); handleDirectionInput('right'); }}
+                      onMouseDown={() => handleDirectionInput('right')}
+                      onClick={() => handleDirectionInput('right')}
                     >▶</button>
                     <div className="dpad-center"></div>
                   </div>
@@ -3011,6 +3033,13 @@ export default function Game() {
         .start-btn-large:hover:not(:disabled) {
           transform: translateY(-1px);
           background: linear-gradient(180deg, #ffffff, #dae5ff);
+        }
+
+        .start-btn-large.selected {
+          background: linear-gradient(180deg, #fff8cf, #ffd86b);
+          border-color: #7a5a0a;
+          color: #543a00;
+          box-shadow: 0 3px 0 rgba(111,79,8,0.35);
         }
 
         .start-btn-large.secondary:hover:not(:disabled) {
@@ -4235,6 +4264,19 @@ export default function Game() {
           cursor: pointer;
           transform: rotate(-10deg);
         }
+
+        .start-btn::after,
+        .select-btn::after {
+          display: block;
+          font-size: 6px;
+          color: #f1f1f1;
+          letter-spacing: 1px;
+          text-align: center;
+          line-height: 10px;
+        }
+
+        .start-btn::after { content: 'START'; }
+        .select-btn::after { content: 'SELECT'; }
 
         .start-btn:hover, .select-btn:hover {
           background: #777;
