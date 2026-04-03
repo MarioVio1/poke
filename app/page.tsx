@@ -65,12 +65,40 @@ interface BattleState {
   trainerName?: string
 }
 
+interface DailyRewardState {
+  lastClaimed: string | null
+  streak: number
+}
+
+interface MonthlyEvent {
+  title: string
+  description: string
+  rumor: string
+  rewardItem: string
+  rewardLabel: string
+}
+
 // Intro animation frames
 const INTRO_FRAMES = [
   { text: '★ POKEMONA ★', subtext: 'Besti di Venetia', delay: 2000 },
   { text: 'Una regione magica...', subtext: 'Dove i canali cantano', delay: 1500 },
   { text: 'Dove i Besti regnano...', subtext: 'Tra spritz e polenta', delay: 1500 },
   { text: 'La tua avventura inizia ora!', subtext: '', delay: 2000 },
+]
+
+const MONTHLY_EVENTS: MonthlyEvent[] = [
+  { title: 'Sagra del Radicchio', description: 'Un mese perfetto per cercare Besti erbosi e sentire ogni nonna dare consigli non richiesti.', rumor: 'Pare che a Trevisella girino radicchi lucidi come rubini.', rewardItem: 'caffette', rewardLabel: 'Caffe Corretto' },
+  { title: 'Carnevale dei Canali', description: 'Maschere, ponti e confusione. I Besti ombra si fanno vedere piu spesso dopo il tramonto.', rumor: 'Un gondoliere giura di aver visto OmbraSpritz specchiarsi nell acqua.', rewardItem: 'mascheraball', rewardLabel: 'Mascheraball' },
+  { title: 'Mese degli Studenti Fuori Corso', description: 'A Padoana nessuno dorme e tutti promettono di recuperare gli esami.', rumor: 'Prof. Sansovino nasconde quiz segreti tra i vicoli.', rewardItem: 'pietra_temporale', rewardLabel: 'Pietra Temporale' },
+  { title: 'Primavera in Laguna', description: 'Il lago e calmo, i canali cantano e i pescatori raccontano storie sempre piu grosse.', rumor: 'A Gardalago si sente parlare di una regata Besti clandestina.', rewardItem: 'scampaball', rewardLabel: 'Scampaball' },
+  { title: 'Festa del Prosecco', description: 'Spritzia e in pieno caos elegante: brindisi, terrazze e promesse di rivincita.', rumor: 'Bepi lo Spritzaro starebbe preparando una squadra da after infinito.', rewardItem: 'spritzball', rewardLabel: 'Spritz Ball' },
+  { title: 'Notti delle Dolomiti', description: 'L aria si fa sottile e i racconti sullo Yeti tornano a circolare.', rumor: 'Nevelet e stato visto vicino a una funivia chiusa da anni.', rewardItem: 'iperpozione', rewardLabel: 'Iper Pozione' },
+  { title: 'Tour dei Bagnanti', description: 'Il lago pullula di villeggianti e Besti acquatici piu nervosi del solito.', rumor: 'Lagunaga odia i pedaloni e qualcuno ne paghera il prezzo.', rewardItem: 'lagunaball', rewardLabel: 'Lagunaball' },
+  { title: 'Ferragosto da Moni', description: 'Griglie accese, parenti invadenti e sfide improvvisate in ogni piazza.', rumor: 'La Compagnia della Polenta recluta grint alle sagre di paese.', rewardItem: 'polentaball', rewardLabel: 'Polentaball' },
+  { title: 'Vendemmia Selvaggia', description: 'Veronara torna teatrale e ogni filare nasconde un allenatore convinto di essere un poeta.', rumor: 'Giuliano Arena prova monologhi contro i passanti.', rewardItem: 'vinoball', rewardLabel: 'Vinoball' },
+  { title: 'Mese delle Nebbie', description: 'La pianura e lattiginosa e i dialoghi diventano ancora piu strani del solito.', rumor: 'Un grint della Polenta starebbe perdendo il pacco da consegnare ogni mattina.', rewardItem: 'ultraball', rewardLabel: 'Ultra Ball' },
+  { title: 'Mercatini in Piazza', description: 'Tra luci e bancarelle si scambiano pietre evolutive come fossero caramelle.', rumor: 'Cugino Max vende bici di dubbia provenienza dietro il Centro Besti.', rewardItem: 'pietra_acquatica', rewardLabel: 'Pietra Acquatica' },
+  { title: 'Inverno da Ostarie', description: 'Tra osterie e stufe accese, le storie si allungano e i Besti si allenano al caldo.', rumor: 'Dux Polenta starebbe preparando un cenone decisamente poco rassicurante.', rewardItem: 'spritz_curativo', rewardLabel: 'Spritz Curativo' },
 ]
 
 const normalizeItemKey = (value: string) =>
@@ -91,6 +119,7 @@ const findItemByName = (value: string): GameItem | undefined => {
 }
 
 const MAIN_GYM_BADGES = ['aperitivo', 'arena', 'studio', 'radicchio', 'ghiaccio', 'laguna'] as const
+const ELITE_BADGES = ['elite_fuoco', 'elite_acqua', 'elite_natura', 'elite_magia'] as const
 
 const normalizeBadgeId = (value: string) => {
   const normalized = normalizeItemKey(value)
@@ -135,6 +164,16 @@ const getBadgeLabel = (value: string) => {
       return 'Badge Ghiaccio'
     case 'laguna':
       return 'Badge Laguna'
+    case 'elite_fuoco':
+      return 'Sigillo del Fuoco'
+    case 'elite_acqua':
+      return "Sigillo dell'Acqua"
+    case 'elite_natura':
+      return 'Sigillo della Natura'
+    case 'elite_magia':
+      return 'Sigillo della Magia'
+    case 'league_pass':
+      return 'Pass della Lega'
     case 'campione':
       return 'Titolo di Campione'
     default:
@@ -145,6 +184,21 @@ const getBadgeLabel = (value: string) => {
 const hasAllMainBadges = (badges: string[]) => {
   const normalizedBadges = badges.map(normalizeBadgeId)
   return MAIN_GYM_BADGES.every(badge => normalizedBadges.includes(badge))
+}
+
+const getEliteBadgeId = (trainerName?: string) => {
+  switch (trainerName) {
+    case 'Il Fuocoso Marco':
+      return 'elite_fuoco'
+    case "L'Acquoso Luca":
+      return 'elite_acqua'
+    case 'Il Naturale Giulia':
+      return 'elite_natura'
+    case 'Il Magico Antonio':
+      return 'elite_magia'
+    default:
+      return null
+  }
 }
 
 const normalizeVehicleId = (value?: string): VehicleType => {
@@ -164,6 +218,30 @@ const normalizeVehicleId = (value?: string): VehicleType => {
       return 'none'
   }
 }
+
+const getTodayKey = () => new Date().toLocaleDateString('sv-SE')
+
+const getYesterdayKey = () => {
+  const date = new Date()
+  date.setDate(date.getDate() - 1)
+  return date.toLocaleDateString('sv-SE')
+}
+
+const getMonthlyEvent = (): MonthlyEvent => {
+  const monthIndex = new Date().getMonth()
+  return MONTHLY_EVENTS[monthIndex] || MONTHLY_EVENTS[0]
+}
+
+const getIntroStarStyle = (index: number) => ({
+  left: `${(index * 17) % 100}%`,
+  top: `${(index * 29) % 100}%`,
+  animationDelay: `${(index % 5) * 0.35}s`,
+})
+
+const getTitleParticleStyle = (index: number) => ({
+  left: `${(index * 11 + 7) % 100}%`,
+  animationDelay: `${(index % 6) * 0.4}s`,
+})
 
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -221,6 +299,7 @@ export default function Game() {
 
   // Day/Night cycle
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('morning')
+  const [dailyReward, setDailyReward] = useState<DailyRewardState>({ lastClaimed: null, streak: 0 })
 
   // Evolution state
   const [showEvolve, setShowEvolve] = useState(false)
@@ -280,6 +359,12 @@ export default function Game() {
       }
     })
     setNotification(`Ottenuto: ${giftedItem.name}!`)
+  }, [])
+
+  const closeOverlay = useCallback(() => {
+    setShowOverlay(false)
+    setInMenu(false)
+    setInTeleport(false)
   }, [])
 
   // Save/Load System with Auto-Save
@@ -405,6 +490,29 @@ export default function Game() {
       }
     }
   }, [])
+
+  useEffect(() => {
+    try {
+      const savedReward = localStorage.getItem('pokemona_daily_reward')
+      if (savedReward) {
+        const parsed = JSON.parse(savedReward) as DailyRewardState
+        setDailyReward({
+          lastClaimed: parsed.lastClaimed || null,
+          streak: parsed.streak || 0,
+        })
+      }
+    } catch (e) {
+      console.error('Daily reward load failed:', e)
+    }
+  }, [])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('pokemona_daily_reward', JSON.stringify(dailyReward))
+    } catch (e) {
+      console.error('Daily reward save failed:', e)
+    }
+  }, [dailyReward])
 
   // Intro animation effect
   useEffect(() => {
@@ -700,7 +808,7 @@ export default function Game() {
     if (dir === 'right') nx++
 
     const map = MAPS[gs.map]
-    if (!map.tiles[ny] || !map.tiles[ny][nx]) return
+    if (!map.tiles[ny] || typeof map.tiles[ny][nx] === 'undefined') return
     
     const tile = map.tiles[ny][nx]
     if (!canMoveOnTile(tile, gs.vehicle)) return
@@ -722,6 +830,14 @@ export default function Game() {
           setDialogs(ev.dialog)
           setSpeaker(ev.name || '')
           setDialogCallback(() => {
+            if (ev.name === 'Infermiera') {
+              setGs(prev => ({
+                ...prev,
+                party: prev.party.map(p => ({ ...p, hp: p.maxHp, status: undefined })),
+              }))
+              soundManager.heal()
+              setNotification('I tuoi Besti sono in forma smagliante!')
+            }
             if (ev.gift) {
               if (ev.gift === 'starter') {
                 setShowStarterChoice(true)
@@ -1160,27 +1276,37 @@ export default function Game() {
         }
         
         // Check if this is an Elite battle
-        if (['Il Fuocoso', "L'Acquoso", 'Il Naturale', 'Il Magico'].includes(battleState!.trainerName || '')) {
+        const eliteBadge = getEliteBadgeId(battleState!.trainerName)
+        if (eliteBadge) {
           soundManager.success()
           setBattleMsg(`Hai sconfitto ${battleState!.trainerName}!`)
           setGs(prev => ({
             ...prev,
-            player: {
-              ...prev.player,
-              money: prev.player.money + reward,
-              badges: prev.player.badges.includes('league_pass')
+            player: (() => {
+              const normalizedBadges = prev.player.badges.map(normalizeBadgeId)
+              const updatedBadges = normalizedBadges.includes(eliteBadge)
                 ? prev.player.badges
-                : ['league_pass', ...prev.player.badges],
-            },
+                : [...prev.player.badges, eliteBadge]
+              const updatedNormalized = updatedBadges.map(normalizeBadgeId)
+              const hasAllEliteBadges = ELITE_BADGES.every(badge => updatedNormalized.includes(badge))
+
+              return {
+                ...prev.player,
+                money: prev.player.money + reward,
+                badges: hasAllEliteBadges && !updatedNormalized.includes('league_pass')
+                  ? [...updatedBadges, 'league_pass']
+                  : updatedBadges,
+              }
+            })(),
           }))
           setTimeout(() => {
             setInBattle(false)
             setShowBattleMsg(false)
             setAnimating(false)
             setDialogs([
-              `${battleState!.trainerName}: Sei forte...`,
-              `Ma gli altri Elite sono più forti di me!`,
-              `Continua il tuo cammino!`,
+              `${battleState!.trainerName}: Xe stata una gran sfida.`,
+              `Hai ottenuto il ${getBadgeLabel(eliteBadge)}.`,
+              'Quando avrai tutti e quattro i sigilli, otterrai il Pass della Lega.',
             ])
             setSpeaker(battleState!.trainerName || '')
             setInDialog(true)
@@ -1654,6 +1780,78 @@ export default function Game() {
     setInMenu(false)
   }
 
+  const claimDailyReward = useCallback(() => {
+    const today = getTodayKey()
+    if (dailyReward.lastClaimed === today) {
+      setNotification('Premio giornaliero gia riscosso. Torna domani, mona!')
+      setTimeout(() => setNotification(''), 2500)
+      return
+    }
+
+    const isConsecutive = dailyReward.lastClaimed === getYesterdayKey()
+    const newStreak = isConsecutive ? dailyReward.streak + 1 : 1
+    const monthlyEvent = getMonthlyEvent()
+    const dailyMoney = 300 + newStreak * 100
+    const rewardItem = ITEMS[monthlyEvent.rewardItem] || ITEMS.gondolball
+
+    setGs(prev => {
+      const existing = prev.inv.find(entry => entry.item.id === rewardItem.id)
+      return {
+        ...prev,
+        player: { ...prev.player, money: prev.player.money + dailyMoney },
+        inv: existing
+          ? prev.inv.map(entry => entry.item.id === rewardItem.id ? { ...entry, qty: entry.qty + 1 } : entry)
+          : [...prev.inv, { item: rewardItem, qty: 1 }],
+      }
+    })
+
+    setDailyReward({ lastClaimed: today, streak: newStreak })
+    setNotification(`Ricompensa riscossa! +₿${dailyMoney} e ${rewardItem.name}. Giorni di fila: ${newStreak}`)
+    setTimeout(() => setNotification(''), 3000)
+  }, [dailyReward])
+
+  const showAdventureBoard = useCallback(() => {
+    const monthlyEvent = getMonthlyEvent()
+    const dailyClaimed = dailyReward.lastClaimed === getTodayKey()
+    const leagueReady = hasAllMainBadges(gs.player.badges)
+
+    setOverlayTitle('BACHECA AVVENTURA')
+    setOverlayContent(
+      <div className="adventure-board">
+        <div className="board-card">
+          <div className="board-title">Ricompensa Giornaliera</div>
+          <div className="board-subtitle">Torna ogni giorno per tenere viva la run</div>
+          <div className="board-text">
+            Serie attuale: {dailyReward.streak} giorni. Oggi {dailyClaimed ? 'hai gia riscosso il premio' : 'puoi ritirare il premio del giorno'}.
+          </div>
+          <div className="board-reward">Ricompensa di oggi: soldi, consumabili e una spinta per continuare a girare Venetia.</div>
+          <button className="board-btn" onClick={claimDailyReward} disabled={dailyClaimed}>
+            {dailyClaimed ? 'Premio gia preso' : 'Riscuoti premio'}
+          </button>
+        </div>
+
+        <div className="board-card">
+          <div className="board-title">Evento Del Mese</div>
+          <div className="board-subtitle">{monthlyEvent.title}</div>
+          <div className="board-text">{monthlyEvent.description}</div>
+          <div className="board-task">Voce di corridoio: {monthlyEvent.rumor}</div>
+          <div className="board-reward">Ricompensa tema del mese: {monthlyEvent.rewardLabel}</div>
+        </div>
+
+        <div className="board-card">
+          <div className="board-title">Venetia Viva</div>
+          <div className="board-text">
+            La Compagnia della Polenta e ancora in giro con grint, pacchi sospetti e storie secondarie sparse tra Spritzia, Padoana e la base finale.
+          </div>
+          <div className="board-task">Tracce aperte: palestra di {MAPS[gs.map]?.name || 'zona attuale'}, rivali da riaffrontare, villanate della Polenta, ricompense giornaliere e collezione Besti.</div>
+          <div className="board-task">Stato mondo: {leagueReady ? 'hai i badge principali e la Lega ti aspetta' : 'prima chiudi i badge principali e poi punta alla Lega'}.</div>
+        </div>
+      </div>
+    )
+    setShowOverlay(true)
+    setInMenu(false)
+  }, [claimDailyReward, dailyReward, gs.map, gs.player.badges])
+
   const teleportTo = (loc: TeleportLocation) => {
     soundManager.teleport()
     setGs(prev => ({
@@ -1680,10 +1878,11 @@ export default function Game() {
           <div className="menu-option" onClick={() => { showBag(); setInMenu(false) }}>Zaino</div>
           <div className="menu-option" onClick={() => { showPokedex(); setInMenu(false) }}>BestiDex</div>
           <div className="menu-option" onClick={() => { showTeleport(); }}>Teletrasporto</div>
+          <div className="menu-option" onClick={() => { showAdventureBoard(); }}>📜 Bacheca</div>
           <div className="menu-option" onClick={() => { showAchievements(); }}>🏆 Trofei</div>
           <div className="menu-option" onClick={() => { showSave(); }}>💾 Salva</div>
           <div className="menu-option" onClick={() => { showLoad(); }}>📂 Carica</div>
-          <div className="menu-option" onClick={() => { setInMenu(false) }}>❌ Chiudi</div>
+          <div className="menu-option" onClick={() => { closeOverlay() }}>❌ Chiudi</div>
         </div>
       )
       setShowOverlay(true)
@@ -1727,7 +1926,7 @@ export default function Game() {
       return
     }
     if (showOverlay) {
-      setShowOverlay(false)
+      closeOverlay()
       return
     }
     checkEvents()
@@ -1746,7 +1945,7 @@ export default function Game() {
       return
     }
     if (showOverlay) {
-      setShowOverlay(false)
+      closeOverlay()
       return
     }
     toggleMenu()
@@ -1831,11 +2030,7 @@ export default function Game() {
                       <div 
                         key={i} 
                         className="star" 
-                        style={{
-                          left: `${Math.random() * 100}%`,
-                          top: `${Math.random() * 100}%`,
-                          animationDelay: `${Math.random() * 2}s`
-                        }}
+                        style={getIntroStarStyle(i)}
                       />
                     ))}
                   </div>
@@ -1869,10 +2064,7 @@ export default function Game() {
                       <div 
                         key={i} 
                         className="particle"
-                        style={{
-                          left: `${Math.random() * 100}%`,
-                          animationDelay: `${Math.random() * 3}s`
-                        }}
+                        style={getTitleParticleStyle(i)}
                       />
                     ))}
                   </div>
@@ -2176,7 +2368,7 @@ export default function Game() {
               {showOverlay && (
                 <div className="overlay">
                   <div className="overlay-header">{overlayTitle}</div>
-                  <button className="close-btn" onClick={() => setShowOverlay(false)}>✕</button>
+                  <button className="close-btn" onClick={closeOverlay}>✕</button>
                   <div className="overlay-content">{overlayContent}</div>
                 </div>
               )}
@@ -2906,6 +3098,66 @@ export default function Game() {
 
         .overlay-content {
           font-size: 7px;
+        }
+
+        .adventure-board {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .board-card {
+          background: linear-gradient(180deg, #fffaf1 0%, #f4ede1 100%);
+          border: 2px solid #7b5e3b;
+          border-radius: 8px;
+          padding: 8px;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+        }
+
+        .board-title {
+          font-size: 8px;
+          color: #5b3a1f;
+          margin-bottom: 4px;
+        }
+
+        .board-subtitle {
+          font-size: 6px;
+          color: #8b6b4b;
+          margin-bottom: 6px;
+        }
+
+        .board-text,
+        .board-task,
+        .board-reward {
+          line-height: 1.5;
+          margin-bottom: 5px;
+          color: #2f2a23;
+        }
+
+        .board-task {
+          color: #4b3a2a;
+        }
+
+        .board-reward {
+          color: #2e7d32;
+        }
+
+        .board-btn {
+          width: 100%;
+          margin-top: 4px;
+          padding: 8px;
+          border: none;
+          border-radius: 6px;
+          background: linear-gradient(180deg, #c96d1f 0%, #a65316 100%);
+          color: white;
+          font-family: inherit;
+          font-size: 7px;
+          cursor: pointer;
+        }
+
+        .board-btn:disabled {
+          background: #9e9e9e;
+          cursor: default;
         }
 
         .menu-grid {

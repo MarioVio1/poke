@@ -403,7 +403,7 @@ export const isLocationUnlocked = (
     case 'league':
       return ['aperitivo', 'arena', 'studio', 'radicchio', 'ghiaccio', 'laguna'].every(badge => normalizedBadges.includes(badge))
     case 'elite':
-      return normalizedBadges.includes('leaguepass') || badges.includes('league_pass')
+      return normalizedBadges.includes('league_pass')
     default:
       return false
   }

@@ -289,12 +289,12 @@ export const MAPS: Record<string, GameMap> = {
       // Gym Leader
       { type: 'gym', x: 10, y: 6, name: 'Bepi lo Spritzaro', npcId: 'bepi_spritzaro',
         badge: 'aperitivo',
-        dialog: ['CHE BEVEMO OGGI?!', 'Spritzino! Pronto per l\'Happy Hour!', 'Combattiamo! Ma dopo... spritz!'],
+        dialog: ['CHE BEVEMO OGGI, OSTREGA?!', 'Spritzino! Se me batti te offro da bere, se no torna a casa, mona!', 'Combattiamo! Ma dopo... ombra e cicheto!'],
         team: [{ id: 'spritzino', lvl: 14 }, { id: 'vespolo', lvl: 15 }, { id: 'fogaron', lvl: 16 }] },
       
       // Enemy Grunt
       { type: 'trainer', x: 4, y: 7, name: 'Grint', npcId: 'grint_polenta', isEnemy: true,
-        dialog: ['LA COMPAGNIA DELLA POLENTA REGNERÀ!'],
+        dialog: ['LA COMPAGNIA DELLA POLENTA REGNERA!', 'No sta far el furbo, fiolo: qua comandemo noi!'],
         team: [{ id: 'polentaur', lvl: 12 }, { id: 'salamix', lvl: 11 }] },
       
       // Photographer
@@ -431,7 +431,7 @@ export const MAPS: Record<string, GameMap> = {
       // Gym Leader - Arena style
       { type: 'gym', x: 5, y: 4, name: 'Giuliano Arena', npcId: 'giuliano_arena',
         badge: 'arena',
-        dialog: ['Benvenuto nell\'ARENA!', 'Come a Verona, dove gli innamorati giurano!', 'Combattiamo con onore!'],
+        dialog: ['Benvenuto nell\'ARENA!', 'Qua tra balconi, promesse e ciacole se misura il valore vero!', 'Combattiamo con onore, fiolo, e senza sceneggiate!'],
         team: [{ id: 'polentaur', lvl: 18 }, { id: 'alpibex', lvl: 19 }, { id: 'dolomor', lvl: 20 }] },
       
       // Tifoso
@@ -561,7 +561,7 @@ export const MAPS: Record<string, GameMap> = {
       // Gym Leader - Universita
       { type: 'gym', x: 10, y: 6, name: 'Prof. Sansovino', npcId: 'prof_padova',
         badge: 'studio',
-        dialog: ['Benvenuto all\'Università!', 'Solo chi studia davvero merita il mio esame finale!', 'Vediamo se hai imparato qualcosa.'],
+        dialog: ['Benvenuto all\'Universita!', 'Niente ciacole, ostrega: qua se studia e dopo se combatte!', 'Vediamo se hai imparato qualcosa o se te sei qua solo per lo spritz.'],
         team: [{ id: 'tiramisu', lvl: 22 }, { id: 'prosecchione', lvl: 23 }, { id: 'mascarion', lvl: 24 }] },
       
       // Camera for photos
@@ -695,7 +695,7 @@ export const MAPS: Record<string, GameMap> = {
       // Gym Leader - Radicchio
       { type: 'gym', x: 10, y: 8, name: 'Nonna Gina', npcId: 'vecchio_treviso',
         badge: 'radicchio',
-        dialog: ['El radicchio vero no perdona!', 'Se vuoi il mio badge, devi meritartelo sul serio!'],
+        dialog: ['El radicchio vero no perdona, ostia!', 'Se vuoi el mio badge te lo devi sudare, fiolo, altro che scorciatoie!'],
         team: [{ id: 'radicorso', lvl: 26 }, { id: 'lagunaga', lvl: 27 }, { id: 'canalisk', lvl: 28 }] },
       
       // Give bike story event
@@ -826,7 +826,7 @@ export const MAPS: Record<string, GameMap> = {
       // Gym Leader - Ice type
       { type: 'gym', x: 9, y: 6, name: 'Regina dei Ghiacci', npcId: 'vecchia_spritzia',
         badge: 'ghiaccio',
-        dialog: ['Il freddo è mio alleato!', 'Combattiamo!'],
+        dialog: ['Il freddo xe el mio alleato!', 'Se tremi adesso, in vetta no duri gnanca un minuto!'],
         team: [{ id: 'nevelet', lvl: 24 }, { id: 'dolomor', lvl: 26 }, { id: 'dolomibex', lvl: 28 }] },
       
       // Shop
@@ -944,18 +944,18 @@ export const MAPS: Record<string, GameMap> = {
     events: [
       // Gondola boatman
       { type: 'npc', x: 9, y: 6, name: 'Gondoliere Eco', npcId: 'gondoliere_verde',
-        dialog: ['Benvenuto al Gardalago!', 'Vuoi attraversare il lago? Costa 100€!'],
+        dialog: ['Benvenuto al Gardalago!', 'Co sta gondola te porti dove vuoi, basta no far el mona sul molo!'],
         vehicle: 'gondola_oro' },
       
       // Gym Leader - Final city badge
       { type: 'gym', x: 10, y: 8, name: 'Maestro Marco', npcId: 'campione_veneto',
         badge: 'laguna',
-        dialog: ['Hai attraversato tutta Venetia per arrivare qui.', 'Se vuoi entrare nella Lega, devi prima superare me!'],
+        dialog: ['Hai attraversato tutta Venetia per arrivare qua, bravo.', 'Se vuoi entrare nella Lega, prima devi superare mi. Niente paura, ma gnanca regali.'],
         team: [{ id: 'lagunaga', lvl: 36 }, { id: 'canalord', lvl: 38 }, { id: 'lagorion', lvl: 40 }] },
       
       // Optional rematch before the League
       { type: 'trainer', x: 10, y: 6, name: 'Maestro Marco', npcId: 'campione_veneto',
-        dialog: ['Sei gia quasi pronto per la Lega.', 'Facciamo una rivincita per vedere se reggi la pressione!'],
+        dialog: ['Sei quasi pronto per la Lega.', 'Femo una rivincita: vedemo se reggi la pressione o te sciopi come un ombrellone al lago!'],
         team: [{ id: 'serenissima', lvl: 42 }, { id: 'lagorion', lvl: 42 }, { id: 'fogarion', lvl: 42 }, { id: 'radicthron', lvl: 41 }, { id: 'canalord', lvl: 41 }] },
       
       // Shop
@@ -1144,18 +1144,18 @@ export const MAPS: Record<string, GameMap> = {
     ],
     events: [
       { type: 'trainer', x: 3, y: 4, name: 'Il Fuocoso Marco', npcId: 'elite_1',
-        dialog: ['Sono Il Fuocoso Marco! Le mie fiamme non perdonano!', 'Non avvicinarti troppo, potresti bruciarti!'],
+        dialog: ['Sono Il Fuocoso Marco! Le mie fiamme no perdona!', 'Se te vien vicino troppo, te cusi come polenta dimenticata sul fogo!'],
         team: [{ id: 'fogarox', lvl: 40 }, { id: 'dolomitor', lvl: 42 }, { id: 'lagorion', lvl: 41 }] },
       { type: 'trainer', x: 16, y: 4, name: 'L\'Acquoso Luca', npcId: 'elite_2',
-        dialog: ['Io sono L\'Acquoso Luca! I miei canali sono profondi!'],
-        team: [{ id: 'canalord', lvl: 40 }, { id: 'nevelet', lvl: 42 }, { id: 'ombraspritz', lvl: 41 }] },
+        dialog: ['Io sono L\'Acquoso Luca! I miei canali xe profondi e pieni de sorprese!'],
+        team: [{ id: 'canalord', lvl: 40 }, { id: 'nevelet', lvl: 42 }, { id: 'ombradriz', lvl: 41 }] },
       { type: 'trainer', x: 3, y: 10, name: 'Il Naturale Giulia', npcId: 'elite_3',
-        dialog: ['Sono Il Naturale Giulia! La natura è dalla mia parte!'],
+        dialog: ['Sono Il Naturale Giulia! La natura xe dalla mia parte, e no la puoi fregare!'],
         team: [{ id: 'vignarbor', lvl: 40 }, { id: 'polentitan', lvl: 42 }, { id: 'serenissima', lvl: 41 }] },
       { type: 'trainer', x: 16, y: 10, name: 'Il Magico Antonio', npcId: 'elite_4',
-        dialog: ['Sono Il Magico Antonio! Le ombre nascondono grandi poteri!'],
+        dialog: ['Sono Il Magico Antonio! Le ombre nasconde poteri grossi, fiolo. Sta atento!'],
         team: [{ id: 'mascarion', lvl: 40 }, { id: 'stregatto', lvl: 42 }, { id: 'fantasma', lvl: 41 }] },
-      { type: 'warp', x: 10, y: 13, dest: 'league_champion', dx: 10, dy: 3, requires: 'league' },
+      { type: 'warp', x: 10, y: 13, dest: 'league_champion', dx: 10, dy: 3, requires: 'elite' },
     ],
   },
   league_champion: {
@@ -1183,12 +1183,12 @@ export const MAPS: Record<string, GameMap> = {
     ],
     events: [
       { type: 'gymLeader', x: 10, y: 8, name: 'DUX VENETIAE', npcId: 'champion',
-        dialog: ['Dopo questo lungo viaggio...', '...finalmente ci incontriamo!', 'Sono il DUX VENETIAE!', 'Dimostra il tuo valore, sfidante!'],
+        dialog: ['Dopo questo lungo viaggio...', '...finalmente ci incontriamo, fiolo!', 'Sono il DUX VENETIAE!', 'Dimostra il tuo valore, senza ciacole e senza paura!'],
         team: [
           { id: 'dolomitor', lvl: 50 },
           { id: 'lagorion', lvl: 50 },
           { id: 'serenissima', lvl: 50 },
-          { id: 'ombraspritz', lvl: 50 },
+          { id: 'ombradriz', lvl: 50 },
           { id: 'fogarox', lvl: 52 },
           { id: 'canalord', lvl: 52 },
         ], badge: 'champion', prize: 50000 },
