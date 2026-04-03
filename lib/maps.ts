@@ -17,7 +17,7 @@ export const CITY_THEMES: Record<string, {
     accentColor: '#4fc3f7',
     description: 'La città dei canali e delle maschere',
     npcs: [
-      { name: 'Prof. Barcaro', greeting: 'Studio i Besti da 40 anni!' },
+      { name: 'Dottor GheSboro', greeting: 'Studio i Besti tra nebbia e cicheti da una vita!' },
       { name: 'Gondoliere', greeting: 'Vogando per i canali...' },
       { name: 'Foto Mario', greeting: 'SORRISI! Siamo a Canalborgo!' },
     ]
@@ -129,12 +129,12 @@ export const MAPS: Record<string, GameMap> = {
     ],
     events: [
       // Professor's Lab (center)
-      { type: 'npc', x: 10, y: 7, name: 'Prof. Barcaro', npcId: 'prof_barcaro', 
-        dialog: ['Ciao! Sono il Prof. Barcaro!', 'Studio i Besti da 40 anni!', 'Scegli il tuo primo Besti!'], givesStarter: true },
+      { type: 'npc', x: 10, y: 7, name: 'Dottor GheSboro', npcId: 'prof_barcaro', 
+        dialog: ['Finalmente sei arrivato!', 'Sono il Dottor GheSboro, e oggi ti affido il tuo primo Besti!', 'Scegli con criterio: il viaggio sara lungo e pieno di monade.'], givesStarter: true },
       
       // Mom (home)
       { type: 'npc', x: 4, y: 9, name: 'Mamma', npcId: 'mamma',
-        dialog: ['Tesoro! Sei uscito?', 'Stai attento e non litigare!', 'Se perdi, torno a casa che ti faccio il risotto!'] },
+        dialog: ['Tesoro! Sei uscito o te devo tirar zo dal letto con la scopa?', 'Stai attento e non litigare!', 'Se perdi, torno a casa che ti faccio il risotto!'] },
       
       // Old man near canal
       { type: 'npc', x: 5, y: 4, name: 'Nonno Piero', npcId: 'nonno_piero',
@@ -176,7 +176,7 @@ export const MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,1,1,1,1,1],
     ],
     events: [
-      { type: 'npc', x: 4, y: 3, name: 'Mamma', npcId: 'mamma', dialog: ['Vai dal Prof. Barcaro!'] },
+      { type: 'npc', x: 4, y: 3, name: 'Mamma', npcId: 'mamma', dialog: ['Su, vestite e va dal Dottor GheSboro!', 'Se torno con la scopa, te voli fora dalla finestra!'] },
       { type: 'item', x: 7, y: 4, item: { name: 'Pozioncino', type: 'heal', val: 20 } },
       { type: 'item', x: 6, y: 3, item: { name: 'Gondolball', type: 'capture', val: 0 } },
       { type: 'warp', x: 4, y: 5, dest: 'canalborgo', dx: 7, dy: 12 },
