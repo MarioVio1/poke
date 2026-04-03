@@ -1947,6 +1947,26 @@ export default function Game() {
     toggleMenu()
   }
 
+  const handleDirectionInput = useCallback((dir: 'up' | 'down' | 'left' | 'right') => {
+    if (!gameStarted && !showPlayerSetup) {
+      if (dir === 'up' || dir === 'left') {
+        setTitleSelection(prev => (prev === 0 ? 1 : 0))
+      } else if (dir === 'down' || dir === 'right') {
+        setTitleSelection(prev => (prev === 1 ? 0 : 1))
+      }
+      return
+    }
+
+    if (showPlayerSetup) {
+      if (dir === 'left') setSetupIdentity('maschio')
+      if (dir === 'up') setSetupIdentity('femmina')
+      if (dir === 'right') setSetupIdentity('trans')
+      return
+    }
+
+    move(dir)
+  }, [gameStarted, move, showPlayerSetup])
+
   const handleStartButton = useCallback(() => {
     if (!gameStarted || showPlayerSetup || showStoryIntro) return
     toggleMenu()
@@ -1982,26 +2002,6 @@ export default function Game() {
     }
     handleSelectButton()
   }, [handleA, handleB, handleDirectionInput, handleSelectButton, handleStartButton])
-
-  const handleDirectionInput = useCallback((dir: 'up' | 'down' | 'left' | 'right') => {
-    if (!gameStarted && !showPlayerSetup) {
-      if (dir === 'up' || dir === 'left') {
-        setTitleSelection(prev => (prev === 0 ? 1 : 0))
-      } else if (dir === 'down' || dir === 'right') {
-        setTitleSelection(prev => (prev === 1 ? 0 : 1))
-      }
-      return
-    }
-
-    if (showPlayerSetup) {
-      if (dir === 'left') setSetupIdentity('maschio')
-      if (dir === 'up') setSetupIdentity('femmina')
-      if (dir === 'right') setSetupIdentity('trans')
-      return
-    }
-
-    move(dir)
-  }, [gameStarted, move, showPlayerSetup])
 
   // Effects
   useEffect(() => {
