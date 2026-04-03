@@ -7,10 +7,25 @@ export const PIXEL_SPRITES: Record<string, {
   icon: ImageData
 }> = {}
 
+const canUseDOM = () =>
+  typeof document !== 'undefined'
+
+const createEmptyImageData = (width: number, height: number): ImageData =>
+  ({
+    data: new Uint8ClampedArray(width * height * 4),
+    width,
+    height,
+    colorSpace: 'srgb',
+  } as ImageData)
+
 // Create pixel art from 2D color array
 function createPixelArt(pixels: number[][], scale = 1): ImageData {
   const height = pixels.length
   const width = pixels[0]?.length || 0
+
+  if (!canUseDOM()) {
+    return createEmptyImageData(width * scale, height * scale)
+  }
   
   const canvas = document.createElement('canvas')
   canvas.width = width * scale
@@ -1291,6 +1306,8 @@ PIXEL_SPRITES.idrovolante = {
 
 // Helper to convert ImageData to data URL
 export function imageDataToUrl(imageData: ImageData): string {
+  if (!canUseDOM()) return ''
+
   const canvas = document.createElement('canvas')
   canvas.width = imageData.width
   canvas.height = imageData.height
