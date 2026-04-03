@@ -232,6 +232,7 @@ const OPENING_STORY: StoryIntroScene[] = [
 
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const lastVirtualPressRef = useRef<Record<string, number>>({})
 
   const normalizePlayer = useCallback((player: Partial<GameState['player']> | undefined): GameState['player'] => ({
     name: player?.name || 'Federico',
@@ -264,6 +265,7 @@ export default function Game() {
   const [showIntroText, setShowIntroText] = useState(false)
   const [titleSelection, setTitleSelection] = useState(0)
   const [showPlayerSetup, setShowPlayerSetup] = useState(false)
+  const [mapTransition, setMapTransition] = useState(false)
   const [setupName, setSetupName] = useState('Federico')
   const [setupIdentity, setSetupIdentity] = useState<PlayerIdentity>('maschio')
   const [showStoryIntro, setShowStoryIntro] = useState(false)
@@ -940,7 +942,11 @@ export default function Game() {
           setInDialog(true)
           break
         }
-        setGs(prev => ({ ...prev, map: ev.dest!, player: { ...prev.player, x: ev.dx!, y: ev.dy! } }))
+        setMapTransition(true)
+        setTimeout(() => {
+          setGs(prev => ({ ...prev, map: ev.dest!, player: { ...prev.player, x: ev.dx!, y: ev.dy! } }))
+          setTimeout(() => setMapTransition(false), 160)
+        }, 160)
         break
       case 'heal':
         setGs(prev => ({
@@ -1001,11 +1007,11 @@ export default function Game() {
 
     // Event interaction
     const ev = map.events?.find((e: MapEvent) => {
-      if (e.type === 'npc' || e.type === 'trainer' || e.type === 'gym') {
+      if (e.type === 'npc' || e.type === 'trainer' || e.type === 'gym' || e.type === 'sign') {
         if (typeof e.x !== 'number' || typeof e.y !== 'number') return false
-        return e.x === gs.player.x && e.y === gs.player.y
+        return Math.abs(e.x - gs.player.x) + Math.abs(e.y - gs.player.y) <= 1
       }
-      if (e.type === 'sign' || e.type === 'warp' || e.type === 'heal' || e.type === 'shop') {
+      if (e.type === 'warp' || e.type === 'heal' || e.type === 'shop') {
         if (typeof e.x !== 'number' || typeof e.y !== 'number') return false
         return e.x === gs.player.x && e.y === gs.player.y
       }
@@ -1941,6 +1947,42 @@ export default function Game() {
     toggleMenu()
   }
 
+  const handleStartButton = useCallback(() => {
+    if (!gameStarted || showPlayerSetup || showStoryIntro) return
+    toggleMenu()
+  }, [gameStarted, showPlayerSetup, showStoryIntro])
+
+  const handleSelectButton = useCallback(() => {
+    if (!gameStarted || showPlayerSetup || showStoryIntro) return
+    setNotification(gs.flags.hasStarter ? `Obiettivo: esplora ${MAPS[gs.map]?.name || 'Venetia'}` : (gs.storyProgress < 2 ? 'Obiettivo: parla con la Mamma' : 'Obiettivo: vai dal Dottor GheSboro'))
+    setTimeout(() => setNotification(''), 1600)
+  }, [gameStarted, gs.flags.hasStarter, gs.map, gs.storyProgress, showPlayerSetup, showStoryIntro])
+
+  const handleVirtualPress = useCallback((control: 'up' | 'down' | 'left' | 'right' | 'a' | 'b' | 'start' | 'select') => {
+    const now = Date.now()
+    const last = lastVirtualPressRef.current[control] || 0
+    if (now - last < 120) return
+    lastVirtualPressRef.current[control] = now
+
+    if (control === 'up' || control === 'down' || control === 'left' || control === 'right') {
+      handleDirectionInput(control)
+      return
+    }
+    if (control === 'a') {
+      handleA()
+      return
+    }
+    if (control === 'b') {
+      handleB()
+      return
+    }
+    if (control === 'start') {
+      handleStartButton()
+      return
+    }
+    handleSelectButton()
+  }, [handleA, handleB, handleDirectionInput, handleSelectButton, handleStartButton])
+
   const handleDirectionInput = useCallback((dir: 'up' | 'down' | 'left' | 'right') => {
     if (!gameStarted && !showPlayerSetup) {
       if (dir === 'up' || dir === 'left') {
@@ -2009,6 +2051,10 @@ export default function Game() {
       const target = e.target as HTMLElement | null
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return
       try {
+        if (e.repeat && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D'].includes(e.key)) {
+          e.preventDefault()
+          return
+        }
         switch (e.key) {
           case 'ArrowUp': case 'w': case 'W':
             e.preventDefault()
@@ -2470,6 +2516,8 @@ export default function Game() {
                 <div className="notification">{notification}</div>
               )}
 
+              {mapTransition && <div className="map-fade"></div>}
+
               {/* Overlay (Menus) */}
               {showOverlay && (
                 <div className="overlay">
@@ -2520,30 +2568,26 @@ export default function Game() {
                     <button 
                       type="button"
                       className="dpad-btn dpad-up" 
-                      onTouchStart={(e) => { e.preventDefault(); handleDirectionInput('up'); }}
-                      onMouseDown={() => handleDirectionInput('up')}
-                      onClick={() => handleDirectionInput('up')}
+                      onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('up'); }}
+                      onClick={(e) => e.preventDefault()}
                     >▲</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-down" 
-                      onTouchStart={(e) => { e.preventDefault(); handleDirectionInput('down'); }}
-                      onMouseDown={() => handleDirectionInput('down')}
-                      onClick={() => handleDirectionInput('down')}
+                      onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('down'); }}
+                      onClick={(e) => e.preventDefault()}
                     >▼</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-left" 
-                      onTouchStart={(e) => { e.preventDefault(); handleDirectionInput('left'); }}
-                      onMouseDown={() => handleDirectionInput('left')}
-                      onClick={() => handleDirectionInput('left')}
+                      onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('left'); }}
+                      onClick={(e) => e.preventDefault()}
                     >◀</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-right" 
-                      onTouchStart={(e) => { e.preventDefault(); handleDirectionInput('right'); }}
-                      onMouseDown={() => handleDirectionInput('right')}
-                      onClick={() => handleDirectionInput('right')}
+                      onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('right'); }}
+                      onClick={(e) => e.preventDefault()}
                     >▶</button>
                     <div className="dpad-center"></div>
                   </div>
@@ -2555,17 +2599,15 @@ export default function Game() {
                     type="button"
                     className="action-btn" 
                     id="btn-a" 
-                    onTouchStart={(e) => { e.preventDefault(); handleA(); }}
-                    onMouseDown={() => handleA()}
-                    onClick={handleA}
+                    onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('a'); }}
+                    onClick={(e) => e.preventDefault()}
                   >A</button>
                   <button 
                     type="button"
                     className="action-btn" 
                     id="btn-b" 
-                    onTouchStart={(e) => { e.preventDefault(); handleB(); }}
-                    onMouseDown={() => handleB()}
-                    onClick={handleB}
+                    onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('b'); }}
+                    onClick={(e) => e.preventDefault()}
                   >B</button>
                 </div>
 
@@ -2574,11 +2616,10 @@ export default function Game() {
                   <button 
                     type="button"
                     className="start-btn" 
-                    onTouchStart={(e) => { e.preventDefault(); toggleMenu(); }}
-                    onMouseDown={() => toggleMenu()}
-                    onClick={toggleMenu}
+                    onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('start'); }}
+                    onClick={(e) => e.preventDefault()}
                   ></button>
-                  <button type="button" className="select-btn" onTouchStart={(e) => { e.preventDefault(); handleB(); }} onMouseDown={() => handleB()} onClick={handleB}></button>
+                  <button type="button" className="select-btn" onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('select'); }} onClick={(e) => e.preventDefault()}></button>
                 </div>
               </div>
             </div>
@@ -3238,6 +3279,22 @@ export default function Game() {
           border-radius: 5px;
           font-size: 8px;
           z-index: 100;
+        }
+
+        .map-fade {
+          position: absolute;
+          inset: 0;
+          background: #000;
+          opacity: 0.88;
+          z-index: 95;
+          pointer-events: none;
+          animation: mapFadePulse 0.32s ease;
+        }
+
+        @keyframes mapFadePulse {
+          0% { opacity: 0; }
+          50% { opacity: 0.92; }
+          100% { opacity: 0.88; }
         }
 
         .battle-scene {

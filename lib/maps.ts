@@ -113,14 +113,14 @@ export const MAPS: Record<string, GameMap> = {
     tiles: [
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
       [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,0,2,2,2,0,0,0,0,0,2,2,2,0,0,0,0,0,1],
-      [1,0,0,2,2,2,0,0,0,0,0,2,2,2,0,0,0,0,0,1],
+      [1,0,3,3,3,3,0,0,0,0,0,0,3,3,3,3,0,0,0,1],
+      [1,0,3,3,3,3,0,2,2,2,0,0,3,3,3,3,0,0,0,1],
+      [1,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,1],
       [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
       [1,0,0,0,0,0,0,3,3,3,3,3,0,0,0,0,0,0,0,1],
       [1,0,0,0,0,0,0,3,3,3,3,3,0,0,0,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,3,3,3,3,0,0,0,0,0,0,0,0,3,3,3,0,0,1],
+      [1,0,3,3,3,3,0,0,0,0,0,0,0,0,3,3,3,0,0,1],
       [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
       [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
       [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
@@ -128,35 +128,39 @@ export const MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
     ],
     events: [
-      // Professor's Lab (center)
-      { type: 'npc', x: 10, y: 7, name: 'Dottor GheSboro', npcId: 'prof_barcaro', 
-        dialog: ['Finalmente te son rivà fin qua!', 'Sono il Dottor GheSboro, e oggi ti affido il tuo primo Besti!', 'Scegli con criterio: el viaggio sarà longo e pien de monade.'], givesStarter: true },
-      
-      // Mom (home)
-      { type: 'npc', x: 4, y: 9, name: 'Mamma', npcId: 'mamma',
-        dialog: ['Tesoro! Sei uscito o te devo tirar zo dal letto con la scopa?', 'Stai attento e non litigare!', 'Se perdi, torno a casa che ti faccio il risotto!'] },
+      // Town NPCs
+      { type: 'npc', x: 4, y: 5, name: 'Mamma', npcId: 'mamma',
+        dialog: ['Bravo, te si rivà fin in piazza.', 'Adesso va dal Dottor GheSboro in laboratorio, vicino al canale.'] },
       
       // Old man near canal
-      { type: 'npc', x: 5, y: 4, name: 'Nonno Piero', npcId: 'nonno_piero',
+      { type: 'npc', x: 6, y: 5, name: 'Nonno Piero', npcId: 'nonno_piero',
         dialog: ['Nel mio tempo...', '...i Besti si chiamavano Bestie!', 'E non c\'era ste palle!'] },
       
       // Gondoliere
-      { type: 'npc', x: 2, y: 5, name: 'Gondoliere', npcId: 'gondoliere_nero',
+      { type: 'npc', x: 10, y: 4, name: 'Gondoliere', npcId: 'gondoliere_nero',
         dialog: ['Vogando per i canali...', 'Vuoi attraversare? Costa 50€!'] },
       
       // Sign
       { type: 'sign', x: 8, y: 9, text: 'Benvenuti a CANALBORGO!\nLa città dei canali.' },
-      { type: 'sign', x: 15, y: 4, text: 'Centro Besti ➜' },
+      { type: 'sign', x: 3, y: 1, text: 'Casa di Federico' },
+      { type: 'sign', x: 9, y: 5, text: 'Laboratorio GheSboro ➜' },
+      { type: 'sign', x: 15, y: 1, text: 'Centro Besti ➜' },
+      { type: 'sign', x: 15, y: 8, text: 'Bottega di Bruna' },
       
       // Home entrance
-      { type: 'warp', x: 7, y: 11, dest: 'casa', dx: 4, dy: 5 },
-      { type: 'warp', x: 12, y: 11, dest: 'casa', dx: 5, dy: 5 },
+      { type: 'warp', x: 3, y: 3, dest: 'casa', dx: 4, dy: 5 },
+
+      // Professor lab
+      { type: 'warp', x: 9, y: 7, dest: 'laboratorio', dx: 5, dy: 6 },
       
       // Center entrance
-      { type: 'warp', x: 9, y: 6, dest: 'centro', dx: 4, dy: 4 },
+      { type: 'warp', x: 14, y: 3, dest: 'centro', dx: 4, dy: 4 },
       
       // Shop entrance
-      { type: 'warp', x: 10, y: 6, dest: 'shop_centro', dx: 3, dy: 4 },
+      { type: 'warp', x: 15, y: 9, dest: 'shop_centro', dx: 3, dy: 4 },
+
+      // Neighbor house
+      { type: 'warp', x: 15, y: 3, dest: 'casa_vicina', dx: 4, dy: 5 },
       
       // Route to Spritzia
       { type: 'warp', x: 7, y: 14, dest: 'route1', dx: 10, dy: 1 },
@@ -181,6 +185,47 @@ export const MAPS: Record<string, GameMap> = {
       { type: 'item', x: 2, y: 5, item: { name: 'Gondolball', type: 'capture', val: 0 } },
       { type: 'warp', x: 4, y: 6, dest: 'canalborgo', dx: 7, dy: 12 },
       { type: 'warp', x: 5, y: 6, dest: 'canalborgo', dx: 12, dy: 12 },
+    ],
+  },
+
+  laboratorio: {
+    name: 'Laboratorio GheSboro',
+    tiles: [
+      [1,1,1,1,1,1,1,1,1,1,1],
+      [1,4,4,4,4,4,4,4,4,4,1],
+      [1,4,4,4,4,4,4,4,4,4,1],
+      [1,4,5,5,4,4,4,5,5,4,1],
+      [1,4,4,4,4,4,4,4,4,4,1],
+      [1,4,4,4,4,4,4,4,4,4,1],
+      [1,4,4,4,4,4,4,4,4,4,1],
+      [1,1,1,1,1,4,1,1,1,1,1],
+    ],
+    events: [
+      { type: 'npc', x: 5, y: 2, name: 'Dottor GheSboro', npcId: 'professor',
+        dialog: ['Finalmente te son rivà fin qua!', 'Sono il Dottor GheSboro, e oggi ti affido il tuo primo Besti!', 'Scegli con criterio: el viaggio sarà longo e pien de monade.'], givesStarter: true },
+      { type: 'npc', x: 3, y: 5, name: 'Assistente Nora', npcId: 'scientist',
+        dialog: ['Qua dentro cataloghemo tutto.', 'Se te servi una mano, basta domandare.'] },
+      { type: 'warp', x: 5, y: 7, dest: 'canalborgo', dx: 9, dy: 8 },
+    ],
+  },
+
+  casa_vicina: {
+    name: 'Casa del Vicino',
+    tiles: [
+      [1,1,1,1,1,1,1,1,1,1],
+      [1,4,4,4,4,4,4,4,4,1],
+      [1,4,4,4,4,4,4,4,4,1],
+      [1,4,4,4,4,4,4,4,4,1],
+      [1,4,4,4,4,4,4,4,4,1],
+      [1,4,4,4,4,4,4,4,4,1],
+      [1,1,1,1,4,4,1,1,1,1],
+    ],
+    events: [
+      { type: 'npc', x: 4, y: 3, name: 'Zia Bruna', npcId: 'lady',
+        dialog: ['Te vedi che el paese no xe vuoto.', 'Passa quando vuoi: qua ghe xe sempre qualcuno che ciacola.'] },
+      { type: 'item', x: 7, y: 4, item: { name: 'Caffè Corretto', type: 'heal', val: 10 } },
+      { type: 'warp', x: 4, y: 6, dest: 'canalborgo', dx: 15, dy: 4 },
+      { type: 'warp', x: 5, y: 6, dest: 'canalborgo', dx: 15, dy: 4 },
     ],
   },
 
