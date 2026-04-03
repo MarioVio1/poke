@@ -489,9 +489,9 @@ export default function Game() {
     if (nextStep >= OPENING_STORY.length) {
       setShowStoryIntro(false)
       setDialogs([
-        `${gs.player.name}! In piedi subito!`,
-        'Il Dottor GheSboro ti aspetta al laboratorio.',
-        'E porta rispetto, che no semo in vacanza!',
+        `${gs.player.name}! In piedi subito, son qua in camera.`,
+        'Il Dottor GheSboro ti aspetta al laboratorio e no vogio farte tardare.',
+        'Prima parla con mi, dopo te sistemi e te parti come si deve.',
       ])
       setSpeaker('Mamma')
       setDialogCallback(null)
@@ -2432,21 +2432,25 @@ export default function Game() {
                       type="button"
                       className="dpad-btn dpad-up" 
                       onPointerDown={(e) => { e.preventDefault(); move('up'); }}
+                      onClick={() => move('up')}
                     >▲</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-down" 
                       onPointerDown={(e) => { e.preventDefault(); move('down'); }}
+                      onClick={() => move('down')}
                     >▼</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-left" 
                       onPointerDown={(e) => { e.preventDefault(); move('left'); }}
+                      onClick={() => move('left')}
                     >◀</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-right" 
                       onPointerDown={(e) => { e.preventDefault(); move('right'); }}
+                      onClick={() => move('right')}
                     >▶</button>
                     <div className="dpad-center"></div>
                   </div>
@@ -2459,12 +2463,14 @@ export default function Game() {
                     className="action-btn" 
                     id="btn-a" 
                     onPointerDown={(e) => { e.preventDefault(); handleA(); }}
+                    onClick={handleA}
                   >A</button>
                   <button 
                     type="button"
                     className="action-btn" 
                     id="btn-b" 
                     onPointerDown={(e) => { e.preventDefault(); handleB(); }}
+                    onClick={handleB}
                   >B</button>
                 </div>
 
@@ -2474,8 +2480,9 @@ export default function Game() {
                     type="button"
                     className="start-btn" 
                     onPointerDown={(e) => { e.preventDefault(); toggleMenu(); }}
+                    onClick={toggleMenu}
                   ></button>
-                  <button type="button" className="select-btn" onPointerDown={(e) => { e.preventDefault(); handleB(); }}></button>
+                  <button type="button" className="select-btn" onPointerDown={(e) => { e.preventDefault(); handleB(); }} onClick={handleB}></button>
                 </div>
               </div>
             </div>
@@ -3991,10 +3998,10 @@ export default function Game() {
 
         .dpad-container {
           position: absolute;
-          left: 30px;
-          bottom: 28px;
-          width: 108px;
-          height: 108px;
+          left: 22px;
+          bottom: 20px;
+          width: 112px;
+          height: 112px;
           touch-action: none;
           z-index: 5;
           pointer-events: auto;
@@ -4028,8 +4035,7 @@ export default function Game() {
 
         .dpad-btn:active, .dpad-btn.pressed {
           background: linear-gradient(145deg, #666, #444);
-          transform: translateY(2px);
-          box-shadow: 0 1px 0 #222;
+          box-shadow: 0 4px 0 #181818;
         }
 
         .dpad-up { 
@@ -4070,10 +4076,10 @@ export default function Game() {
 
         .action-btns {
           position: absolute;
-          right: 28px;
-          bottom: 34px;
-          width: 112px;
-          height: 112px;
+          right: 20px;
+          bottom: 22px;
+          width: 132px;
+          height: 120px;
           z-index: 5;
           pointer-events: auto;
         }
@@ -4092,22 +4098,20 @@ export default function Game() {
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
           box-shadow: 0 6px 0 #141414, inset 0 2px 0 rgba(255,255,255,0.35);
-          transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
 
         #btn-a {
           right: 8px;
-          bottom: 8px;
+          bottom: 10px;
         }
 
         #btn-b {
           left: 10px;
-          top: 10px;
+          top: 6px;
         }
 
         .action-btn:active {
-          transform: translateY(3px);
-          box-shadow: 0 2px 0 #222, inset 0 1px 0 rgba(255,255,255,0.25);
+          box-shadow: 0 6px 0 #141414, inset 0 2px 0 rgba(255,255,255,0.35);
         }
 
         #btn-a {
@@ -4134,10 +4138,10 @@ export default function Game() {
         .start-select {
           position: absolute;
           left: 50%;
-          top: 106px;
+          top: 112px;
           transform: translateX(-50%);
           display: flex;
-          gap: 14px;
+          gap: 20px;
           align-items: center;
           justify-content: center;
           z-index: 5;
@@ -4254,7 +4258,7 @@ export default function Game() {
           .action-btns {
             right: 12px;
             bottom: 24px;
-            width: 96px;
+            width: 108px;
             height: 96px;
           }
 
@@ -4266,7 +4270,7 @@ export default function Game() {
 
           .start-select {
             top: 96px;
-            gap: 10px;
+            gap: 14px;
           }
 
           .start-btn,

@@ -176,7 +176,7 @@ export const MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,1,1,1,1,1],
     ],
     events: [
-      { type: 'npc', x: 4, y: 3, name: 'Mamma', npcId: 'mamma', dialog: ['Su, vestite e va dal Dottor GheSboro!', 'Se torno con la scopa, te voli fora dalla finestra!'] },
+      { type: 'npc', x: 4, y: 3, name: 'Mamma', npcId: 'mamma', dialog: ['Te son qua in camera apposta: sveiate ben, fio mio.', 'Prima sistema la testa, dopo va dal Dottor GheSboro.', 'No sta vegnir zo dal letto come un sacco de patate.'] },
       { type: 'item', x: 7, y: 4, item: { name: 'Pozioncino', type: 'heal', val: 20 } },
       { type: 'item', x: 6, y: 3, item: { name: 'Gondolball', type: 'capture', val: 0 } },
       { type: 'warp', x: 4, y: 5, dest: 'canalborgo', dx: 7, dy: 12 },
