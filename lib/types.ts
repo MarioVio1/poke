@@ -42,15 +42,15 @@ export const OUTDOOR_TILES: Record<number, {
   walkable: boolean
   type: 'grass' | 'path' | 'water' | 'tree' | 'wall' | 'building'
 }> = {
-  0: { base: '#9fe29b', detail: '#6fbf68', walkable: true, type: 'grass' },      // grass
-  1: { base: '#8a7a61', detail: '#6d604d', walkable: false, type: 'wall' },       // wall/border
-  2: { base: '#67c7dd', detail: '#b7f0f4', walkable: false, type: 'water' },     // water
-  3: { base: '#e7d28f', detail: '#c96e58', walkable: false, type: 'building' }, // building
-  6: { base: '#74c45e', detail: '#5fa64d', walkable: true, type: 'grass' },      // vineyard
-  7: { base: '#b62d3b', detail: '#d85c64', walkable: true, type: 'grass' },      // radicchio
-  8: { base: '#d9f6e4', detail: '#bde8d0', walkable: true, type: 'grass' },      // snow / pale grass
-  9: { base: '#7c5c3a', detail: '#5f4529', walkable: false, type: 'tree' },      // tree/trunk
-  10: { base: '#7fd060', detail: '#4e9d42', walkable: false, type: 'tree' },     // tree/leaves
+  0: { base: '#9fe29b', detail: '#69b85d', walkable: true, type: 'grass' },
+  1: { base: '#8a7a61', detail: '#6d604d', walkable: false, type: 'wall' },
+  2: { base: '#67c7dd', detail: '#b7f0f4', walkable: false, type: 'water' },
+  3: { base: '#f3d58b', detail: '#d86356', walkable: false, type: 'building' },
+  6: { base: '#7bc86a', detail: '#4f9649', walkable: true, type: 'grass' },
+  7: { base: '#c44b5b', detail: '#8d2136', walkable: true, type: 'grass' },
+  8: { base: '#d9f6e4', detail: '#b9e3cf', walkable: true, type: 'grass' },
+  9: { base: '#845f35', detail: '#5f4529', walkable: false, type: 'tree' },
+  10: { base: '#82db6f', detail: '#4e9d42', walkable: false, type: 'tree' },
 }
 
 // Indoor tiles (floors, walls, furniture)
@@ -60,15 +60,15 @@ export const INDOOR_TILES: Record<number, {
   walkable: boolean
   type: 'floor' | 'wall' | 'counter' | 'carpet' | 'heal'
 }> = {
-  0: { base: '#efeff7', detail: '#d6d8ea', walkable: true, type: 'floor' },     // indoor floor
-  1: { base: '#7d7364', detail: '#5c554a', walkable: false, type: 'wall' },      // wall
-  2: { base: '#d8c59d', detail: '#bfa468', walkable: false, type: 'wall' },      // wall accent
-  3: { base: '#b9db9e', detail: '#9dca7a', walkable: true, type: 'carpet' },     // carpet / mat
-  4: { base: '#dff8ff', detail: '#9de0f1', walkable: true, type: 'heal' },       // healing circle
-  5: { base: '#c9c6d6', detail: '#9790a9', walkable: false, type: 'counter' },   // counter/shop
-  6: { base: '#ead58f', detail: '#d1b665', walkable: true, type: 'floor' },      // wooden floor
-  7: { base: '#92a7ef', detail: '#6e82d4', walkable: true, type: 'carpet' },     // blue carpet
-  8: { base: '#d45353', detail: '#a73f3f', walkable: false, type: 'wall' },      // red wall accent
+  0: { base: '#efeff7', detail: '#d6d8ea', walkable: true, type: 'floor' },
+  1: { base: '#7d7364', detail: '#5c554a', walkable: false, type: 'wall' },
+  2: { base: '#d8c59d', detail: '#bfa468', walkable: false, type: 'wall' },
+  3: { base: '#c9e1ac', detail: '#9dca7a', walkable: true, type: 'carpet' },
+  4: { base: '#dff8ff', detail: '#9de0f1', walkable: true, type: 'heal' },
+  5: { base: '#c9c6d6', detail: '#9790a9', walkable: false, type: 'counter' },
+  6: { base: '#ead58f', detail: '#d1b665', walkable: true, type: 'floor' },
+  7: { base: '#92a7ef', detail: '#6e82d4', walkable: true, type: 'carpet' },
+  8: { base: '#d45353', detail: '#a73f3f', walkable: false, type: 'wall' },
 }
 
 // Detect if map is indoor
@@ -140,21 +140,29 @@ export const renderTile = (
   // Tile detail pattern
   ctx.fillStyle = detailColor
   if (tile.type === 'grass') {
-    // FireRed-like grass streaks and flowers
-    ctx.fillRect(x + 2, y + 3, 2, 5)
-    ctx.fillRect(x + 6, y + 2, 1, 4)
-    ctx.fillRect(x + 10, y + 5, 2, 5)
-    ctx.fillRect(x + 6, y + 10, 2, 4)
-    if ((x * 7 + y * 13) % 23 === 0) {
-      ctx.fillStyle = '#f95b6b'
-      ctx.fillRect(x + 4, y + 8, 2, 2)
+    ctx.fillRect(x + 2, y + 2, 2, 5)
+    ctx.fillRect(x + 7, y + 3, 1, 4)
+    ctx.fillRect(x + 11, y + 5, 2, 5)
+    ctx.fillRect(x + 5, y + 10, 2, 4)
+    ctx.fillStyle = 'rgba(255,255,255,0.1)'
+    ctx.fillRect(x + 1, y + 1, size - 2, 1)
+    if ((x * 7 + y * 13) % 29 === 0) {
+      ctx.fillStyle = '#f26f7e'
+      ctx.fillRect(x + 4, y + 9, 2, 2)
       ctx.fillStyle = '#ffe56f'
-      ctx.fillRect(x + 10, y + 10, 2, 2)
+      ctx.fillRect(x + 10, y + 11, 2, 2)
     }
   }
   
+  if (tile.type === 'path') {
+    ctx.fillStyle = 'rgba(255,255,255,0.15)'
+    ctx.fillRect(x + 1, y + 1, size - 2, 1)
+    ctx.fillStyle = detailColor
+    ctx.fillRect(x + 3, y + 4, 3, 2)
+    ctx.fillRect(x + 9, y + 10, 4, 2)
+  }
+
   if (tile.type === 'water') {
-    // Water ripples and shore shimmer
     const waveOffset = Math.sin(time / 260 + x / 11) * 2
     ctx.fillStyle = '#d8fbff'
     ctx.fillRect(x + waveOffset + 2, y + 4, 5, 2)
@@ -163,10 +171,12 @@ export const renderTile = (
     ctx.fillRect(x, y + size - 2, size, 2)
     ctx.fillStyle = 'rgba(255,255,255,0.28)'
     ctx.fillRect(x + 1, y + 1, size - 2, 1)
+    ctx.fillStyle = '#4f94d4'
+    ctx.fillRect(x, y + 6, size, 1)
+    ctx.fillRect(x, y + 12, size, 1)
   }
   
   if (tile.type === 'wall') {
-    // Brick / border pattern
     ctx.fillRect(x, y, size, 2)
     ctx.fillRect(x, y, 2, size)
     ctx.fillRect(x + 7, y, 1, size)
@@ -174,27 +184,27 @@ export const renderTile = (
   }
 
   if (tile.type === 'building') {
-    // Outdoor building facade / roof hint
-    ctx.fillStyle = '#d16f59'
-    ctx.fillRect(x, y, size, 4)
-    ctx.fillStyle = '#f5edcb'
-    ctx.fillRect(x + 1, y + 4, size - 2, size - 5)
-    ctx.fillStyle = '#86b8ec'
-    ctx.fillRect(x + 3, y + 6, 4, 3)
-    ctx.fillRect(x + 9, y + 6, 4, 3)
-    ctx.fillStyle = '#7a5940'
-    ctx.fillRect(x + 6, y + 9, 4, 6)
-    ctx.fillStyle = '#c0c7d6'
-    ctx.fillRect(x + 2, y + 4, size - 4, 1)
+    ctx.fillStyle = '#db7259'
+    ctx.fillRect(x, y, size, 5)
+    ctx.fillStyle = '#f7f1d4'
+    ctx.fillRect(x + 1, y + 5, size - 2, size - 6)
+    ctx.fillStyle = '#7a5b45'
+    ctx.fillRect(x + 5, y + 8, 6, 7)
+    ctx.fillStyle = '#88bdf2'
+    ctx.fillRect(x + 2, y + 6, 3, 3)
+    ctx.fillRect(x + 11, y + 6, 3, 3)
+    ctx.fillStyle = '#d9dde5'
+    ctx.fillRect(x + 1, y + 5, size - 2, 1)
   }
   
   if (tile.type === 'floor' || tile.type === 'carpet') {
-    // GBA floor diagonals
     ctx.fillStyle = detailColor
     ctx.fillRect(x + 2, y + 2, 1, 1)
     ctx.fillRect(x + 6, y + 6, 1, 1)
     ctx.fillRect(x + 10, y + 10, 1, 1)
     ctx.fillRect(x + 14, y + 14, 1, 1)
+    ctx.fillStyle = 'rgba(255,255,255,0.15)'
+    ctx.fillRect(x, y, size, 1)
   }
   
   if (tile.type === 'heal') {
@@ -221,22 +231,20 @@ export const renderTile = (
   
   if (tile.type === 'tree') {
     if (tileType === 9) {
-      // Tree trunk
       ctx.fillStyle = '#7c5c3a'
       ctx.fillRect(x + 5, y + 4, 6, 12)
     } else {
-      // Tree leaves
-      ctx.fillStyle = '#4e9d42'
+      ctx.fillStyle = '#4f9f43'
       ctx.beginPath()
       ctx.arc(x + 8, y + 9, 7, 0, Math.PI * 2)
       ctx.fill()
-      ctx.fillStyle = '#bfff7d'
+      ctx.fillStyle = '#c8ff88'
       ctx.beginPath()
-      ctx.arc(x + 8, y + 6, 5, 0, Math.PI * 2)
+      ctx.arc(x + 8, y + 6, 4, 0, Math.PI * 2)
       ctx.fill()
-      ctx.fillStyle = '#76d257'
+      ctx.fillStyle = '#77cc58'
       ctx.beginPath()
-      ctx.arc(x + 5, y + 8, 4, 0, Math.PI * 2)
+      ctx.arc(x + 5, y + 9, 4, 0, Math.PI * 2)
       ctx.fill()
       ctx.fillStyle = '#5cad4f'
       ctx.fillRect(x + 10, y + 10, 2, 2)

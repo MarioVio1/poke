@@ -701,23 +701,8 @@ export default function Game() {
         const t = map.tiles[y][x]
         renderTile(ctx, t, (x - sx) * TILE, (y - sy) * TILE, TILE, indoor, currentTime)
         
-        // Add trees for outdoor grass
-        if (!indoor && t === 0 && ((x * 7 + y * 11) % 17 === 0)) {
-          // Tree
-          ctx.fillStyle = '#5d4037'
-          ctx.fillRect((x - sx) * TILE + 6, (y - sy) * TILE + 8, 4, 8)
-          ctx.fillStyle = '#2e7d32'
-          ctx.beginPath()
-          ctx.arc((x - sx) * TILE + 8, (y - sy) * TILE + 6, 7, 0, Math.PI * 2)
-          ctx.fill()
-          ctx.fillStyle = '#388e3c'
-          ctx.beginPath()
-          ctx.arc((x - sx) * TILE + 6, (y - sy) * TILE + 4, 5, 0, Math.PI * 2)
-          ctx.fill()
-        }
-        
-        // Add grass tufts for outdoor
-        if (!indoor && t === 0 && (x + y) % 4 === 0) {
+        // Add light grass tufts for outdoor
+        if (!indoor && (t === 0 || t === 6 || t === 7 || t === 8) && (x + y) % 4 === 0) {
           ctx.fillStyle = '#3d8b3d'
           ctx.fillRect((x - sx) * TILE + 3, (y - sy) * TILE + 2, 2, 5)
           ctx.fillRect((x - sx) * TILE + 10, (y - sy) * TILE + 4, 2, 4)
@@ -741,29 +726,29 @@ export default function Game() {
 
           ctx.fillStyle = 'rgba(0,0,0,0.3)'
           ctx.beginPath()
-          ctx.ellipse(ex + 8, ey + 13, 5, 3, 0, 0, Math.PI * 2)
+          ctx.ellipse(ex + 8, ey + 14, 5, 3, 0, 0, Math.PI * 2)
           ctx.fill()
 
-          ctx.fillStyle = '#f6d2ae'
-          ctx.fillRect(ex + 5, ey + 3, 6, 5)
           ctx.fillStyle = palette.hair
           ctx.fillRect(ex + 4, ey + 2, 8, 3)
-          ctx.fillRect(ex + 5, ey + 5, 1, 2)
-          ctx.fillRect(ex + 10, ey + 5, 1, 2)
-          ctx.fillStyle = '#ffffff'
-          ctx.fillRect(ex + 6, ey + 5, 1, 1)
-          ctx.fillRect(ex + 9, ey + 5, 1, 1)
-          ctx.fillStyle = palette.shirt
-          ctx.fillRect(ex + 5, ey + 8, 6, 4)
-          ctx.fillStyle = palette.jacket
-          ctx.fillRect(ex + 4, ey + 8, 1, 4)
-          ctx.fillRect(ex + 11, ey + 8, 1, 4)
           ctx.fillStyle = '#f6d2ae'
-          ctx.fillRect(ex + 4, ey + 8, 1, 3)
-          ctx.fillRect(ex + 11, ey + 8, 1, 3)
+          ctx.fillRect(ex + 5, ey + 5, 6, 4)
+          ctx.fillStyle = '#1d1d1d'
+          ctx.fillRect(ex + 6, ey + 6, 1, 1)
+          ctx.fillRect(ex + 9, ey + 6, 1, 1)
+          ctx.fillStyle = palette.jacket
+          ctx.fillRect(ex + 4, ey + 9, 8, 5)
+          ctx.fillStyle = palette.shirt
+          ctx.fillRect(ex + 6, ey + 9, 4, 4)
+          ctx.fillStyle = '#f6d2ae'
+          ctx.fillRect(ex + 3, ey + 10, 1, 3)
+          ctx.fillRect(ex + 12, ey + 10, 1, 3)
           ctx.fillStyle = palette.legs
-          ctx.fillRect(ex + 5, ey + 12, 2, 3)
-          ctx.fillRect(ex + 9, ey + 12, 2, 3)
+          ctx.fillRect(ex + 5, ey + 14, 2, 2)
+          ctx.fillRect(ex + 9, ey + 14, 2, 2)
+          ctx.fillStyle = '#2c2c2c'
+          ctx.fillRect(ex + 5, ey + 15, 2, 1)
+          ctx.fillRect(ex + 9, ey + 15, 2, 1)
         }
         
         if (e.type === 'sign') {
@@ -840,28 +825,26 @@ export default function Game() {
     
     ctx.fillStyle = 'rgba(0,0,0,0.3)'
     ctx.beginPath()
-    ctx.ellipse(px + 8, py + 13, 5, 3, 0, 0, Math.PI * 2)
+    ctx.ellipse(px + 8, py + 14, 5, 3, 0, 0, Math.PI * 2)
     ctx.fill()
-
-    ctx.fillStyle = '#f6d2ae'
-    ctx.fillRect(px + 5, py + 3 + bobOffset, 6, 5)
 
     ctx.fillStyle = playerPalette.hair
     ctx.fillRect(px + 4, py + 2 + bobOffset, 8, 3)
-    ctx.fillStyle = playerPalette.hat
-    ctx.fillRect(px + 4, py + 5 + bobOffset, 2, 1)
-    ctx.fillRect(px + 10, py + 5 + bobOffset, 2, 1)
-    ctx.fillStyle = '#3b2b1e'
-    ctx.fillRect(px + 5, py + 6 + bobOffset, 6, 1)
-
+    ctx.fillStyle = '#f6d2ae'
+    ctx.fillRect(px + 5, py + 5 + bobOffset, 6, 4)
+    ctx.fillStyle = '#1d1d1d'
+    ctx.fillRect(px + 6, py + 6 + bobOffset, 1, 1)
+    ctx.fillRect(px + 9, py + 6 + bobOffset, 1, 1)
     ctx.fillStyle = playerPalette.jacket
-    ctx.fillRect(px + 5, py + 8 + bobOffset, 6, 4)
+    ctx.fillRect(px + 4, py + 9 + bobOffset, 8, 5)
     ctx.fillStyle = playerPalette.shirt
-    ctx.fillRect(px + 4, py + 8 + bobOffset, 1, 4)
-    ctx.fillRect(px + 11, py + 8 + bobOffset, 1, 4)
+    ctx.fillRect(px + 6, py + 9 + bobOffset, 4, 4)
+    ctx.fillStyle = '#f6d2ae'
+    ctx.fillRect(px + 3, py + 10 + bobOffset, 1, 3)
+    ctx.fillRect(px + 12, py + 10 + bobOffset, 1, 3)
     ctx.fillStyle = playerPalette.legs
-    ctx.fillRect(px + 5, py + 12 + bobOffset, 2, 3)
-    ctx.fillRect(px + 9, py + 12 + bobOffset, 2, 3)
+    ctx.fillRect(px + 5, py + 14 + bobOffset, 2, 2)
+    ctx.fillRect(px + 9, py + 14 + bobOffset, 2, 2)
     ctx.fillStyle = '#3a3431'
     ctx.fillRect(px + 5, py + 15 + bobOffset, 2, 1)
     ctx.fillRect(px + 9, py + 15 + bobOffset, 2, 1)
