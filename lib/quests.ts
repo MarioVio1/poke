@@ -383,7 +383,7 @@ export const MAIN_QUESTS: Quest[] = [
     ],
     rewards: [
       { type: "money", amount: 500, description: "₿500" },
-      { type: "keyItem", item: "pokedex", description: "POKéDEX!" }
+      { type: "keyItem", item: "pokedex", description: "PokeDioex!" }
     ],
     prerequisites: ["choice_of_destiny"],
     repeatable: false,
@@ -833,17 +833,17 @@ export const SIDE_QUESTS: Quest[] = [
   },
   {
     id: "bestia_dex_complete",
-    name: "BestiDex Completo",
-    description: "Vedi tutte le voci del BestiDex",
+    name: "PokeDioex Completo",
+    description: "Vedi tutte le voci del PokeDioex",
     type: "collection",
     chapter: 10,
     location: "any",
     giver: "Prof. Barcaro",
     objectives: [
-      { type: "visit", target: "bestidex", description: "Completa il BestiDex" }
+      { type: "visit", target: "bestidex", description: "Completa il PokeDioex" }
     ],
     rewards: [
-      { type: "keyItem", item: "bestidex_nazionale", description: "BestiDex Nazionale" }
+      { type: "keyItem", item: "bestidex_nazionale", description: "PokeDioex Nazionale" }
     ],
     prerequisites: ["champion_battle"],
     repeatable: false,
@@ -1054,6 +1054,148 @@ export const SIDE_QUESTS: Quest[] = [
     ],
     prerequisites: ["defeat_spritzia_gym"],
     repeatable: false,
+  },
+  {
+    id: "foto_mario_album",
+    name: "Album da Bacaro",
+    description: "Aiuta Foto Mario a fotografare i Besti piu strani di Spritzia",
+    type: "character",
+    chapter: 3,
+    location: "spritzia",
+    giver: "Foto Mario",
+    objectives: [
+      { type: "talk", target: "Foto Mario", description: "Parla con Foto Mario" },
+      { type: "capture", target: "besti_curiosi", description: "Cattura 3 Besti curiosi per l'album", amount: 3 },
+      { type: "deliver", target: "foto_souvenir", description: "Riporta l'album al fotografo" }
+    ],
+    rewards: [
+      { type: "item", item: "foto_souvenir", description: "Foto Souvenir" },
+      { type: "money", amount: 650, description: "₿650" }
+    ],
+    prerequisites: ["welcome_to_spritzia"],
+    repeatable: false,
+  },
+  {
+    id: "spritzia_stone_run",
+    name: "Ostrega, la Pietra Verde",
+    description: "Nonna Marisa vuole una Pietra Verde per far evolvere il Besti del nipote",
+    type: "side",
+    chapter: 3,
+    location: "spritzia",
+    giver: "Nonna Marisa",
+    objectives: [
+      { type: "talk", target: "Nonna Marisa", description: "Ascolta la richiesta di Nonna Marisa" },
+      { type: "collect", target: "pietra_verde", description: "Trova una Pietra Verde" },
+      { type: "deliver", target: "Nonna Marisa", description: "Porta la Pietra Verde a Nonna Marisa" }
+    ],
+    rewards: [
+      { type: "item", item: "pietra_natura", description: "Pietra Natura" },
+      { type: "experience", amount: 250, description: "250 EXP" }
+    ],
+    prerequisites: ["gym_spritzia_intro"],
+    repeatable: false,
+  },
+  {
+    id: "veronara_secret_delivery",
+    name: "Ciacole e Consegne",
+    description: "Don Bepi teme che i Grint stiano trafficando pietre rare a Veronara",
+    type: "side",
+    chapter: 5,
+    location: "veronara",
+    giver: "Don Bepi",
+    objectives: [
+      { type: "talk", target: "Don Bepi", description: "Parla con Don Bepi" },
+      { type: "visit", target: "shop_veronara", description: "Controlla la bottega di Veronara" },
+      { type: "defeat", target: "Grint", description: "Sconfiggi un Grint sospetto", amount: 1 },
+      { type: "collect", target: "pietra_maschera", description: "Recupera la Pietra Maschera" }
+    ],
+    rewards: [
+      { type: "item", item: "pietra_maschera", description: "Pietra Maschera" },
+      { type: "money", amount: 900, description: "₿900" }
+    ],
+    prerequisites: ["welcome_to_veronara"],
+    repeatable: false,
+  },
+  {
+    id: "padoana_exam_stone",
+    name: "Esame fuori corso",
+    description: "Uno studente di Padoana cerca una Pietra Temporale per finire una tesi sulle evoluzioni",
+    type: "character",
+    chapter: 6,
+    location: "padoana",
+    giver: "Marco",
+    objectives: [
+      { type: "talk", target: "Marco", description: "Parla con lo studente disperato" },
+      { type: "collect", target: "pietra_temporale", description: "Ottieni una Pietra Temporale" },
+      { type: "deliver", target: "Carta Studente", description: "Consegna il materiale per la tesi" }
+    ],
+    rewards: [
+      { type: "item", item: "carta_studente", description: "Carta Studente" },
+      { type: "item", item: "pietra_temporale", description: "Pietra Temporale" }
+    ],
+    prerequisites: ["padoana_university"],
+    repeatable: false,
+  },
+  {
+    id: "trevisella_field_help",
+    name: "Radicchio e pazienza",
+    description: "Nono Gino ha bisogno di una mano nei campi e vuole una pietra buona per il raccolto",
+    type: "character",
+    chapter: 7,
+    location: "trevisella",
+    giver: "Nono Gino",
+    objectives: [
+      { type: "talk", target: "Nono Gino", description: "Parla con Nono Gino" },
+      { type: "collect", target: "radicchio_dorato", description: "Trova il Radicchio Dorato" },
+      { type: "collect", target: "pietra_acquatica", description: "Recupera una Pietra Acquatica per irrigare bene" },
+      { type: "deliver", target: "Nono Gino", description: "Consegna tutto a Nono Gino" }
+    ],
+    rewards: [
+      { type: "item", item: "radicchio_dorato", description: "Radicchio Dorato" },
+      { type: "item", item: "pietra_acquatica", description: "Pietra Acquatica" }
+    ],
+    prerequisites: ["defeat_padoana_gym"],
+    repeatable: false,
+  },
+  {
+    id: "dolomax_frozen_shard",
+    name: "Scheggia de Giaso",
+    description: "Una guida alpina di Dolomax cerca una Pietra Ghiaccio per calmare Besti imbizzarriti",
+    type: "side",
+    chapter: 8,
+    location: "dolomax",
+    giver: "Guida Alpina",
+    objectives: [
+      { type: "visit", target: "dolomax", description: "Raggiungi Dolomax" },
+      { type: "collect", target: "pietra_ghiaccio", description: "Trova una Pietra Ghiaccio" },
+      { type: "defeat", target: "bestia_ghiaccio", description: "Calma 2 Besti di ghiaccio", amount: 2 }
+    ],
+    rewards: [
+      { type: "item", item: "pietra_ghiaccio", description: "Pietra Ghiaccio" },
+      { type: "experience", amount: 500, description: "500 EXP" }
+    ],
+    prerequisites: ["defeat_trevisella_gym"],
+    repeatable: false,
+  },
+  {
+    id: "laguna_open_world",
+    name: "La Laguna non dorme mai",
+    description: "Maestro Marco apre una serie di incarichi ricorrenti per tenere vivo il mare di Venetia",
+    type: "side",
+    chapter: 9,
+    location: "gardalago",
+    giver: "Maestro Marco",
+    objectives: [
+      { type: "talk", target: "Maestro Marco", description: "Parla con Maestro Marco" },
+      { type: "capture", target: "bestia_laguna", description: "Cattura 5 Besti della laguna", amount: 5 },
+      { type: "collect", target: "pietra_alba", description: "Recupera una Pietra Alba per il faro" }
+    ],
+    rewards: [
+      { type: "item", item: "pietra_alba", description: "Pietra Alba" },
+      { type: "money", amount: 1600, description: "₿1600" }
+    ],
+    prerequisites: ["defeat_dolomax_gym"],
+    repeatable: true,
   },
   {
     id: "gym_canalborgo",

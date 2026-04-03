@@ -1213,8 +1213,8 @@ export const ITEMS: Record<string, GameItem> = {
   },
   pokedex: {
     id: 'pokedex',
-    name: 'BestiDex',
-    desc: 'Enciclopedia ufficiale dei Besti di Venetia.',
+    name: 'PokeDioex',
+    desc: 'Enciclopedia ufficiale dei Besti di Venetia, distribuita nei Centri Besti e in alcune botteghe.',
     type: 'key',
     price: 0,
     effect: 'bestidex_unlock',
@@ -1304,8 +1304,8 @@ export const ITEMS: Record<string, GameItem> = {
   },
   bestidex_nazionale: {
     id: 'bestidex_nazionale',
-    name: 'BestiDex Nazionale',
-    desc: 'Aggiornamento completo del BestiDex con tutte le regioni note.',
+    name: 'PokeDioex Nazionale',
+    desc: 'Aggiornamento completo del PokeDioex con tutte le regioni note.',
     type: 'key',
     price: 0,
     effect: 'bestidex_national',

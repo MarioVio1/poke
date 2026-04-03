@@ -86,6 +86,12 @@ interface IdentityOption {
   icon: string
 }
 
+interface SpeakerPortrait {
+  icon: string
+  accent: string
+  side: 'left' | 'right'
+}
+
 interface SavedInventoryEntry {
   item: string | GameItem
   qty: number
@@ -277,6 +283,29 @@ const getTitleParticleStyle = (index: number) => ({
   left: `${(index * 11 + 7) % 100}%`,
   animationDelay: `${(index % 6) * 0.4}s`,
 })
+
+const getSpeakerPortrait = (speakerName: string): SpeakerPortrait | null => {
+  if (!speakerName) return null
+
+  const portraits: Record<string, SpeakerPortrait> = {
+    'Prof. GheSboro': { icon: '🧪', accent: '#5e92f3', side: 'left' },
+    'Dottor GheSboro': { icon: '🧪', accent: '#5e92f3', side: 'left' },
+    'Mamma': { icon: '🧹', accent: '#f48fb1', side: 'left' },
+    'Marco': { icon: '⚡', accent: '#ffd54f', side: 'right' },
+    'Bepi lo Spritzaro': { icon: '🍹', accent: '#ffb74d', side: 'right' },
+    'Giuliano Arena': { icon: '🏟️', accent: '#e57373', side: 'right' },
+    'Prof. Sansovino': { icon: '🎓', accent: '#9575cd', side: 'left' },
+    'Nonna Gina': { icon: '🥬', accent: '#81c784', side: 'left' },
+    'Regina dei Ghiacci': { icon: '❄️', accent: '#81d4fa', side: 'right' },
+    'Maestro Marco': { icon: '🚤', accent: '#4fc3f7', side: 'right' },
+    'DUX VENETIAE': { icon: '👑', accent: '#ffd54f', side: 'right' },
+    'Grint': { icon: '🥣', accent: '#ff8a65', side: 'right' },
+    'Infermiera': { icon: '💊', accent: '#80cbc4', side: 'left' },
+    'Narratore': { icon: '📜', accent: '#bcaaa4', side: 'left' },
+  }
+
+  return portraits[speakerName] || { icon: '🙂', accent: '#90a4ae', side: 'left' }
+}
 
 class RuntimeErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -502,9 +531,13 @@ function GameScreen() {
       (itemKey === 'camera' ? ITEMS.foto_souvenir : undefined)
 
     if (!giftedItem) return
+    if (giftedItem.type === 'key' && gs.inv.some(entry => entry.item.id === giftedItem.id && entry.qty > 0)) return
 
     setGs(prev => {
       const existing = prev.inv.find(entry => entry.item.id === giftedItem.id)
+      if (giftedItem.type === 'key' && existing) {
+        return prev
+      }
 
       return {
         ...prev,
@@ -514,7 +547,11 @@ function GameScreen() {
       }
     })
     setNotification(`Ottenuto: ${giftedItem.name}!`)
-  }, [])
+  }, [gs.inv])
+
+  const hasInventoryItem = useCallback((itemId: string) => {
+    return gs.inv.some(entry => entry.item.id === itemId && entry.qty > 0)
+  }, [gs.inv])
 
   const closeOverlay = useCallback(() => {
     setShowOverlay(false)
@@ -644,7 +681,6 @@ function GameScreen() {
     const frame = INTRO_FRAMES[introFrame]
     if (!frame) {
       setShowIntro(false)
-      setGameStarted(true)
       return
     }
     
@@ -1756,10 +1792,24 @@ function GameScreen() {
   }
 
   const showPokedex = () => {
-    setOverlayTitle('BESTIDEX')
+    if (!hasInventoryItem('pokedex')) {
+      setNotification('Ti serve il PokeDioex. Prova al Centro Besti o in bottega.')
+      return
+    }
+
+    const allBesti = Object.values(BESTI)
+
+    setOverlayTitle(`POKEDIOEX ${allBesti.length}`)
     setOverlayContent(
-      <div className="dex-grid">
-        {Object.values(BESTI).slice(0, 50).map(b => (
+      <div>
+        <div className="dex-summary">
+          <div className="dex-summary-title">Catalogo Besti di Venetia</div>
+          <div className="dex-summary-copy">
+            Consulta i Besti conosciuti della regione. Nuove zone e nuove Bestie possono essere aggiunte nel tempo.
+          </div>
+        </div>
+        <div className="dex-grid">
+        {allBesti.map(b => (
           <div key={b.id} className="dex-entry">
             <img src={getBestiaIcon(b.id)} className="dex-sprite" alt={b.name} />
             <div className="dex-num">#{String(b.id).padStart(3, '0')}</div>
@@ -1767,6 +1817,7 @@ function GameScreen() {
             <div className="dex-types">{b.types.map(t => <span key={t} className={`type-badge type-${t}`}>{t}</span>)}</div>
           </div>
         ))}
+        </div>
       </div>
     )
     setShowOverlay(true)
@@ -2054,7 +2105,7 @@ function GameScreen() {
         <div className="menu-options">
           <div className="menu-option" onClick={() => { showParty(); setInMenu(false) }}>Squadra</div>
           <div className="menu-option" onClick={() => { showBag(); setInMenu(false) }}>Zaino</div>
-          <div className="menu-option" onClick={() => { showPokedex(); setInMenu(false) }}>BestiDex</div>
+          <div className="menu-option" onClick={() => { showPokedex(); setInMenu(false) }}>PokeDioex</div>
           <div className="menu-option" onClick={() => { showTeleport(); }}>Teletrasporto</div>
           <div className="menu-option" onClick={() => { showAdventureBoard(); }}>📜 Bacheca</div>
           <div className="menu-option" onClick={() => { showAchievements(); }}>🏆 Trofei</div>
@@ -2246,33 +2297,37 @@ function GameScreen() {
                       />
                     ))}
                   </div>
-                  <div className="fire-banner">BESTI DI VENETIA VERSIONE FUCO</div>
-                  <div className="title-logo">POKEMONA</div>
-                  <div className="title-subtitle">Besti di Venetia</div>
-                  <div className="title-bestia">
-                    <img src={getBestiaSprite('dolomitor')} alt="Dolomitor" className="title-sprite-float pixel-sprite" />
-                    <img src={getBestiaSprite('lagorion')} alt="Lagorion" className="title-sprite-float pixel-sprite" style={{animationDelay: '0.5s'}} />
-                    <img src={getBestiaSprite('serenissima')} alt="Serenissima" className="title-sprite-float pixel-sprite" style={{animationDelay: '1s'}} />
-                    <img src={getBestiaSprite('ombradriz')} alt="OmbraSpritz" className="title-sprite-float pixel-sprite" style={{animationDelay: '1.5s'}} />
-                  </div>
-                  <div className="title-menu">
-                    <button className="start-btn-large" onClick={beginNewGame}>
-                      NUOVA PARTITA
-                    </button>
-                    <button
-                      className="start-btn-large secondary"
-                      onClick={() => {
-                        if (loadGame()) {
-                          setShowIntro(false)
-                          setGameStarted(true)
-                        } else {
-                          setNotification('Nessun salvataggio disponibile!')
-                          setTimeout(() => setNotification(''), 2000)
-                        }
-                      }}
-                    >
-                      CARICA
-                    </button>
+                  <div className="title-card">
+                    <div className="title-crest">GBA MONADEX</div>
+                    <div className="fire-banner">BESTI DI VENETIA VERSIONE FUCO</div>
+                    <div className="title-logo">POKEMONA</div>
+                    <div className="title-subtitle">Besti di Venetia</div>
+                    <div className="title-bestia">
+                      <img src={getBestiaSprite('dolomitor')} alt="Dolomitor" className="title-sprite-float pixel-sprite" />
+                      <img src={getBestiaSprite('lagorion')} alt="Lagorion" className="title-sprite-float pixel-sprite" style={{animationDelay: '0.5s'}} />
+                      <img src={getBestiaSprite('serenissima')} alt="Serenissima" className="title-sprite-float pixel-sprite" style={{animationDelay: '1s'}} />
+                      <img src={getBestiaSprite('ombradriz')} alt="OmbraSpritz" className="title-sprite-float pixel-sprite" style={{animationDelay: '1.5s'}} />
+                    </div>
+                    <div className="title-menu">
+                      <button className="start-btn-large" onClick={beginNewGame}>
+                        NUOVA PARTITA
+                      </button>
+                      <button
+                        className="start-btn-large secondary"
+                        onClick={() => {
+                          if (loadGame()) {
+                            setShowIntro(false)
+                            setGameStarted(true)
+                          } else {
+                            setNotification('Nessun salvataggio disponibile!')
+                            setTimeout(() => setNotification(''), 2000)
+                          }
+                        }}
+                      >
+                        CARICA
+                      </button>
+                    </div>
+                    <div className="title-hint">Premi A per cominciare il casino veneto</div>
                   </div>
                 </div>
               )}
@@ -2344,6 +2399,17 @@ function GameScreen() {
               {/* Dialog */}
               {inDialog && (
                 <div className="dialog-box">
+                  {speaker && (() => {
+                    const portrait = getSpeakerPortrait(speaker)
+                    if (!portrait) return null
+                    return (
+                      <div className={`dialog-portrait ${portrait.side}`} style={{ borderColor: portrait.accent }}>
+                        <div className="dialog-portrait-inner" style={{ background: `linear-gradient(180deg, ${portrait.accent} 0%, #1f2430 100%)` }}>
+                          <span>{portrait.icon}</span>
+                        </div>
+                      </div>
+                    )
+                  })()}
                   {speaker && <div className="dialog-speaker">{speaker}</div>}
                   <div className="dialog-text">{dialogs[0]}</div>
                   <div className="dialog-arrow">▼</div>
@@ -2705,6 +2771,17 @@ function GameScreen() {
           box-shadow:
             inset 0 0 24px rgba(0,0,0,0.9),
             0 1px 0 rgba(255,255,255,0.06);
+          position: relative;
+        }
+
+        .screen-bezel::before {
+          content: 'DOT MATRIX WITH STEREO SOUND';
+          position: absolute;
+          top: -10px;
+          left: 12px;
+          font-size: 5px;
+          letter-spacing: 0.12em;
+          color: rgba(255,255,255,0.22);
         }
 
         .game-container {
@@ -2732,6 +2809,16 @@ function GameScreen() {
             repeating-linear-gradient(180deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 4px);
           pointer-events: none;
           z-index: 2;
+        }
+
+        .game-container::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border: 2px solid rgba(16, 40, 18, 0.28);
+          box-shadow: inset 0 0 26px rgba(0,0,0,0.18);
+          pointer-events: none;
+          z-index: 1;
         }
 
         .game-canvas.shake {
@@ -2839,13 +2926,38 @@ function GameScreen() {
         .title-screen {
           position: absolute;
           inset: 0;
-          background: linear-gradient(180deg, #1e3a5f 0%, #0d1b2a 100%);
+          background:
+            radial-gradient(circle at 50% 18%, rgba(255,255,255,0.1), transparent 20%),
+            linear-gradient(180deg, #24538f 0%, #173866 45%, #112947 100%);
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           color: white;
           overflow: hidden;
+        }
+
+        .title-card {
+          position: relative;
+          z-index: 1;
+          width: 194px;
+          padding: 12px 12px 10px;
+          border-radius: 12px;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,0.08), transparent 18%),
+            linear-gradient(180deg, rgba(11, 26, 52, 0.92) 0%, rgba(9, 19, 37, 0.95) 100%);
+          border: 2px solid rgba(201, 221, 255, 0.22);
+          box-shadow:
+            0 10px 22px rgba(0,0,0,0.24),
+            inset 0 1px 0 rgba(255,255,255,0.1);
+          text-align: center;
+        }
+
+        .title-crest {
+          font-size: 5px;
+          color: #bdd8ff;
+          letter-spacing: 0.18em;
+          margin-bottom: 8px;
         }
 
         .title-particles {
@@ -2869,9 +2981,9 @@ function GameScreen() {
         }
 
         .title-logo {
-          font-size: 24px;
-          color: #ffd700;
-          text-shadow: 2px 2px 0 #b8860b, 4px 4px 0 #8b6914;
+          font-size: 25px;
+          color: #ffe58f;
+          text-shadow: 0 2px 0 #9a4c00, 2px 4px 0 #6f2d00, 0 0 16px rgba(255,213,79,0.25);
           animation: pulse 2s infinite;
           z-index: 1;
         }
@@ -2890,16 +3002,16 @@ function GameScreen() {
 
         .title-subtitle {
           font-size: 8px;
-          margin-top: 10px;
-          color: #87ceeb;
+          margin-top: 8px;
+          color: #d5ecff;
           z-index: 1;
         }
 
         .title-bestia {
           display: flex;
           gap: 10px;
-          margin-top: 20px;
-          z-index: 1;
+          margin-top: 16px;
+          justify-content: center;
         }
 
         .title-sprite-float {
@@ -2915,16 +3027,16 @@ function GameScreen() {
         }
 
         .start-btn-large {
-          margin-top: 30px;
-          padding: 10px 20px;
-          background: linear-gradient(180deg, #4caf50, #2e7d32);
-          border: none;
-          border-radius: 5px;
-          color: white;
+          margin-top: 0;
+          padding: 9px 14px;
+          background: linear-gradient(180deg, #f8f8f8 0%, #d7dfeb 100%);
+          border: 2px solid #2c3d5f;
+          border-radius: 8px;
+          color: #193052;
           font-family: inherit;
-          font-size: 8px;
+          font-size: 7px;
           cursor: pointer;
-          box-shadow: 0 4px 0 #1b5e20;
+          box-shadow: 0 4px 0 rgba(18,30,50,0.38);
           z-index: 1;
           transition: all 0.2s;
         }
@@ -2934,18 +3046,28 @@ function GameScreen() {
           flex-direction: column;
           gap: 10px;
           margin-top: 18px;
-          z-index: 1;
+          width: 142px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .title-hint {
+          margin-top: 10px;
+          font-size: 5px;
+          color: #adc8ea;
+          letter-spacing: 0.08em;
         }
 
         .start-btn-large.secondary {
           margin-top: 0;
-          background: linear-gradient(180deg, #5f82c4, #34518a);
-          box-shadow: 0 4px 0 #21345e;
+          background: linear-gradient(180deg, #fff0c1 0%, #ffd56f 100%);
+          color: #4b2b03;
+          border-color: #7c4d11;
         }
 
         .start-btn-large:hover {
-          background: linear-gradient(180deg, #66bb6a, #4caf50);
-          transform: scale(1.05);
+          background: linear-gradient(180deg, #ffffff 0%, #e2ecfa 100%);
+          transform: translateY(-1px);
         }
 
         .hud-top {
@@ -2955,10 +3077,15 @@ function GameScreen() {
           right: 5px;
           display: flex;
           justify-content: space-between;
-          font-size: 8px;
+          font-size: 7px;
           color: white;
           text-shadow: 1px 1px 0 #000;
           z-index: 10;
+          background: linear-gradient(180deg, rgba(18,43,30,0.78) 0%, rgba(13,29,20,0.68) 100%);
+          border: 2px solid rgba(180, 228, 157, 0.28);
+          border-radius: 8px;
+          padding: 4px 6px;
+          box-shadow: 0 2px 0 rgba(0,0,0,0.18);
         }
 
         .dialog-box {
@@ -2966,23 +3093,58 @@ function GameScreen() {
           bottom: 5px;
           left: 5px;
           right: 5px;
-          background: white;
-          border: 2px solid #333;
-          border-radius: 5px;
-          padding: 8px;
-          min-height: 50px;
+          background: linear-gradient(180deg, #f8fbff 0%, #dfe8f6 100%);
+          border: 3px solid #304a70;
+          border-radius: 10px;
+          padding: 10px 10px 12px;
+          min-height: 56px;
           z-index: 20;
+          box-shadow:
+            0 4px 0 rgba(15,26,46,0.25),
+            inset 0 1px 0 rgba(255,255,255,0.85);
+        }
+
+        .dialog-portrait {
+          position: absolute;
+          top: -18px;
+          width: 34px;
+          height: 34px;
+          border: 3px solid #90a4ae;
+          background: #121826;
+          border-radius: 8px;
+          padding: 2px;
+          box-shadow: 0 4px 0 rgba(0,0,0,0.22);
+        }
+
+        .dialog-portrait.left {
+          left: 10px;
+        }
+
+        .dialog-portrait.right {
+          right: 10px;
+        }
+
+        .dialog-portrait-inner {
+          width: 100%;
+          height: 100%;
+          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 16px;
         }
 
         .dialog-speaker {
           font-size: 7px;
-          color: #1976d2;
-          margin-bottom: 4px;
+          color: #1b3d74;
+          margin-bottom: 5px;
+          letter-spacing: 0.04em;
         }
 
         .dialog-text {
-          font-size: 8px;
-          line-height: 1.4;
+          font-size: 7px;
+          line-height: 1.6;
+          color: #20283a;
         }
 
         .dialog-arrow {
@@ -3567,6 +3729,26 @@ function GameScreen() {
           gap: 5px;
         }
 
+        .dex-summary {
+          margin-bottom: 8px;
+          padding: 6px 8px;
+          background: linear-gradient(180deg, #f7f4da 0%, #ebe4b3 100%);
+          border: 2px solid #b7aa62;
+          border-radius: 5px;
+        }
+
+        .dex-summary-title {
+          font-size: 7px;
+          color: #5d4e11;
+          margin-bottom: 4px;
+        }
+
+        .dex-summary-copy {
+          font-size: 5px;
+          line-height: 1.5;
+          color: #675c29;
+        }
+
         .dex-entry {
           background: #f5f5f5;
           padding: 5px;
@@ -3835,8 +4017,9 @@ function GameScreen() {
         }
 
         .bottom-content {
-          display: flex;
-          flex-direction: column;
+          display: grid;
+          grid-template-columns: 1fr;
+          grid-template-rows: auto auto;
           gap: 12px;
           width: 100%;
         }
@@ -3890,11 +4073,14 @@ function GameScreen() {
         }
 
         .controls-area {
-          display: flex;
-          align-items: flex-end;
-          justify-content: space-between;
-          gap: 12px;
+          display: grid;
+          grid-template-columns: 1fr 72px 1fr;
+          align-items: end;
+          justify-items: center;
+          gap: 8px;
           width: 100%;
+          min-height: 118px;
+          padding: 2px 4px 0;
         }
 
         .controls-left,
@@ -3903,6 +4089,7 @@ function GameScreen() {
           flex-direction: column;
           align-items: center;
           gap: 8px;
+          width: 100%;
         }
 
         .control-caption {
@@ -4046,6 +4233,7 @@ function GameScreen() {
           display: flex;
           gap: 10px;
           margin-top: 2px;
+          justify-content: center;
         }
 
         .start-btn, .select-btn {
@@ -4096,11 +4284,12 @@ function GameScreen() {
           position: absolute;
           top: 5px;
           right: 5px;
-          background: rgba(0,0,0,0.7);
-          padding: 3px 8px;
+          background: linear-gradient(180deg, rgba(31,44,67,0.92) 0%, rgba(20,28,41,0.92) 100%);
+          padding: 4px 8px;
           border-radius: 10px;
+          border: 2px solid rgba(137, 183, 255, 0.2);
           font-size: 6px;
-          color: #ffd700;
+          color: #f9df84;
           z-index: 5;
         }
 
@@ -4132,6 +4321,11 @@ function GameScreen() {
             width: 42px !important;
             height: 42px !important;
             font-size: 13px !important;
+          }
+
+          .controls-area {
+            grid-template-columns: 1fr 60px 1fr;
+            min-height: 112px;
           }
         }
 
