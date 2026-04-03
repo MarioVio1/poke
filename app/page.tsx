@@ -1410,7 +1410,7 @@ export default function Game() {
         ...prev,
         party: prev.party.map(p => p === bestia ? {
           ...p,
-          id: newForm,
+          id: BESTI[newForm]?.id ?? p.id,
           name: evolved.name,
           types: evolved.types,
           maxHp: Math.floor(evolved.bs.hp * 1.5),
