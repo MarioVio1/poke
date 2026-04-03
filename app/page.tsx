@@ -859,34 +859,41 @@ export default function Game() {
 
   // Move player
   const move = useCallback((dir: string) => {
-    if (inBattle || inDialog || inShop || animating) return
-    let nx = gs.player.x
-    let ny = gs.player.y
-    if (dir === 'up') ny--
-    if (dir === 'down') ny++
-    if (dir === 'left') nx--
-    if (dir === 'right') nx++
+    try {
+      if (inBattle || inDialog || inShop || animating || !gameStarted || showStoryIntro || showPlayerSetup) return
 
-    const map = MAPS[gs.map]
-    if (!map.tiles[ny] || typeof map.tiles[ny][nx] === 'undefined') return
-    
-    const tile = map.tiles[ny][nx]
-    if (!canMoveOnTile(tile, gs.vehicle)) return
+      setGs(prev => {
+        let nx = prev.player.x
+        let ny = prev.player.y
+        if (dir === 'up') ny--
+        if (dir === 'down') ny++
+        if (dir === 'left') nx--
+        if (dir === 'right') nx++
 
-    setGs(prev => ({ ...prev, player: { ...prev.player, x: nx, y: ny } }))
-    soundManager.footstep()
-  }, [gs, inBattle, inDialog, inShop, animating])
+        const map = MAPS[prev.map]
+        if (!map?.tiles?.[ny] || typeof map.tiles[ny][nx] === 'undefined') return prev
+
+        const tile = map.tiles[ny][nx]
+        if (!canMoveOnTile(tile, prev.vehicle)) return prev
+
+        return { ...prev, player: { ...prev.player, x: nx, y: ny } }
+      })
+
+      soundManager.footstep()
+    } catch (error) {
+      console.error('Move failed:', error)
+    }
+  }, [animating, gameStarted, inBattle, inDialog, inShop, showPlayerSetup, showStoryIntro])
 
   // Handle map events
   const handleEvent = useCallback((ev: MapEvent) => {
     switch (ev.type) {
       case 'npc':
         if (gs.map === 'casa' && ev.name === 'Mamma' && !gs.flags.hasStarter) {
+          setGs(prev => ({ ...prev, storyProgress: Math.max(prev.storyProgress, 2) }))
           setDialogs(ev.dialog || [])
           setSpeaker(ev.name || '')
-          setDialogCallback(() => {
-            setGs(prev => ({ ...prev, storyProgress: Math.max(prev.storyProgress, 2) }))
-          })
+          setDialogCallback(null)
           setInDialog(true)
         } else if (ev.givesStarter && !gs.flags.hasStarter) {
           setDialogs(ev.dialog || [])
@@ -2572,7 +2579,8 @@ export default function Game() {
 
         .game-wrapper {
           width: min(620px, 96vw);
-          height: calc(100vh - 32px);
+          min-height: calc(100vh - 32px);
+          height: auto;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -2581,9 +2589,10 @@ export default function Game() {
         .gba-console {
           position: relative;
           width: 100%;
-          height: min(940px, calc(100vh - 24px));
+          height: auto;
+          min-height: min(940px, calc(100vh - 24px));
           display: grid;
-          grid-template-rows: minmax(0, 1.08fr) minmax(0, 0.92fr);
+          grid-template-rows: auto auto;
           gap: 12px;
           background:
             radial-gradient(circle at 35% 25%, rgba(132,90,255,0.45) 0%, rgba(132,90,255,0) 38%),
@@ -2624,7 +2633,6 @@ export default function Game() {
 
         .top-screen, .bottom-screen {
           width: 100%;
-          min-height: 0;
         }
 
         .screen-bezel {
@@ -3975,7 +3983,7 @@ export default function Game() {
           position: relative;
           background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 24%);
           border-radius: 24px;
-          height: 100%;
+          min-height: 360px;
           padding: 0;
           overflow: hidden;
         }
@@ -3983,7 +3991,7 @@ export default function Game() {
         .bottom-content {
           position: relative;
           width: 100%;
-          height: 100%;
+          min-height: 360px;
         }
 
         .info-panel {
@@ -4072,10 +4080,10 @@ export default function Game() {
 
         .dpad-container {
           position: absolute;
-          left: 22px;
-          bottom: 20px;
-          width: 112px;
-          height: 112px;
+          left: 26px;
+          bottom: 26px;
+          width: 144px;
+          height: 144px;
           touch-action: none;
           z-index: 5;
           pointer-events: auto;
@@ -4089,13 +4097,13 @@ export default function Game() {
 
         .dpad-btn {
           position: absolute;
-          width: 42px;
-          height: 42px;
+          width: 46px;
+          height: 46px;
           background: linear-gradient(145deg, #5a5a5a, #2d2d2d);
           border: 3px solid #1b1b1b;
-          border-radius: 10px;
+          border-radius: 12px;
           color: white;
-          font-size: 14px;
+          font-size: 18px;
           cursor: pointer;
           display: flex;
           align-items: center;
@@ -4113,36 +4121,32 @@ export default function Game() {
         }
 
         .dpad-up { 
-          top: 2px; 
+          top: 0; 
           left: 50%; 
           transform: translateX(-50%);
-          border-radius: 6px 6px 0 0;
         }
         .dpad-down { 
-          bottom: 2px; 
+          bottom: 0; 
           left: 50%; 
           transform: translateX(-50%);
-          border-radius: 0 0 6px 6px;
         }
         .dpad-left { 
-          left: 2px; 
+          left: 0; 
           top: 50%; 
           transform: translateY(-50%);
-          border-radius: 6px 0 0 6px;
         }
         .dpad-right { 
-          right: 2px; 
+          right: 0; 
           top: 50%; 
           transform: translateY(-50%);
-          border-radius: 0 6px 6px 0;
         }
         .dpad-center {
           position: absolute; 
           top: 50%; 
           left: 50%; 
           transform: translate(-50%, -50%);
-          width: 24px;
-          height: 24px;
+          width: 22px;
+          height: 22px;
           background: linear-gradient(145deg, #505050, #242424);
           border-radius: 50%;
           border: 3px solid #222;
@@ -4150,10 +4154,10 @@ export default function Game() {
 
         .action-btns {
           position: absolute;
-          right: 20px;
-          bottom: 22px;
-          width: 132px;
-          height: 120px;
+          right: 22px;
+          bottom: 34px;
+          width: 148px;
+          height: 136px;
           z-index: 5;
           pointer-events: auto;
         }
@@ -4175,13 +4179,13 @@ export default function Game() {
         }
 
         #btn-a {
-          right: 8px;
+          right: 12px;
           bottom: 10px;
         }
 
         #btn-b {
-          left: 10px;
-          top: 6px;
+          left: 12px;
+          top: 8px;
         }
 
         .action-btn:active {
@@ -4212,10 +4216,10 @@ export default function Game() {
         .start-select {
           position: absolute;
           left: 50%;
-          top: 112px;
+          top: 108px;
           transform: translateX(-50%);
-          display: flex;
-          gap: 20px;
+          display: grid;
+          gap: 10px;
           align-items: center;
           justify-content: center;
           z-index: 5;
@@ -4223,13 +4227,13 @@ export default function Game() {
         }
 
         .start-btn, .select-btn {
-          width: 54px;
+          width: 62px;
           height: 14px;
           background: linear-gradient(180deg, #767676 0%, #4d4d4d 100%);
           border: 2px solid #1b1b1b;
           border-radius: 999px;
           cursor: pointer;
-          transform: rotate(-16deg);
+          transform: rotate(-10deg);
         }
 
         .start-btn:hover, .select-btn:hover {
@@ -4305,7 +4309,7 @@ export default function Game() {
 
           .screen-bezel-bottom,
           .bottom-content {
-            height: 100%;
+            min-height: 320px;
           }
 
           .info-panel {
@@ -4319,21 +4323,21 @@ export default function Game() {
           .dpad-container {
             left: 12px;
             bottom: 22px;
-            width: 92px !important;
-            height: 92px !important;
+            width: 112px !important;
+            height: 112px !important;
           }
           
           .dpad-btn {
-            width: 36px !important;
-            height: 36px !important;
-            font-size: 13px !important;
+            width: 40px !important;
+            height: 40px !important;
+            font-size: 16px !important;
           }
           
           .action-btns {
             right: 12px;
             bottom: 24px;
-            width: 108px;
-            height: 96px;
+            width: 118px;
+            height: 110px;
           }
 
           .action-btn {
@@ -4344,7 +4348,7 @@ export default function Game() {
 
           .start-select {
             top: 96px;
-            gap: 14px;
+            gap: 8px;
           }
 
           .start-btn,
