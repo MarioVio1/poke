@@ -1797,6 +1797,8 @@ export default function Game() {
                     const playerTile = currentMap?.tiles?.[gs.player.y]?.[gs.player.x]
                     const hasStairsNearby = currentMap?.events?.some(e => 
                       e.type === 'warp' && 
+                      typeof e.x === 'number' &&
+                      typeof e.y === 'number' &&
                       Math.abs(e.x - gs.player.x) <= 1 && 
                       Math.abs(e.y - gs.player.y) <= 1
                     )
