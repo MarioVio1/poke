@@ -76,6 +76,9 @@ interface StoryIntroScene {
   accent: string
 }
 
+type VirtualControl = 'up' | 'down' | 'left' | 'right' | 'a' | 'b' | 'start' | 'select'
+type ControlMode = 'boot' | 'title' | 'setup' | 'story' | 'dialog' | 'shop' | 'menu' | 'overlay' | 'overworld'
+
 // Intro animation frames
 const INTRO_FRAMES = [
   { text: '★ POKEMONA ★', subtext: 'Besti di Venetia', delay: 2000 },
@@ -233,6 +236,7 @@ const OPENING_STORY: StoryIntroScene[] = [
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const lastVirtualPressRef = useRef<Record<string, number>>({})
+  const activeVirtualControlRef = useRef<VirtualControl | null>(null)
 
   const normalizePlayer = useCallback((player: Partial<GameState['player']> | undefined): GameState['player'] => ({
     name: player?.name || 'Federico',
@@ -270,6 +274,7 @@ export default function Game() {
   const [setupIdentity, setSetupIdentity] = useState<PlayerIdentity>('maschio')
   const [showStoryIntro, setShowStoryIntro] = useState(false)
   const [storyIntroStep, setStoryIntroStep] = useState(0)
+  const [menuSelection, setMenuSelection] = useState(0)
   
   // Battle states
   const [battleState, setBattleState] = useState<BattleState | null>(null)
@@ -562,9 +567,9 @@ export default function Game() {
   }, [showIntro, introFrame])
 
   // Skip intro
-  const skipIntro = () => {
+  const skipIntro = useCallback(() => {
     setShowIntro(false)
-  }
+  }, [])
 
   // Create a Bestia with stats (including legendary starters)
   const createBesti = useCallback((id: string, lvl: number): PartyBestia => {
@@ -1840,29 +1845,19 @@ export default function Game() {
     setTimeout(() => setNotification(''), 2000)
   }
 
-  const toggleMenu = () => {
+  const toggleMenu = useCallback(() => {
     soundManager.menuOpen()
     if (inMenu) {
       setInMenu(false)
       setShowOverlay(false)
     } else {
       setOverlayTitle('MENU')
-      setOverlayContent(
-        <div className="menu-options">
-          <div className="menu-option" onClick={() => { showParty(); setInMenu(false) }}>Squadra</div>
-          <div className="menu-option" onClick={() => { showBag(); setInMenu(false) }}>Zaino</div>
-          <div className="menu-option" onClick={() => { showPokedex(); setInMenu(false) }}>BestiDex</div>
-          <div className="menu-option" onClick={() => { showTeleport(); }}>Teletrasporto</div>
-          <div className="menu-option" onClick={() => { showAchievements(); }}>🏆 Trofei</div>
-          <div className="menu-option" onClick={() => { showSave(); }}>💾 Salva</div>
-          <div className="menu-option" onClick={() => { showLoad(); }}>📂 Carica</div>
-          <div className="menu-option" onClick={() => { setInMenu(false) }}>❌ Chiudi</div>
-        </div>
-      )
+      setMenuSelection(0)
+      setOverlayContent(null)
       setShowOverlay(true)
       setInMenu(true)
     }
-  }
+  }, [inMenu])
 
   // Shop functions
   const buyItem = (item: GameItem) => {
@@ -1888,120 +1883,248 @@ export default function Game() {
     }
   }
 
-  // Handle A button
-  const handleA = () => {
-    soundManager.buttonPress()
-    if (!gameStarted && !showPlayerSetup) {
-      if (titleSelection === 1 && hasSave()) {
-        startSavedGame()
-      } else {
-        startNewGame()
-      }
-      return
+  const runMenuAction = useCallback((index: number) => {
+    switch (index) {
+      case 0:
+        setInMenu(false)
+        showParty()
+        return
+      case 1:
+        setInMenu(false)
+        showBag()
+        return
+      case 2:
+        setInMenu(false)
+        showPokedex()
+        return
+      case 3:
+        setInMenu(false)
+        showTeleport()
+        return
+      case 4:
+        setInMenu(false)
+        showAchievements()
+        return
+      case 5:
+        setInMenu(false)
+        showSave()
+        return
+      case 6:
+        setInMenu(false)
+        showLoad()
+        return
+      default:
+        setInMenu(false)
+        setShowOverlay(false)
     }
-    if (showPlayerSetup) {
-      confirmNewGameSetup()
-      return
-    }
-    if (showStoryIntro) {
-      advanceStoryIntro()
-      return
-    }
-    if (inDialog) {
-      advanceDialog()
-      return
-    }
-    if (inShop) {
-      setInShop(false)
-      return
-    }
-    if (showOverlay) {
-      setShowOverlay(false)
-      return
-    }
-    checkEvents()
-  }
+  }, [showAchievements, showBag, showLoad, showParty, showPokedex, showSave, showTeleport])
 
-  // Handle B button
-  const handleB = () => {
-    soundManager.menuBack()
-    if (showPlayerSetup) {
-      setShowPlayerSetup(false)
-      return
-    }
-    if (!gameStarted) return
-    if (showStoryIntro) return
-    if (inDialog) {
-      setInDialog(false)
-      setDialogs([])
-      return
-    }
-    if (inShop) {
-      setInShop(false)
-      return
-    }
-    if (showOverlay) {
-      setShowOverlay(false)
-      return
-    }
-    toggleMenu()
-  }
+  const getControlMode = useCallback((): ControlMode => {
+    if (showIntro) return 'boot'
+    if (!gameStarted && !showPlayerSetup) return 'title'
+    if (showPlayerSetup) return 'setup'
+    if (showStoryIntro) return 'story'
+    if (inDialog) return 'dialog'
+    if (inShop) return 'shop'
+    if (inMenu) return 'menu'
+    if (showOverlay) return 'overlay'
+    return 'overworld'
+  }, [gameStarted, inDialog, inMenu, inShop, showIntro, showOverlay, showPlayerSetup, showStoryIntro])
 
-  const handleDirectionInput = useCallback((dir: 'up' | 'down' | 'left' | 'right') => {
-    if (!gameStarted && !showPlayerSetup) {
-      if (dir === 'up' || dir === 'left') {
-        setTitleSelection(prev => (prev === 0 ? 1 : 0))
-      } else if (dir === 'down' || dir === 'right') {
-        setTitleSelection(prev => (prev === 1 ? 0 : 1))
-      }
-      return
-    }
+  const cycleSetupIdentity = useCallback((step: number) => {
+    const identities: PlayerIdentity[] = ['maschio', 'femmina', 'trans']
+    const currentIndex = identities.indexOf(setupIdentity)
+    const nextIndex = (currentIndex + step + identities.length) % identities.length
+    setSetupIdentity(identities[nextIndex])
+  }, [setupIdentity])
 
-    if (showPlayerSetup) {
-      if (dir === 'left') setSetupIdentity('maschio')
-      if (dir === 'up') setSetupIdentity('femmina')
-      if (dir === 'right') setSetupIdentity('trans')
-      return
-    }
-
-    move(dir)
-  }, [gameStarted, move, showPlayerSetup])
-
-  const handleStartButton = useCallback(() => {
-    if (!gameStarted || showPlayerSetup || showStoryIntro) return
-    toggleMenu()
-  }, [gameStarted, showPlayerSetup, showStoryIntro])
-
-  const handleSelectButton = useCallback(() => {
-    if (!gameStarted || showPlayerSetup || showStoryIntro) return
+  const showObjectiveHint = useCallback(() => {
     setNotification(gs.flags.hasStarter ? `Obiettivo: esplora ${MAPS[gs.map]?.name || 'Venetia'}` : (gs.storyProgress < 2 ? 'Obiettivo: parla con la Mamma' : 'Obiettivo: vai dal Dottor GheSboro'))
     setTimeout(() => setNotification(''), 1600)
-  }, [gameStarted, gs.flags.hasStarter, gs.map, gs.storyProgress, showPlayerSetup, showStoryIntro])
+  }, [gs.flags.hasStarter, gs.map, gs.storyProgress])
 
-  const handleVirtualPress = useCallback((control: 'up' | 'down' | 'left' | 'right' | 'a' | 'b' | 'start' | 'select') => {
+  const handleControlAction = useCallback((control: VirtualControl) => {
+    const mode = getControlMode()
+
+    if (control === 'a' || control === 'start') {
+      soundManager.buttonPress()
+    } else if (control === 'b' || control === 'select') {
+      soundManager.menuBack()
+    }
+
+    switch (mode) {
+      case 'boot':
+        if (control === 'a' || control === 'b' || control === 'start') {
+          skipIntro()
+        }
+        return
+      case 'title':
+        if (control === 'up' || control === 'left') {
+          setTitleSelection(0)
+          return
+        }
+        if (control === 'down' || control === 'right') {
+          setTitleSelection(1)
+          return
+        }
+        if (control === 'a' || control === 'start') {
+          if (titleSelection === 1 && hasSave()) {
+            startSavedGame()
+          } else {
+            startNewGame()
+          }
+        }
+        return
+      case 'setup':
+        if (control === 'left' || control === 'up') {
+          cycleSetupIdentity(-1)
+          return
+        }
+        if (control === 'right' || control === 'down') {
+          cycleSetupIdentity(1)
+          return
+        }
+        if (control === 'a' || control === 'start') {
+          confirmNewGameSetup()
+          return
+        }
+        if (control === 'b') {
+          setShowPlayerSetup(false)
+        }
+        return
+      case 'story':
+        if (control === 'a' || control === 'start') {
+          advanceStoryIntro()
+        }
+        return
+      case 'dialog':
+        if (control === 'a' || control === 'start') {
+          advanceDialog()
+          return
+        }
+        if (control === 'b') {
+          setInDialog(false)
+          setDialogs([])
+        }
+        return
+      case 'shop':
+        if (control === 'a' || control === 'b' || control === 'start') {
+          setInShop(false)
+        }
+        return
+      case 'menu':
+        if (control === 'up' || control === 'left') {
+          setMenuSelection(prev => (prev === 0 ? 7 : prev - 1))
+          return
+        }
+        if (control === 'down' || control === 'right') {
+          setMenuSelection(prev => (prev === 7 ? 0 : prev + 1))
+          return
+        }
+        if (control === 'a' || control === 'start') {
+          runMenuAction(menuSelection)
+          return
+        }
+        if (control === 'b' || control === 'select') {
+          setInMenu(false)
+          setShowOverlay(false)
+        }
+        return
+      case 'overlay':
+        if (control === 'a' || control === 'b' || control === 'start' || control === 'select') {
+          setShowOverlay(false)
+        }
+        return
+      case 'overworld':
+        if (control === 'up' || control === 'down' || control === 'left' || control === 'right') {
+          move(control)
+          return
+        }
+        if (control === 'a') {
+          checkEvents()
+          return
+        }
+        if (control === 'start') {
+          toggleMenu()
+          return
+        }
+        if (control === 'select') {
+          showObjectiveHint()
+        }
+        return
+    }
+  }, [advanceDialog, advanceStoryIntro, checkEvents, confirmNewGameSetup, cycleSetupIdentity, getControlMode, hasSave, menuSelection, move, runMenuAction, showObjectiveHint, skipIntro, startNewGame, startSavedGame, titleSelection, toggleMenu])
+
+  const handleA = useCallback(() => {
+    handleControlAction('a')
+  }, [handleControlAction])
+
+  const handleB = useCallback(() => {
+    handleControlAction('b')
+  }, [handleControlAction])
+
+  const handleDirectionInput = useCallback((dir: 'up' | 'down' | 'left' | 'right') => {
+    handleControlAction(dir)
+  }, [handleControlAction])
+
+  const handleStartButton = useCallback(() => {
+    handleControlAction('start')
+  }, [handleControlAction])
+
+  const handleSelectButton = useCallback(() => {
+    handleControlAction('select')
+  }, [handleControlAction])
+
+  const handleVirtualPress = useCallback((control: VirtualControl) => {
     const now = Date.now()
     const last = lastVirtualPressRef.current[control] || 0
-    if (now - last < 120) return
+    if (now - last < 220) return
     lastVirtualPressRef.current[control] = now
+    handleControlAction(control)
+  }, [handleControlAction])
 
-    if (control === 'up' || control === 'down' || control === 'left' || control === 'right') {
-      handleDirectionInput(control)
-      return
-    }
-    if (control === 'a') {
-      handleA()
-      return
-    }
-    if (control === 'b') {
-      handleB()
-      return
-    }
-    if (control === 'start') {
-      handleStartButton()
-      return
-    }
-    handleSelectButton()
-  }, [handleA, handleB, handleDirectionInput, handleSelectButton, handleStartButton])
+  const bindVirtualControl = useCallback((control: VirtualControl) => ({
+    onPointerDown: (e: React.PointerEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (activeVirtualControlRef.current === control) return
+      activeVirtualControlRef.current = control
+      e.currentTarget.setPointerCapture?.(e.pointerId)
+      handleVirtualPress(control)
+    },
+    onPointerUp: (e: React.PointerEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (activeVirtualControlRef.current === control) {
+        activeVirtualControlRef.current = null
+      }
+      if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId)
+      }
+    },
+    onPointerCancel: (e: React.PointerEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (activeVirtualControlRef.current === control) {
+        activeVirtualControlRef.current = null
+      }
+      if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId)
+      }
+    },
+    onPointerLeave: () => {
+      if (activeVirtualControlRef.current === control) {
+        activeVirtualControlRef.current = null
+      }
+    },
+    onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      e.stopPropagation()
+    },
+    onContextMenu: (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+    },
+  }), [handleVirtualPress])
 
   // Effects
   useEffect(() => {
@@ -2522,8 +2645,22 @@ export default function Game() {
               {showOverlay && (
                 <div className="overlay">
                   <div className="overlay-header">{overlayTitle}</div>
-                  <button className="close-btn" onClick={() => setShowOverlay(false)}>✕</button>
-                  <div className="overlay-content">{overlayContent}</div>
+                  <button className="close-btn" onClick={() => { setShowOverlay(false); setInMenu(false) }}>✕</button>
+                  <div className="overlay-content">
+                    {inMenu ? (
+                      <div className="menu-options">
+                        {['Squadra', 'Zaino', 'BestiDex', 'Teletrasporto', 'Trofei', 'Salva', 'Carica', 'Chiudi'].map((label, index) => (
+                          <div
+                            key={label}
+                            className={`menu-option ${menuSelection === index ? 'selected' : ''}`}
+                            onClick={() => runMenuAction(index)}
+                          >
+                            {label}
+                          </div>
+                        ))}
+                      </div>
+                    ) : overlayContent}
+                  </div>
                 </div>
               )}
             </div>
@@ -2568,26 +2705,22 @@ export default function Game() {
                     <button 
                       type="button"
                       className="dpad-btn dpad-up" 
-                      onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('up'); }}
-                      onClick={(e) => e.preventDefault()}
+                      {...bindVirtualControl('up')}
                     >▲</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-down" 
-                      onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('down'); }}
-                      onClick={(e) => e.preventDefault()}
+                      {...bindVirtualControl('down')}
                     >▼</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-left" 
-                      onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('left'); }}
-                      onClick={(e) => e.preventDefault()}
+                      {...bindVirtualControl('left')}
                     >◀</button>
                     <button 
                       type="button"
                       className="dpad-btn dpad-right" 
-                      onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('right'); }}
-                      onClick={(e) => e.preventDefault()}
+                      {...bindVirtualControl('right')}
                     >▶</button>
                     <div className="dpad-center"></div>
                   </div>
@@ -2599,15 +2732,13 @@ export default function Game() {
                     type="button"
                     className="action-btn" 
                     id="btn-a" 
-                    onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('a'); }}
-                    onClick={(e) => e.preventDefault()}
+                    {...bindVirtualControl('a')}
                   >A</button>
                   <button 
                     type="button"
                     className="action-btn" 
                     id="btn-b" 
-                    onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('b'); }}
-                    onClick={(e) => e.preventDefault()}
+                    {...bindVirtualControl('b')}
                   >B</button>
                 </div>
 
@@ -2616,10 +2747,9 @@ export default function Game() {
                   <button 
                     type="button"
                     className="start-btn" 
-                    onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('start'); }}
-                    onClick={(e) => e.preventDefault()}
+                    {...bindVirtualControl('start')}
                   ></button>
-                  <button type="button" className="select-btn" onPointerDown={(e) => { e.preventDefault(); handleVirtualPress('select'); }} onClick={(e) => e.preventDefault()}></button>
+                  <button type="button" className="select-btn" {...bindVirtualControl('select')}></button>
                 </div>
               </div>
             </div>
@@ -2641,7 +2771,7 @@ export default function Game() {
         }
 
         .game-wrapper {
-          width: min(620px, 96vw);
+          width: min(540px, 94vw);
           min-height: calc(100vh - 32px);
           height: auto;
           display: flex;
@@ -2653,10 +2783,10 @@ export default function Game() {
           position: relative;
           width: 100%;
           height: auto;
-          min-height: min(940px, calc(100vh - 24px));
+          min-height: min(860px, calc(100vh - 24px));
           display: grid;
           grid-template-rows: auto auto;
-          gap: 12px;
+          gap: 10px;
           background:
             radial-gradient(circle at 35% 25%, rgba(132,90,255,0.45) 0%, rgba(132,90,255,0) 38%),
             linear-gradient(180deg, #202026 0%, #131317 22%, #5f19d4 58%, #4d0fb9 100%);
@@ -2838,11 +2968,11 @@ export default function Game() {
         }
 
         .story-intro-card {
-          width: min(100%, 500px);
+          width: min(100%, 280px);
           height: 100%;
           display: grid;
           grid-template-rows: 1fr auto;
-          gap: 10px;
+          gap: 8px;
         }
 
         .story-intro-stage {
@@ -2859,33 +2989,33 @@ export default function Game() {
         }
 
         .story-stage-sprite {
-          width: 112px;
-          height: 112px;
+          width: 80px;
+          height: 80px;
           object-fit: contain;
           z-index: 2;
           filter: drop-shadow(0 6px 0 rgba(0,0,0,0.18));
         }
 
         .story-stage-sprite.bestia {
-          width: 90px;
-          height: 90px;
+          width: 64px;
+          height: 64px;
         }
 
         .story-stage-side {
           position: absolute;
           bottom: 24px;
-          width: 52px;
-          height: 52px;
+          width: 36px;
+          height: 36px;
           object-fit: contain;
           opacity: 0.95;
         }
 
         .story-stage-side.left {
-          left: 44px;
+          left: 20px;
         }
 
         .story-stage-side.right {
-          right: 44px;
+          right: 20px;
         }
 
         .story-intro-box {
@@ -2893,28 +3023,28 @@ export default function Game() {
           border: 4px solid #4f8cff;
           border-radius: 12px;
           box-shadow: 0 6px 0 rgba(0,0,0,0.18);
-          padding: 12px 14px 14px;
+          padding: 10px 10px 12px;
         }
 
         .story-intro-speaker {
-          font-size: 8px;
+          font-size: 6px;
           letter-spacing: 1px;
         }
 
         .story-intro-title {
-          font-size: 16px;
+          font-size: 10px;
           color: #1f2e4f;
           line-height: 1.2;
         }
 
         .story-intro-text {
-          font-size: 10px;
-          line-height: 1.65;
+          font-size: 7px;
+          line-height: 1.5;
           color: #1d1d1d;
         }
 
         .story-intro-hint {
-          font-size: 7px;
+          font-size: 5px;
           text-align: right;
           color: #526179;
         }
@@ -2957,19 +3087,19 @@ export default function Game() {
         .title-frame {
           position: relative;
           z-index: 1;
-          width: min(300px, 88%);
+          width: min(250px, 80%);
           max-height: 100%;
           display: grid;
           grid-template-rows: auto auto auto;
           align-content: center;
-          gap: 5px;
+          gap: 4px;
           justify-items: center;
           align-items: center;
         }
 
         .firered-brand {
           width: 100%;
-          padding: 6px 8px 5px;
+          padding: 5px 7px 4px;
           border: 3px solid #1b1b1b;
           border-radius: 10px;
           background: linear-gradient(180deg, rgba(24,50,89,0.95) 0%, rgba(15,25,53,0.94) 100%);
@@ -2978,28 +3108,28 @@ export default function Game() {
         }
 
         .firered-brand-top {
-          font-size: 5px;
+          font-size: 4px;
           color: #ffdd77;
           margin-bottom: 2px;
           letter-spacing: 1px;
         }
 
         .title-logo {
-          font-size: clamp(14px, 5vw, 20px);
+          font-size: clamp(12px, 4.2vw, 18px);
           color: #ffe082;
           text-shadow: 1px 1px 0 #7a3212, 3px 3px 0 #3c1c12;
           line-height: 1.05;
         }
 
         .title-subtitle {
-          font-size: 4px;
+          font-size: 3px;
           margin-top: 3px;
           color: #d5f7ff;
         }
 
         .title-hero {
           width: 100%;
-          min-height: 48px;
+          min-height: 42px;
           display: grid;
           grid-template-columns: 1fr auto 1fr;
           align-items: end;
@@ -3008,16 +3138,16 @@ export default function Game() {
         }
 
         .title-hero-main {
-          width: 42px;
-          height: 42px;
+          width: 34px;
+          height: 34px;
           grid-column: 2;
           filter: drop-shadow(0 4px 0 rgba(0,0,0,0.25));
           animation: titleFloat 2.4s ease-in-out infinite;
         }
 
         .title-hero-side {
-          width: 24px;
-          height: 24px;
+          width: 20px;
+          height: 20px;
           opacity: 0.95;
           filter: drop-shadow(0 3px 0 rgba(0,0,0,0.22));
           animation: titleFloat 2.8s ease-in-out infinite;
@@ -3034,7 +3164,7 @@ export default function Game() {
 
         .title-menu-card {
           width: 100%;
-          padding: 6px;
+          padding: 5px;
           border: 3px solid #1b1b1b;
           border-radius: 10px;
           background: rgba(250,250,242,0.96);
@@ -3045,13 +3175,13 @@ export default function Game() {
 
         .start-btn-large {
           width: 100%;
-          padding: 6px 8px;
+          padding: 5px 7px;
           background: linear-gradient(180deg, #f0f4ff, #c7d7ff);
           border: 2px solid #19243f;
           border-radius: 8px;
           color: #162241;
           font-family: inherit;
-          font-size: 6px;
+          font-size: 5px;
           text-align: left;
           cursor: pointer;
           box-shadow: 0 3px 0 rgba(25,36,63,0.32);
@@ -3088,12 +3218,12 @@ export default function Game() {
         }
 
         .title-save-info {
-          min-height: 16px;
-          padding: 4px 6px;
+          min-height: 14px;
+          padding: 3px 5px;
           border-radius: 6px;
           background: #dde7d8;
           border: 2px solid #52614b;
-          font-size: 5px;
+          font-size: 4px;
           color: #243120;
           line-height: 1.3;
         }
@@ -3111,29 +3241,29 @@ export default function Game() {
         }
 
         .player-setup-card {
-          width: min(100%, 320px);
+          width: min(100%, 256px);
           background: #f8f8f0;
           border: 4px solid #1b1b1b;
           border-radius: 14px;
           box-shadow: 0 8px 0 rgba(0,0,0,0.18);
-          padding: 12px;
+          padding: 10px;
           display: grid;
-          gap: 8px;
+          gap: 6px;
         }
 
         .player-setup-title {
-          font-size: 11px;
+          font-size: 9px;
           color: #1f2e4f;
         }
 
         .player-setup-subtitle {
-          font-size: 6px;
+          font-size: 5px;
           color: #455368;
           line-height: 1.5;
         }
 
         .player-preview-stage {
-          height: 92px;
+          height: 74px;
           border: 3px solid #284061;
           border-radius: 10px;
           background: linear-gradient(180deg, #d9eef8 0%, #d9eef8 58%, #cae0c2 58%, #cae0c2 100%);
@@ -3143,8 +3273,8 @@ export default function Game() {
         }
 
         .player-preview-sprite {
-          width: 72px;
-          height: 72px;
+          width: 56px;
+          height: 56px;
           object-fit: contain;
         }
 
@@ -3154,7 +3284,7 @@ export default function Game() {
         }
 
         .name-field label {
-          font-size: 7px;
+          font-size: 6px;
           color: #2a3652;
         }
 
@@ -3164,7 +3294,7 @@ export default function Game() {
           border-radius: 8px;
           padding: 8px 10px;
           font-family: inherit;
-          font-size: 8px;
+          font-size: 7px;
           color: #1a2237;
           background: #ffffff;
           outline: none;
@@ -3173,26 +3303,26 @@ export default function Game() {
         .identity-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 6px;
+          gap: 4px;
         }
 
         .identity-btn {
           border: 3px solid #32465f;
           background: #eef4ff;
           border-radius: 10px;
-          padding: 6px 4px;
+          padding: 4px 3px;
           display: grid;
           justify-items: center;
           gap: 4px;
           font-family: inherit;
-          font-size: 6px;
+          font-size: 5px;
           color: #24314a;
           cursor: pointer;
         }
 
         .identity-btn img {
-          width: 34px;
-          height: 34px;
+          width: 26px;
+          height: 26px;
           object-fit: contain;
         }
 
@@ -3854,6 +3984,12 @@ export default function Game() {
           background: #e3f2fd;
         }
 
+        .menu-option.selected {
+          background: #d9ebff;
+          border: 2px solid #3f7de8;
+          box-shadow: inset 0 0 0 2px rgba(255,255,255,0.75);
+        }
+
         /* Teleport */
         .teleport-list {
           display: flex;
@@ -4069,7 +4205,7 @@ export default function Game() {
           position: relative;
           background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 24%);
           border-radius: 24px;
-          min-height: 360px;
+          min-height: 330px;
           padding: 0;
           overflow: hidden;
         }
@@ -4077,7 +4213,7 @@ export default function Game() {
         .bottom-content {
           position: relative;
           width: 100%;
-          min-height: 360px;
+          min-height: 330px;
         }
 
         .info-panel {
@@ -4088,7 +4224,7 @@ export default function Game() {
           background: linear-gradient(180deg, rgba(34,22,72,0.94) 0%, rgba(25,16,54,0.96) 100%);
           border-radius: 16px;
           padding: 14px 16px;
-          min-height: 74px;
+          min-height: 68px;
           color: white;
           border: 1px solid rgba(255,255,255,0.12);
           display: flex;
@@ -4167,7 +4303,7 @@ export default function Game() {
         .dpad-container {
           position: absolute;
           left: 26px;
-          bottom: 26px;
+          bottom: 20px;
           width: 144px;
           height: 144px;
           touch-action: none;
@@ -4241,7 +4377,7 @@ export default function Game() {
         .action-btns {
           position: absolute;
           right: 22px;
-          bottom: 34px;
+          bottom: 24px;
           width: 148px;
           height: 136px;
           z-index: 5;
@@ -4302,7 +4438,7 @@ export default function Game() {
         .start-select {
           position: absolute;
           left: 50%;
-          top: 108px;
+          top: 98px;
           transform: translateX(-50%);
           display: grid;
           gap: 10px;
