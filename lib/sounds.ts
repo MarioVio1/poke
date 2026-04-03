@@ -6,15 +6,28 @@ class SoundManager {
   private enabled: boolean = true
 
   constructor() {
-    if (typeof window !== 'undefined') {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
-    }
+    this.initAudio()
   }
 
   enable() { this.enabled = true }
   disable() { this.enabled = false }
 
+  private initAudio() {
+    if (this.audioContext || typeof window === 'undefined') return
+
+    try {
+      const AudioContextCtor = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+      if (!AudioContextCtor) return
+      this.audioContext = new AudioContextCtor()
+    } catch (error) {
+      this.audioContext = null
+      this.enabled = false
+      console.error('Audio init failed:', error)
+    }
+  }
+
   private playTone(frequency: number, duration: number, type: OscillatorType = 'square', volume: number = 0.1) {
+    this.initAudio()
     if (!this.audioContext || !this.enabled) return
 
     const oscillator = this.audioContext.createOscillator()
