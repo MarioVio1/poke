@@ -42,10 +42,10 @@ export const OUTDOOR_TILES: Record<number, {
   walkable: boolean
   type: 'grass' | 'path' | 'water' | 'tree' | 'wall' | 'building'
 }> = {
-  0: { base: '#8cd67d', detail: '#6fbc61', walkable: true, type: 'grass' },      // grass
+  0: { base: '#9fe29b', detail: '#6fbf68', walkable: true, type: 'grass' },      // grass
   1: { base: '#8a7a61', detail: '#6d604d', walkable: false, type: 'wall' },       // wall/border
-  2: { base: '#4db8d3', detail: '#8de4eb', walkable: false, type: 'water' },     // water
-  3: { base: '#d8c89c', detail: '#b8955f', walkable: false, type: 'building' }, // building
+  2: { base: '#67c7dd', detail: '#b7f0f4', walkable: false, type: 'water' },     // water
+  3: { base: '#e7d28f', detail: '#c96e58', walkable: false, type: 'building' }, // building
   6: { base: '#74c45e', detail: '#5fa64d', walkable: true, type: 'grass' },      // vineyard
   7: { base: '#b62d3b', detail: '#d85c64', walkable: true, type: 'grass' },      // radicchio
   8: { base: '#d9f6e4', detail: '#bde8d0', walkable: true, type: 'grass' },      // snow / pale grass
@@ -142,22 +142,27 @@ export const renderTile = (
   if (tile.type === 'grass') {
     // FireRed-like grass streaks and flowers
     ctx.fillRect(x + 2, y + 3, 2, 5)
+    ctx.fillRect(x + 6, y + 2, 1, 4)
     ctx.fillRect(x + 10, y + 5, 2, 5)
     ctx.fillRect(x + 6, y + 10, 2, 4)
     if ((x * 7 + y * 13) % 23 === 0) {
-      ctx.fillStyle = '#ffd95a'
-      ctx.fillRect(x + 7, y + 7, 2, 2)
+      ctx.fillStyle = '#f95b6b'
+      ctx.fillRect(x + 4, y + 8, 2, 2)
+      ctx.fillStyle = '#ffe56f'
+      ctx.fillRect(x + 10, y + 10, 2, 2)
     }
   }
   
   if (tile.type === 'water') {
     // Water ripples and shore shimmer
     const waveOffset = Math.sin(time / 260 + x / 11) * 2
-    ctx.fillStyle = '#9cf3f7'
+    ctx.fillStyle = '#d8fbff'
     ctx.fillRect(x + waveOffset + 2, y + 4, 5, 2)
     ctx.fillRect(x - waveOffset + 8, y + 9, 4, 2)
-    ctx.fillStyle = '#2aa1c5'
+    ctx.fillStyle = '#3ea6cb'
     ctx.fillRect(x, y + size - 2, size, 2)
+    ctx.fillStyle = 'rgba(255,255,255,0.28)'
+    ctx.fillRect(x + 1, y + 1, size - 2, 1)
   }
   
   if (tile.type === 'wall') {
@@ -170,13 +175,17 @@ export const renderTile = (
 
   if (tile.type === 'building') {
     // Outdoor building facade / roof hint
-    ctx.fillStyle = '#9f7d58'
-    ctx.fillRect(x, y, size, 3)
-    ctx.fillStyle = '#cbb08b'
-    ctx.fillRect(x + 2, y + 4, size - 4, size - 6)
-    ctx.fillStyle = '#6d5741'
-    ctx.fillRect(x + 4, y + 6, 4, 6)
-    ctx.fillRect(x + 9, y + 6, 4, 6)
+    ctx.fillStyle = '#d16f59'
+    ctx.fillRect(x, y, size, 4)
+    ctx.fillStyle = '#f5edcb'
+    ctx.fillRect(x + 1, y + 4, size - 2, size - 5)
+    ctx.fillStyle = '#86b8ec'
+    ctx.fillRect(x + 3, y + 6, 4, 3)
+    ctx.fillRect(x + 9, y + 6, 4, 3)
+    ctx.fillStyle = '#7a5940'
+    ctx.fillRect(x + 6, y + 9, 4, 6)
+    ctx.fillStyle = '#c0c7d6'
+    ctx.fillRect(x + 2, y + 4, size - 4, 1)
   }
   
   if (tile.type === 'floor' || tile.type === 'carpet') {
@@ -221,7 +230,7 @@ export const renderTile = (
       ctx.beginPath()
       ctx.arc(x + 8, y + 9, 7, 0, Math.PI * 2)
       ctx.fill()
-      ctx.fillStyle = '#9af06b'
+      ctx.fillStyle = '#bfff7d'
       ctx.beginPath()
       ctx.arc(x + 8, y + 6, 5, 0, Math.PI * 2)
       ctx.fill()
@@ -229,6 +238,8 @@ export const renderTile = (
       ctx.beginPath()
       ctx.arc(x + 5, y + 8, 4, 0, Math.PI * 2)
       ctx.fill()
+      ctx.fillStyle = '#5cad4f'
+      ctx.fillRect(x + 10, y + 10, 2, 2)
     }
   }
 }
