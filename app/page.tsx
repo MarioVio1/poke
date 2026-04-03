@@ -497,16 +497,10 @@ export default function Game() {
   const advanceStoryIntro = useCallback(() => {
     const nextStep = storyIntroStep + 1
     if (nextStep >= OPENING_STORY.length) {
-      setGs(prev => ({ ...prev, storyProgress: Math.max(prev.storyProgress, 1) }))
+      setGs(prev => ({ ...prev, storyProgress: Math.max(prev.storyProgress, 2) }))
       setShowStoryIntro(false)
-      setDialogs([
-        `${gs.player.name}! In piedi subito, son qua in camera.`,
-        'Il Dottor GheSboro ti aspetta al laboratorio e no vogio farte tardare.',
-        'Prima parla con mi, dopo te sistemi e te parti come si deve.',
-      ])
-      setSpeaker('Mamma')
-      setDialogCallback(null)
-      setInDialog(true)
+      setNotification('La Mamma ti ha svegliato. Ora puoi uscire e andare dal Dottor GheSboro.')
+      setTimeout(() => setNotification(''), 2200)
       return
     }
     setStoryIntroStep(nextStep)
@@ -719,28 +713,37 @@ export default function Game() {
         
         if (e.type === 'trainer' || e.type === 'gym' || e.type === 'npc') {
           const palette = e.type === 'gym'
-            ? { hair: '#cc8c1d', shirt: '#f4d34a', jacket: '#3b4ea2', legs: '#2a2f55' }
+            ? { hat: '#c37a1f', hair: '#6f3a15', shirt: '#f4d34a', jacket: '#3b4ea2', legs: '#2a2f55', accent: '#f6d2ae' }
             : e.isEnemy
-              ? { hair: '#3b1f1a', shirt: '#cc4d43', jacket: '#3b2b2b', legs: '#2a2335' }
-              : { hair: '#2d2d2d', shirt: '#4aa3f0', jacket: '#3465c7', legs: '#263266' }
+              ? { hat: '#4c2a21', hair: '#3b1f1a', shirt: '#cc4d43', jacket: '#3b2b2b', legs: '#2a2335', accent: '#f6d2ae' }
+              : { hat: '#2d2d2d', hair: '#1f1f1f', shirt: '#4aa3f0', jacket: '#3465c7', legs: '#263266', accent: '#f6d2ae' }
 
           ctx.fillStyle = 'rgba(0,0,0,0.3)'
           ctx.beginPath()
           ctx.ellipse(ex + 8, ey + 14, 5, 3, 0, 0, Math.PI * 2)
           ctx.fill()
 
-          ctx.fillStyle = palette.hair
+          ctx.fillStyle = '#1a1a1a'
+          ctx.fillRect(ex + 4, ey + 2, 8, 1)
+          ctx.fillRect(ex + 3, ey + 3, 10, 1)
+          ctx.fillStyle = palette.hat
           ctx.fillRect(ex + 4, ey + 2, 8, 3)
-          ctx.fillStyle = '#f6d2ae'
-          ctx.fillRect(ex + 5, ey + 5, 6, 4)
+          ctx.fillRect(ex + 3, ey + 5, 10, 1)
+          ctx.fillStyle = palette.hair
+          ctx.fillRect(ex + 4, ey + 6, 1, 2)
+          ctx.fillRect(ex + 11, ey + 6, 1, 2)
+          ctx.fillStyle = palette.accent
+          ctx.fillRect(ex + 5, ey + 6, 6, 4)
           ctx.fillStyle = '#1d1d1d'
-          ctx.fillRect(ex + 6, ey + 6, 1, 1)
-          ctx.fillRect(ex + 9, ey + 6, 1, 1)
+          ctx.fillRect(ex + 6, ey + 7, 1, 1)
+          ctx.fillRect(ex + 9, ey + 7, 1, 1)
+          ctx.fillStyle = '#9c4d3a'
+          ctx.fillRect(ex + 7, ey + 9, 2, 1)
           ctx.fillStyle = palette.jacket
-          ctx.fillRect(ex + 4, ey + 9, 8, 5)
+          ctx.fillRect(ex + 4, ey + 10, 8, 4)
           ctx.fillStyle = palette.shirt
-          ctx.fillRect(ex + 6, ey + 9, 4, 4)
-          ctx.fillStyle = '#f6d2ae'
+          ctx.fillRect(ex + 6, ey + 10, 4, 4)
+          ctx.fillStyle = palette.accent
           ctx.fillRect(ex + 3, ey + 10, 1, 3)
           ctx.fillRect(ex + 12, ey + 10, 1, 3)
           ctx.fillStyle = palette.legs
@@ -818,28 +821,37 @@ export default function Game() {
     const px = (gs.player.x - sx) * TILE
     const py = (gs.player.y - sy) * TILE
     const playerPalette = gs.player.gender === 'femmina'
-      ? { hair: '#8b4d2f', hat: '#ef6c7e', jacket: '#ffffff', shirt: '#ef6c7e', legs: '#3c6dd0' }
+      ? { hat: '#ef6c7e', hair: '#8b4d2f', jacket: '#ffffff', shirt: '#ef6c7e', legs: '#3c6dd0', accent: '#f6d2ae', bag: '#f2c16c' }
       : gs.player.gender === 'trans'
-        ? { hair: '#6f3dc4', hat: '#57b9ff', jacket: '#ffd54f', shirt: '#ff76aa', legs: '#57b9ff' }
-        : { hair: '#d13b35', hat: '#f2f2f2', jacket: '#f0c330', shirt: '#ffffff', legs: '#4f7fd0' }
+        ? { hat: '#57b9ff', hair: '#6f3dc4', jacket: '#ffd54f', shirt: '#ff76aa', legs: '#57b9ff', accent: '#f6d2ae', bag: '#f0c25e' }
+        : { hat: '#d13b35', hair: '#5e2d18', jacket: '#f0c330', shirt: '#ffffff', legs: '#4f7fd0', accent: '#f6d2ae', bag: '#f1c36c' }
     
     ctx.fillStyle = 'rgba(0,0,0,0.3)'
     ctx.beginPath()
     ctx.ellipse(px + 8, py + 14, 5, 3, 0, 0, Math.PI * 2)
     ctx.fill()
 
-    ctx.fillStyle = playerPalette.hair
+    ctx.fillStyle = '#1a1a1a'
+    ctx.fillRect(px + 4, py + 2 + bobOffset, 8, 1)
+    ctx.fillRect(px + 3, py + 3 + bobOffset, 10, 1)
+    ctx.fillStyle = playerPalette.hat
     ctx.fillRect(px + 4, py + 2 + bobOffset, 8, 3)
-    ctx.fillStyle = '#f6d2ae'
-    ctx.fillRect(px + 5, py + 5 + bobOffset, 6, 4)
+    ctx.fillRect(px + 3, py + 5 + bobOffset, 10, 1)
+    ctx.fillStyle = playerPalette.hair
+    ctx.fillRect(px + 4, py + 6 + bobOffset, 1, 2)
+    ctx.fillRect(px + 11, py + 6 + bobOffset, 1, 2)
+    ctx.fillStyle = playerPalette.accent
+    ctx.fillRect(px + 5, py + 6 + bobOffset, 6, 4)
     ctx.fillStyle = '#1d1d1d'
-    ctx.fillRect(px + 6, py + 6 + bobOffset, 1, 1)
-    ctx.fillRect(px + 9, py + 6 + bobOffset, 1, 1)
+    ctx.fillRect(px + 6, py + 7 + bobOffset, 1, 1)
+    ctx.fillRect(px + 9, py + 7 + bobOffset, 1, 1)
+    ctx.fillStyle = '#9c4d3a'
+    ctx.fillRect(px + 7, py + 9 + bobOffset, 2, 1)
     ctx.fillStyle = playerPalette.jacket
-    ctx.fillRect(px + 4, py + 9 + bobOffset, 8, 5)
+    ctx.fillRect(px + 4, py + 10 + bobOffset, 8, 4)
     ctx.fillStyle = playerPalette.shirt
-    ctx.fillRect(px + 6, py + 9 + bobOffset, 4, 4)
-    ctx.fillStyle = '#f6d2ae'
+    ctx.fillRect(px + 6, py + 10 + bobOffset, 4, 4)
+    ctx.fillStyle = playerPalette.bag
     ctx.fillRect(px + 3, py + 10 + bobOffset, 1, 3)
     ctx.fillRect(px + 12, py + 10 + bobOffset, 1, 3)
     ctx.fillStyle = playerPalette.legs
@@ -4157,7 +4169,7 @@ export default function Game() {
           position: relative;
           background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 24%);
           border-radius: 24px;
-          min-height: 330px;
+          min-height: 318px;
           padding: 0;
           overflow: hidden;
         }
@@ -4165,7 +4177,7 @@ export default function Game() {
         .bottom-content {
           position: relative;
           width: 100%;
-          min-height: 330px;
+          min-height: 318px;
         }
 
         .info-panel {
@@ -4394,8 +4406,8 @@ export default function Game() {
           left: 50%;
           top: 98px;
           transform: translateX(-50%);
-          display: grid;
-          gap: 10px;
+          display: flex;
+          gap: 16px;
           align-items: center;
           justify-content: center;
           z-index: 5;
@@ -4492,6 +4504,7 @@ export default function Game() {
             border-radius: 0;
             padding: 0;
             gap: 0;
+            grid-template-rows: 1fr auto;
             background: linear-gradient(180deg, #0d1834 0%, #08101f 100%);
             box-shadow: none;
           }
@@ -4505,11 +4518,13 @@ export default function Game() {
             padding: 0;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: stretch;
+            min-height: 0;
           }
 
           .screen-bezel {
             width: 100%;
+            height: 100%;
             padding: 0;
             border-radius: 0;
             background: #000;
@@ -4518,6 +4533,7 @@ export default function Game() {
 
           .game-container {
             width: 100vw;
+            height: 100%;
             max-width: 100vw;
             border-radius: 0;
           }
@@ -4529,21 +4545,21 @@ export default function Game() {
 
           .screen-bezel-bottom {
             width: 100%;
-            min-height: 36dvh;
-            border-radius: 0;
-            background: linear-gradient(180deg, #111a33 0%, #0b1224 100%);
-          }
+          min-height: 26dvh;
+          border-radius: 0;
+          background: linear-gradient(180deg, #111a33 0%, #0b1224 100%);
+        }
 
-          .bottom-content {
-            min-height: 36dvh;
-          }
+        .bottom-content {
+          min-height: 26dvh;
+        }
 
           .info-panel {
             top: 10px;
             left: 12px;
             right: 12px;
-            min-height: 62px;
-            padding: 12px;
+            min-height: 54px;
+            padding: 10px 12px;
             border-radius: 14px;
           }
 
@@ -4558,7 +4574,7 @@ export default function Game() {
 
           .dpad-container {
             left: 18px;
-            bottom: 24px;
+            bottom: 40px;
             width: 132px;
             height: 132px;
           }
@@ -4571,7 +4587,7 @@ export default function Game() {
 
           .action-btns {
             right: 18px;
-            bottom: 26px;
+            bottom: 40px;
             width: 130px;
             height: 120px;
           }
@@ -4583,26 +4599,31 @@ export default function Game() {
           }
 
           .start-select {
-            top: 92px;
-            gap: 10px;
+            top: auto;
+            bottom: 10px;
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            justify-content: center;
           }
 
           .start-btn,
           .select-btn {
             width: 52px;
             height: 12px;
+            transform: rotate(0deg);
           }
         }
 
         @media (max-width: 400px) {
           .screen-bezel-bottom,
           .bottom-content {
-            min-height: 38dvh;
+            min-height: 28dvh;
           }
 
           .dpad-container {
             left: 14px;
-            bottom: 18px;
+            bottom: 34px;
             width: 118px;
             height: 118px;
           }
@@ -4615,7 +4636,7 @@ export default function Game() {
 
           .action-btns {
             right: 14px;
-            bottom: 18px;
+            bottom: 34px;
             width: 118px;
             height: 108px;
           }
@@ -4627,14 +4648,16 @@ export default function Game() {
           }
 
           .start-select {
-            top: 88px;
-            gap: 8px;
+            top: auto;
+            bottom: 8px;
+            gap: 14px;
           }
 
           .start-btn,
           .select-btn {
             width: 46px;
             height: 11px;
+            transform: rotate(0deg);
           }
         }
         

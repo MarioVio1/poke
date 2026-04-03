@@ -140,6 +140,8 @@ export const renderTile = (
   // Tile detail pattern
   ctx.fillStyle = detailColor
   if (tile.type === 'grass') {
+    ctx.fillStyle = 'rgba(255,255,255,0.08)'
+    ctx.fillRect(x, y, size, 1)
     ctx.fillRect(x + 2, y + 2, 2, 5)
     ctx.fillRect(x + 7, y + 3, 1, 4)
     ctx.fillRect(x + 11, y + 5, 2, 5)
@@ -164,6 +166,8 @@ export const renderTile = (
 
   if (tile.type === 'water') {
     const waveOffset = Math.sin(time / 260 + x / 11) * 2
+    ctx.fillStyle = '#7ad6ef'
+    ctx.fillRect(x, y, size, size)
     ctx.fillStyle = '#d8fbff'
     ctx.fillRect(x + waveOffset + 2, y + 4, 5, 2)
     ctx.fillRect(x - waveOffset + 8, y + 9, 4, 2)
@@ -186,6 +190,8 @@ export const renderTile = (
   if (tile.type === 'building') {
     ctx.fillStyle = '#db7259'
     ctx.fillRect(x, y, size, 5)
+    ctx.fillStyle = '#b94e46'
+    ctx.fillRect(x, y + 4, size, 1)
     ctx.fillStyle = '#f7f1d4'
     ctx.fillRect(x + 1, y + 5, size - 2, size - 6)
     ctx.fillStyle = '#7a5b45'
@@ -205,6 +211,9 @@ export const renderTile = (
     ctx.fillRect(x + 14, y + 14, 1, 1)
     ctx.fillStyle = 'rgba(255,255,255,0.15)'
     ctx.fillRect(x, y, size, 1)
+    ctx.fillStyle = 'rgba(120,120,140,0.18)'
+    ctx.fillRect(x + 4, y, 1, size)
+    ctx.fillRect(x + 12, y, 1, size)
   }
   
   if (tile.type === 'heal') {
@@ -233,6 +242,8 @@ export const renderTile = (
     if (tileType === 9) {
       ctx.fillStyle = '#7c5c3a'
       ctx.fillRect(x + 5, y + 4, 6, 12)
+      ctx.fillStyle = '#9a754c'
+      ctx.fillRect(x + 6, y + 5, 1, 10)
     } else {
       ctx.fillStyle = '#4f9f43'
       ctx.beginPath()
