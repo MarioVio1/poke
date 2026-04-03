@@ -3318,9 +3318,9 @@ export default function Game() {
         /* Bottom Screen */
         .screen-bezel-bottom {
           position: relative;
-          background: transparent;
+          background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 24%);
           border-radius: 24px;
-          min-height: 420px;
+          min-height: 410px;
           padding: 0;
           overflow: hidden;
         }
@@ -3328,18 +3328,18 @@ export default function Game() {
         .bottom-content {
           position: relative;
           width: 100%;
-          min-height: 420px;
+          min-height: 410px;
         }
 
         .info-panel {
           position: absolute;
-          top: 26px;
-          left: 20px;
-          right: 20px;
+          top: 18px;
+          left: 16px;
+          right: 16px;
           background: linear-gradient(180deg, rgba(34,22,72,0.94) 0%, rgba(25,16,54,0.96) 100%);
           border-radius: 16px;
           padding: 14px 16px;
-          min-height: 92px;
+          min-height: 82px;
           color: white;
           border: 1px solid rgba(255,255,255,0.12);
           display: flex;
@@ -3383,10 +3383,10 @@ export default function Game() {
 
         .dpad-container {
           position: absolute;
-          left: 18px;
-          bottom: 22px;
-          width: 132px;
-          height: 132px;
+          left: 26px;
+          bottom: 42px;
+          width: 118px;
+          height: 118px;
           touch-action: none;
         }
 
@@ -3398,13 +3398,13 @@ export default function Game() {
 
         .dpad-btn {
           position: absolute;
-          width: 48px;
-          height: 48px;
+          width: 42px;
+          height: 42px;
           background: linear-gradient(145deg, #5a5a5a, #2d2d2d);
           border: 3px solid #1b1b1b;
           border-radius: 10px;
           color: white;
-          font-size: 15px;
+          font-size: 14px;
           cursor: pointer;
           display: flex;
           align-items: center;
@@ -3451,8 +3451,8 @@ export default function Game() {
           top: 50%; 
           left: 50%; 
           transform: translate(-50%, -50%);
-          width: 28px;
-          height: 28px;
+          width: 24px;
+          height: 24px;
           background: linear-gradient(145deg, #505050, #242424);
           border-radius: 50%;
           border: 3px solid #222;
@@ -3460,20 +3460,20 @@ export default function Game() {
 
         .action-btns {
           position: absolute;
-          right: 18px;
-          bottom: 34px;
-          width: 138px;
-          height: 138px;
+          right: 22px;
+          bottom: 46px;
+          width: 118px;
+          height: 118px;
         }
 
         .action-btn {
           position: absolute;
-          width: 58px;
-          height: 58px;
+          width: 52px;
+          height: 52px;
           border-radius: 50%;
           border: 4px solid #181818;
           font-family: 'Press Start 2P', monospace;
-          font-size: 16px;
+          font-size: 14px;
           cursor: pointer;
           user-select: none;
           -webkit-user-select: none;
@@ -3484,13 +3484,13 @@ export default function Game() {
         }
 
         #btn-a {
-          right: 8px;
-          bottom: 10px;
+          right: 4px;
+          bottom: 6px;
         }
 
         #btn-b {
-          left: 18px;
-          top: 18px;
+          left: 8px;
+          top: 8px;
         }
 
         .action-btn:active {
@@ -3522,10 +3522,10 @@ export default function Game() {
         .start-select {
           position: absolute;
           left: 50%;
-          top: 148px;
+          top: 130px;
           transform: translateX(-50%);
           display: flex;
-          gap: 18px;
+          gap: 14px;
           align-items: center;
           justify-content: center;
         }
@@ -3613,46 +3613,46 @@ export default function Game() {
 
           .screen-bezel-bottom,
           .bottom-content {
-            min-height: 340px;
+            min-height: 320px;
           }
 
           .info-panel {
             left: 12px;
             right: 12px;
             top: 16px;
-            min-height: 78px;
+            min-height: 72px;
             padding: 12px;
           }
 
           .dpad-container {
             left: 12px;
-            bottom: 16px;
-            width: 112px !important;
-            height: 112px !important;
+            bottom: 26px;
+            width: 98px !important;
+            height: 98px !important;
           }
           
           .dpad-btn {
-            width: 40px !important;
-            height: 40px !important;
-            font-size: 14px !important;
+            width: 36px !important;
+            height: 36px !important;
+            font-size: 13px !important;
           }
           
           .action-btns {
             right: 12px;
-            bottom: 22px;
-            width: 120px;
-            height: 120px;
+            bottom: 28px;
+            width: 102px;
+            height: 102px;
           }
 
           .action-btn {
-            width: 52px !important;
-            height: 52px !important;
-            font-size: 15px !important;
+            width: 46px !important;
+            height: 46px !important;
+            font-size: 13px !important;
           }
 
           .start-select {
-            top: 114px;
-            gap: 12px;
+            top: 106px;
+            gap: 10px;
           }
 
           .start-btn,
