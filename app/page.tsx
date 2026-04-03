@@ -4489,79 +4489,169 @@ export default function Game() {
           z-index: 5;
         }
 
-        /* Responsive GameBoy */
-        @media (max-width: 400px) {
+        /* Delta-like mobile layout */
+        @media (max-width: 768px) {
           body {
-            padding: 8px;
+            padding: 0;
+            align-items: stretch;
+          }
+
+          .game-wrapper {
+            width: 100vw;
+            min-height: 100dvh;
+            height: 100dvh;
           }
 
           .gba-console {
-            min-height: auto;
-            padding: 12px;
-            gap: 12px;
-          }
-          
-          .game-wrapper {
-            width: 100%;
-            min-height: auto;
+            min-height: 100dvh;
+            height: 100dvh;
+            border: 0;
+            border-radius: 0;
+            padding: 0;
+            gap: 0;
+            background: linear-gradient(180deg, #0d1834 0%, #08101f 100%);
+            box-shadow: none;
           }
 
+          .gba-console::before,
           .gba-console::after {
-            top: 50.8%;
+            display: none;
+          }
+
+          .top-screen {
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+          }
+
+          .screen-bezel {
+            width: 100%;
+            padding: 0;
+            border-radius: 0;
+            background: #000;
+            box-shadow: none;
           }
 
           .game-container {
-            min-height: 0;
+            width: 100vw;
+            max-width: 100vw;
+            border-radius: 0;
           }
 
-          .screen-bezel-bottom,
+          .bottom-screen {
+            display: flex;
+            align-items: stretch;
+          }
+
+          .screen-bezel-bottom {
+            width: 100%;
+            min-height: 36dvh;
+            border-radius: 0;
+            background: linear-gradient(180deg, #111a33 0%, #0b1224 100%);
+          }
+
           .bottom-content {
-            min-height: 320px;
+            min-height: 36dvh;
           }
 
           .info-panel {
+            top: 10px;
             left: 12px;
             right: 12px;
-            top: 16px;
-            min-height: 68px;
+            min-height: 62px;
             padding: 12px;
+            border-radius: 14px;
+          }
+
+          .location {
+            font-size: 9px;
+            margin-bottom: 8px;
+          }
+
+          .current-objective {
+            font-size: 6px;
           }
 
           .dpad-container {
-            left: 12px;
-            bottom: 22px;
-            width: 112px !important;
-            height: 112px !important;
-          }
-          
-          .dpad-btn {
-            width: 40px !important;
-            height: 40px !important;
-            font-size: 16px !important;
-          }
-          
-          .action-btns {
-            right: 12px;
+            left: 18px;
             bottom: 24px;
-            width: 118px;
-            height: 110px;
+            width: 132px;
+            height: 132px;
+          }
+
+          .dpad-btn {
+            width: 44px;
+            height: 44px;
+            font-size: 18px;
+          }
+
+          .action-btns {
+            right: 18px;
+            bottom: 26px;
+            width: 130px;
+            height: 120px;
           }
 
           .action-btn {
-            width: 42px !important;
-            height: 42px !important;
-            font-size: 13px !important;
+            width: 46px;
+            height: 46px;
+            font-size: 14px;
           }
 
           .start-select {
-            top: 96px;
+            top: 92px;
+            gap: 10px;
+          }
+
+          .start-btn,
+          .select-btn {
+            width: 52px;
+            height: 12px;
+          }
+        }
+
+        @media (max-width: 400px) {
+          .screen-bezel-bottom,
+          .bottom-content {
+            min-height: 38dvh;
+          }
+
+          .dpad-container {
+            left: 14px;
+            bottom: 18px;
+            width: 118px;
+            height: 118px;
+          }
+
+          .dpad-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+          }
+
+          .action-btns {
+            right: 14px;
+            bottom: 18px;
+            width: 118px;
+            height: 108px;
+          }
+
+          .action-btn {
+            width: 42px;
+            height: 42px;
+            font-size: 13px;
+          }
+
+          .start-select {
+            top: 88px;
             gap: 8px;
           }
 
           .start-btn,
           .select-btn {
-            width: 44px;
-            height: 12px;
+            width: 46px;
+            height: 11px;
           }
         }
         
