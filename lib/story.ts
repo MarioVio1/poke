@@ -2322,7 +2322,7 @@ export const GAME_STORY: GameStory = {
         { speaker: "Nonna Pettegola", text: "EHI! Lo sai che...? NO?! Te lo dico io!", emotion: 'excited' },
         { speaker: "Nonna Pettegola", text: "La Maria del terzo piano... HA UN FIDANZATO!", emotion: 'excited' },
         { speaker: "Nonna Pettegola", text: "E non è quello che pensi!", emotion: 'neutral' },
-        { speaker: "Nonna Pettegola", text: "È quello DEL terzo piano. Il 4.', emotion: 'happy' },
+        { speaker: "Nonna Pettegola", text: "È quello del quarto piano, mica del terzo! Che casin, ostrega.", emotion: 'happy' },
         { speaker: "", text: "NON MI INTERESSA!", emotion: 'angry' },
         { speaker: "Zio Imbarazzante", text: "OH! Che bel giovane! Ma te sì MAGRO!", emotion: 'angry' },
         { speaker: "Zio Imbarazzante", text: "A 30 anni... dovresti sposarte!", emotion: 'happy' },
