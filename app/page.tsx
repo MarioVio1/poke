@@ -40,8 +40,10 @@ interface GameFlags {
   battlesWon?: number
 }
 
+type PlayerIdentity = 'maschio' | 'femmina' | 'trans'
+
 interface GameState {
-  player: { name: string; x: number; y: number; money: number; badges: string[] }
+  player: { name: string; x: number; y: number; money: number; badges: string[]; gender?: PlayerIdentity }
   party: PartyBestia[]
   rival?: PartyBestia
   pc: PartyBestia[]
@@ -136,6 +138,77 @@ const PLAYER_BACK_PORTRAIT = toSvgDataUrl(`
   </svg>
 `)
 
+const PLAYER_FRONT_FEMALE = toSvgDataUrl(`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 96">
+    <rect width="80" height="96" fill="#dbeff7"/>
+    <ellipse cx="40" cy="82" rx="20" ry="6" fill="#b7d1da"/>
+    <rect x="24" y="16" width="32" height="18" fill="#8b4d2f"/>
+    <rect x="28" y="30" width="24" height="18" fill="#f6d2ae"/>
+    <rect x="30" y="36" width="5" height="5" fill="#1f1f1f"/>
+    <rect x="45" y="36" width="5" height="5" fill="#1f1f1f"/>
+    <rect x="24" y="46" width="32" height="8" fill="#f6d2ae"/>
+    <rect x="24" y="52" width="32" height="20" fill="#ffffff"/>
+    <rect x="22" y="54" width="10" height="16" fill="#ef6c7e"/>
+    <rect x="48" y="54" width="10" height="16" fill="#ef6c7e"/>
+    <rect x="30" y="72" width="10" height="16" fill="#3c6dd0"/>
+    <rect x="40" y="72" width="10" height="16" fill="#3159b0"/>
+    <rect x="28" y="88" width="12" height="6" fill="#443b37"/>
+    <rect x="40" y="88" width="12" height="6" fill="#443b37"/>
+  </svg>
+`)
+
+const PLAYER_BACK_FEMALE = toSvgDataUrl(`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+    <rect width="96" height="96" fill="none"/>
+    <ellipse cx="48" cy="86" rx="23" ry="6" fill="#b08f4f"/>
+    <rect x="28" y="10" width="36" height="22" fill="#8b4d2f"/>
+    <rect x="32" y="34" width="32" height="28" fill="#ffffff"/>
+    <rect x="28" y="38" width="10" height="18" fill="#ef6c7e"/>
+    <rect x="58" y="38" width="10" height="18" fill="#ef6c7e"/>
+    <rect x="36" y="62" width="12" height="20" fill="#4f7fd0"/>
+    <rect x="48" y="62" width="12" height="20" fill="#335fb7"/>
+    <rect x="34" y="82" width="14" height="8" fill="#413833"/>
+    <rect x="48" y="82" width="14" height="8" fill="#413833"/>
+  </svg>
+`)
+
+const PLAYER_FRONT_TRANS = toSvgDataUrl(`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 96">
+    <rect width="80" height="96" fill="#dbeff7"/>
+    <ellipse cx="40" cy="82" rx="20" ry="6" fill="#b7d1da"/>
+    <rect x="22" y="16" width="36" height="18" fill="#6f3dc4"/>
+    <rect x="24" y="18" width="10" height="10" fill="#57b9ff"/>
+    <rect x="46" y="18" width="10" height="10" fill="#ff76aa"/>
+    <rect x="28" y="30" width="24" height="18" fill="#f6d2ae"/>
+    <rect x="30" y="36" width="5" height="5" fill="#1f1f1f"/>
+    <rect x="45" y="36" width="5" height="5" fill="#1f1f1f"/>
+    <rect x="26" y="52" width="28" height="20" fill="#ffd54f"/>
+    <rect x="22" y="54" width="8" height="14" fill="#57b9ff"/>
+    <rect x="50" y="54" width="8" height="14" fill="#ff76aa"/>
+    <rect x="30" y="72" width="10" height="16" fill="#57b9ff"/>
+    <rect x="40" y="72" width="10" height="16" fill="#ff76aa"/>
+    <rect x="28" y="88" width="12" height="6" fill="#443b37"/>
+    <rect x="40" y="88" width="12" height="6" fill="#443b37"/>
+  </svg>
+`)
+
+const PLAYER_BACK_TRANS = toSvgDataUrl(`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+    <rect width="96" height="96" fill="none"/>
+    <ellipse cx="48" cy="86" rx="23" ry="6" fill="#b08f4f"/>
+    <rect x="28" y="10" width="36" height="22" fill="#6f3dc4"/>
+    <rect x="30" y="14" width="10" height="10" fill="#57b9ff"/>
+    <rect x="56" y="14" width="10" height="10" fill="#ff76aa"/>
+    <rect x="30" y="36" width="36" height="26" fill="#ffd54f"/>
+    <rect x="28" y="42" width="8" height="14" fill="#57b9ff"/>
+    <rect x="60" y="42" width="8" height="14" fill="#ff76aa"/>
+    <rect x="36" y="62" width="12" height="20" fill="#57b9ff"/>
+    <rect x="48" y="62" width="12" height="20" fill="#ff76aa"/>
+    <rect x="34" y="82" width="14" height="8" fill="#413833"/>
+    <rect x="48" y="82" width="14" height="8" fill="#413833"/>
+  </svg>
+`)
+
 const OPENING_STORY: StoryIntroScene[] = [
   {
     speaker: 'Prof. GheSboro',
@@ -159,6 +232,15 @@ const OPENING_STORY: StoryIntroScene[] = [
 
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  const normalizePlayer = useCallback((player: Partial<GameState['player']> | undefined): GameState['player'] => ({
+    name: player?.name || 'Federico',
+    x: typeof player?.x === 'number' ? player.x : 7,
+    y: typeof player?.y === 'number' ? player.y : 9,
+    money: typeof player?.money === 'number' ? player.money : 3000,
+    badges: Array.isArray(player?.badges) ? player.badges : [],
+    gender: player?.gender === 'femmina' || player?.gender === 'trans' ? player.gender : 'maschio',
+  }), [])
   
   // Game states
   const [gameStarted, setGameStarted] = useState(false)
@@ -180,6 +262,9 @@ export default function Game() {
   const [showIntro, setShowIntro] = useState(false)
   const [introFrame, setIntroFrame] = useState(0)
   const [showIntroText, setShowIntroText] = useState(false)
+  const [showPlayerSetup, setShowPlayerSetup] = useState(false)
+  const [setupName, setSetupName] = useState('Federico')
+  const [setupIdentity, setSetupIdentity] = useState<PlayerIdentity>('maschio')
   const [showStoryIntro, setShowStoryIntro] = useState(false)
   const [storyIntroStep, setStoryIntroStep] = useState(0)
   
@@ -221,7 +306,7 @@ export default function Game() {
   const [evolvingBestia, setEvolvingBestia] = useState<PartyBestia | null>(null)
 
   const [gs, setGs] = useState<GameState>({
-    player: { name: 'Federico', x: 7, y: 9, money: 3000, badges: [] },
+    player: { name: 'Federico', x: 7, y: 9, money: 3000, badges: [], gender: 'maschio' },
     party: [],
     rival: undefined,
     pc: [],
@@ -277,7 +362,7 @@ export default function Game() {
       if (saved) {
         const saveData = JSON.parse(saved)
         setGs({
-          player: saveData.player,
+          player: normalizePlayer(saveData.player),
           party: saveData.party,
           rival: saveData.rival,
           pc: saveData.pc,
@@ -303,7 +388,7 @@ export default function Game() {
       setNotification('Errore nel caricamento!')
     }
     return false
-  }, [])
+  }, [normalizePlayer])
 
   const hasSave = useCallback(() => {
     if (typeof window === 'undefined') return false
@@ -331,8 +416,23 @@ export default function Game() {
   }, [])
 
   const startNewGame = useCallback(() => {
+    setSetupName('Federico')
+    setSetupIdentity('maschio')
+    setShowPlayerSetup(true)
+    setShowIntro(false)
+    setShowStoryIntro(false)
+    setShowStarterChoice(false)
+    setShowOverlay(false)
+    setInDialog(false)
+    setDialogs([])
+    setSpeaker('')
+    setDialogCallback(null)
+  }, [])
+
+  const confirmNewGameSetup = useCallback(() => {
+    const playerName = setupName.trim() || 'Federico'
     setGs({
-      player: { name: 'Federico', x: 4, y: 4, money: 3000, badges: [] },
+      player: { name: playerName, x: 4, y: 4, money: 3000, badges: [], gender: setupIdentity },
       party: [],
       rival: undefined,
       pc: [],
@@ -351,6 +451,7 @@ export default function Game() {
       citiesVisited: [],
     })
     setAchievements([])
+    setShowPlayerSetup(false)
     setShowIntro(false)
     setStoryIntroStep(0)
     setShowStoryIntro(true)
@@ -361,7 +462,7 @@ export default function Game() {
     setSpeaker('')
     setDialogCallback(null)
     setGameStarted(true)
-  }, [])
+  }, [setupIdentity, setupName])
 
   const startSavedGame = useCallback(() => {
     if (!hasSave()) {
@@ -369,6 +470,7 @@ export default function Game() {
       return
     }
     if (loadGame()) {
+      setShowPlayerSetup(false)
       setShowIntro(false)
       setShowStarterChoice(false)
       setGameStarted(true)
@@ -387,7 +489,7 @@ export default function Game() {
     if (nextStep >= OPENING_STORY.length) {
       setShowStoryIntro(false)
       setDialogs([
-        'Federico! In piedi subito!',
+        `${gs.player.name}! In piedi subito!`,
         'Il Dottor GheSboro ti aspetta al laboratorio.',
         'E porta rispetto, che no semo in vacanza!',
       ])
@@ -398,7 +500,7 @@ export default function Game() {
     }
     setStoryIntroStep(nextStep)
     soundManager.dialogText()
-  }, [storyIntroStep])
+  }, [gs.player.name, storyIntroStep])
 
   // Auto-load on mount
   useEffect(() => {
@@ -407,7 +509,7 @@ export default function Game() {
       try {
         const saveData = JSON.parse(saved)
         setGs({
-          player: saveData.player,
+          player: normalizePlayer(saveData.player),
           party: saveData.party,
           rival: saveData.rival,
           pc: saveData.pc,
@@ -425,7 +527,7 @@ export default function Game() {
         console.error('Auto-load failed:', e)
       }
     }
-  }, [])
+  }, [normalizePlayer])
 
   // Intro animation effect
   useEffect(() => {
@@ -501,13 +603,27 @@ export default function Game() {
     return sprite.icon || sprite.front
   }
 
+  const getPlayerFrontPortrait = (identity: PlayerIdentity = 'maschio'): string => {
+    if (identity === 'femmina') return PLAYER_FRONT_FEMALE
+    if (identity === 'trans') return PLAYER_FRONT_TRANS
+    return PLAYER_FRONT_PORTRAIT
+  }
+
+  const getPlayerBackPortrait = (identity: PlayerIdentity = 'maschio'): string => {
+    if (identity === 'femmina') return PLAYER_BACK_FEMALE
+    if (identity === 'trans') return PLAYER_BACK_TRANS
+    return PLAYER_BACK_PORTRAIT
+  }
+
+  const personalizeText = (text: string): string => text.replaceAll('Federico', gs.player.name)
+
   const getSpeakerPortrait = (name: string): string => {
     const lower = name.toLowerCase()
     if (lower.includes('ghe') || lower.includes('prof')) return getNPCSprite('professor')
     if (lower.includes('mamma')) return getNPCSprite('mom')
     if (lower.includes('nonna') || lower.includes('lady')) return getNPCSprite('lady')
     if (lower.includes('infermiera')) return getNPCSprite('lass')
-    if (lower.includes('federico')) return PLAYER_FRONT_PORTRAIT
+    if (lower.includes(gs.player.name.toLowerCase()) || lower.includes('federico')) return getPlayerFrontPortrait(gs.player.gender)
     return getNPCSprite('kid')
   }
 
@@ -705,6 +821,11 @@ export default function Game() {
     const bobOffset = Math.sin(currentTime / 200) * 1
     const px = (gs.player.x - sx) * TILE
     const py = (gs.player.y - sy) * TILE
+    const playerPalette = gs.player.gender === 'femmina'
+      ? { hair: '#8b4d2f', hat: '#ef6c7e', jacket: '#ffffff', shirt: '#ef6c7e', legs: '#3c6dd0' }
+      : gs.player.gender === 'trans'
+        ? { hair: '#6f3dc4', hat: '#57b9ff', jacket: '#ffd54f', shirt: '#ff76aa', legs: '#57b9ff' }
+        : { hair: '#d13b35', hat: '#f2f2f2', jacket: '#f0c330', shirt: '#ffffff', legs: '#4f7fd0' }
     
     ctx.fillStyle = 'rgba(0,0,0,0.3)'
     ctx.beginPath()
@@ -714,20 +835,20 @@ export default function Game() {
     ctx.fillStyle = '#f6d2ae'
     ctx.fillRect(px + 5, py + 3 + bobOffset, 6, 5)
 
-    ctx.fillStyle = '#d13b35'
+    ctx.fillStyle = playerPalette.hair
     ctx.fillRect(px + 4, py + 2 + bobOffset, 8, 3)
-    ctx.fillStyle = '#f2f2f2'
+    ctx.fillStyle = playerPalette.hat
     ctx.fillRect(px + 4, py + 5 + bobOffset, 2, 1)
     ctx.fillRect(px + 10, py + 5 + bobOffset, 2, 1)
     ctx.fillStyle = '#3b2b1e'
     ctx.fillRect(px + 5, py + 6 + bobOffset, 6, 1)
 
-    ctx.fillStyle = '#f0c330'
+    ctx.fillStyle = playerPalette.jacket
     ctx.fillRect(px + 5, py + 8 + bobOffset, 6, 4)
-    ctx.fillStyle = '#ffffff'
+    ctx.fillStyle = playerPalette.shirt
     ctx.fillRect(px + 4, py + 8 + bobOffset, 1, 4)
     ctx.fillRect(px + 11, py + 8 + bobOffset, 1, 4)
-    ctx.fillStyle = '#4f7fd0'
+    ctx.fillStyle = playerPalette.legs
     ctx.fillRect(px + 5, py + 12 + bobOffset, 2, 3)
     ctx.fillRect(px + 9, py + 12 + bobOffset, 2, 3)
     ctx.fillStyle = '#3a3431'
@@ -1733,6 +1854,10 @@ export default function Game() {
   // Handle A button
   const handleA = () => {
     soundManager.buttonPress()
+    if (showPlayerSetup) {
+      confirmNewGameSetup()
+      return
+    }
     if (showStoryIntro) {
       advanceStoryIntro()
       return
@@ -1755,6 +1880,10 @@ export default function Game() {
   // Handle B button
   const handleB = () => {
     soundManager.menuBack()
+    if (showPlayerSetup) {
+      setShowPlayerSetup(false)
+      return
+    }
     if (showStoryIntro) return
     if (inDialog) {
       setInDialog(false)
@@ -1873,7 +2002,7 @@ export default function Game() {
               )}
 
               {/* Title Screen */}
-              {!gameStarted && !showIntro && (
+              {!gameStarted && !showIntro && !showPlayerSetup && (
                 <div className="title-screen">
                   <div className="title-particles">
                     {[...Array(15)].map((_, i) => (
@@ -1915,6 +2044,50 @@ export default function Game() {
                 </div>
               )}
 
+              {!gameStarted && showPlayerSetup && (
+                <div className="player-setup-screen">
+                  <div className="player-setup-card">
+                    <div className="player-setup-title">Chi sei?</div>
+                    <div className="player-setup-subtitle">Scegli il nome e il protagonista della tua avventura.</div>
+                    <div className="player-preview-stage">
+                      <img
+                        src={getPlayerFrontPortrait(setupIdentity)}
+                        alt={setupIdentity}
+                        className="player-preview-sprite pixel-sprite"
+                      />
+                    </div>
+                    <div className="name-field">
+                      <label htmlFor="player-name">Nome</label>
+                      <input
+                        id="player-name"
+                        value={setupName}
+                        maxLength={12}
+                        onChange={(e) => setSetupName(e.target.value)}
+                        placeholder="Federico"
+                      />
+                    </div>
+                    <div className="identity-grid">
+                      <button type="button" className={`identity-btn ${setupIdentity === 'maschio' ? 'active' : ''}`} onClick={() => setSetupIdentity('maschio')}>
+                        <img src={PLAYER_FRONT_PORTRAIT} alt="Maschio" className="pixel-sprite" />
+                        <span>Maschio</span>
+                      </button>
+                      <button type="button" className={`identity-btn ${setupIdentity === 'femmina' ? 'active' : ''}`} onClick={() => setSetupIdentity('femmina')}>
+                        <img src={PLAYER_FRONT_FEMALE} alt="Femmina" className="pixel-sprite" />
+                        <span>Femmina</span>
+                      </button>
+                      <button type="button" className={`identity-btn ${setupIdentity === 'trans' ? 'active' : ''}`} onClick={() => setSetupIdentity('trans')}>
+                        <img src={PLAYER_FRONT_TRANS} alt="Trans" className="pixel-sprite" />
+                        <span>Trans</span>
+                      </button>
+                    </div>
+                    <div className="player-setup-actions">
+                      <button type="button" className="start-btn-large secondary" onClick={() => setShowPlayerSetup(false)}>INDIETRO</button>
+                      <button type="button" className="start-btn-large" onClick={confirmNewGameSetup}>INIZIA</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {gameStarted && showStoryIntro && (
                 <div className="story-intro-screen" onClick={advanceStoryIntro}>
                   <div className="story-intro-card">
@@ -1935,8 +2108,8 @@ export default function Game() {
                       <div className="story-intro-speaker" style={{ color: OPENING_STORY[storyIntroStep]?.accent }}>
                         {OPENING_STORY[storyIntroStep]?.speaker}
                       </div>
-                      <div className="story-intro-title">{OPENING_STORY[storyIntroStep]?.title}</div>
-                      <div className="story-intro-text">{OPENING_STORY[storyIntroStep]?.text}</div>
+                      <div className="story-intro-title">{personalizeText(OPENING_STORY[storyIntroStep]?.title || '')}</div>
+                      <div className="story-intro-text">{personalizeText(OPENING_STORY[storyIntroStep]?.text || '')}</div>
                       <div className="story-intro-hint">Premi A o tocca per continuare</div>
                     </div>
                   </div>
@@ -2051,7 +2224,7 @@ export default function Game() {
                   {/* Player Bestia */}
                   <div className="player-area">
                     <img
-                      src={PLAYER_BACK_PORTRAIT}
+                      src={getPlayerBackPortrait(gs.player.gender)}
                       className="battle-trainer-back pixel-sprite"
                       alt="Allenatore"
                     />
@@ -2771,6 +2944,116 @@ export default function Game() {
           font-size: 5px;
           color: #243120;
           line-height: 1.3;
+        }
+
+        .player-setup-screen {
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(circle at 50% 18%, rgba(255,239,170,0.28) 0%, rgba(255,239,170,0) 22%),
+            linear-gradient(180deg, #8ecfe0 0%, #d7f2f2 36%, #9edb99 36%, #7dbf75 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 10px;
+        }
+
+        .player-setup-card {
+          width: min(100%, 320px);
+          background: #f8f8f0;
+          border: 4px solid #1b1b1b;
+          border-radius: 14px;
+          box-shadow: 0 8px 0 rgba(0,0,0,0.18);
+          padding: 12px;
+          display: grid;
+          gap: 8px;
+        }
+
+        .player-setup-title {
+          font-size: 11px;
+          color: #1f2e4f;
+        }
+
+        .player-setup-subtitle {
+          font-size: 6px;
+          color: #455368;
+          line-height: 1.5;
+        }
+
+        .player-preview-stage {
+          height: 92px;
+          border: 3px solid #284061;
+          border-radius: 10px;
+          background: linear-gradient(180deg, #d9eef8 0%, #d9eef8 58%, #cae0c2 58%, #cae0c2 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .player-preview-sprite {
+          width: 72px;
+          height: 72px;
+          object-fit: contain;
+        }
+
+        .name-field {
+          display: grid;
+          gap: 4px;
+        }
+
+        .name-field label {
+          font-size: 7px;
+          color: #2a3652;
+        }
+
+        .name-field input {
+          width: 100%;
+          border: 3px solid #22344f;
+          border-radius: 8px;
+          padding: 8px 10px;
+          font-family: inherit;
+          font-size: 8px;
+          color: #1a2237;
+          background: #ffffff;
+          outline: none;
+        }
+
+        .identity-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 6px;
+        }
+
+        .identity-btn {
+          border: 3px solid #32465f;
+          background: #eef4ff;
+          border-radius: 10px;
+          padding: 6px 4px;
+          display: grid;
+          justify-items: center;
+          gap: 4px;
+          font-family: inherit;
+          font-size: 6px;
+          color: #24314a;
+          cursor: pointer;
+        }
+
+        .identity-btn img {
+          width: 34px;
+          height: 34px;
+          object-fit: contain;
+        }
+
+        .identity-btn.active {
+          background: #fff0b8;
+          border-color: #8d6820;
+          box-shadow: 0 3px 0 rgba(141,104,32,0.22);
+        }
+
+        .player-setup-actions {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
         }
 
         .hud-top {
