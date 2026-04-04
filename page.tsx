@@ -77,7 +77,7 @@ interface StoryIntroScene {
 }
 
 type VirtualControl = 'up' | 'down' | 'left' | 'right' | 'a' | 'b' | 'start' | 'select'
-type ControlMode = 'boot' | 'title' | 'setup' | 'story' | 'dialog' | 'shop' | 'menu' | 'overlay' | 'overworld'
+type ControlMode = 'boot' | 'title' | 'setup' | 'story' | 'dialog' | 'shop' | 'menu' | 'overlay' | 'overworld' | 'battle'
 
 // Intro animation frames
 const INTRO_FRAMES = [
@@ -299,6 +299,12 @@ export default function Game() {
   
   // Ball selection in battle
   const [showBallSelect, setShowBallSelect] = useState(false)
+  
+  // Battle menu selection (0=luotta, 1=mossa, 2=oggetto, 3=fuga)
+  const [battleMenuSelection, setBattleMenuSelection] = useState(0)
+  
+  // Battle option cycling
+  const [battleOption, setBattleOption] = useState(0)
 
   // Achievement system
   const [achievements, setAchievements] = useState<string[]>([])
@@ -1415,6 +1421,37 @@ export default function Game() {
     }, 1500)
   }, [gs.party])
 
+  // Cycle through battle options (fight/bag/run)
+  const cycleBattleOption = useCallback(() => {
+    setBattleOption(prev => (prev + 1) % 3)
+  }, [])
+
+  // Select battle action
+  const selectBattleAction = useCallback((selection: number) => {
+    setMovesOpen(false)
+    switch (selection) {
+      case 0: // Fight
+        setMovesOpen(true)
+        break
+      case 1: // Move (open moves)
+        setMovesOpen(true)
+        break
+      case 2: // Item
+        setShowBallSelect(true)
+        break
+      case 3: // Run
+        if (!battleState?.isWild) {
+          setBattleMsg('Non puoi fuggire da un trainer!')
+          setShowBattleMsg(true)
+        } else {
+          setBattleMsg('Fuggito!')
+          setInBattle(false)
+          setShowBattleMsg(false)
+        }
+        break
+    }
+  }, [battleState])
+
   // Calculate capture rate based on ball type
   const getCaptureRate = useCallback((ballId: string, enemyHp: number, enemyMaxHp: number, enemy: PartyBestia): number => {
     const hpRatio = enemyHp / enemyMaxHp
@@ -1923,12 +1960,13 @@ export default function Game() {
     if (!gameStarted && !showPlayerSetup) return 'title'
     if (showPlayerSetup) return 'setup'
     if (showStoryIntro) return 'story'
+    if (inBattle) return 'battle'
     if (inDialog) return 'dialog'
     if (inShop) return 'shop'
     if (inMenu) return 'menu'
     if (showOverlay) return 'overlay'
     return 'overworld'
-  }, [gameStarted, inDialog, inMenu, inShop, showIntro, showOverlay, showPlayerSetup, showStoryIntro])
+  }, [gameStarted, inBattle, inDialog, inMenu, inShop, showIntro, showOverlay, showPlayerSetup, showStoryIntro])
 
   const cycleSetupIdentity = useCallback((step: number) => {
     const identities: PlayerIdentity[] = ['maschio', 'femmina', 'trans']
@@ -2006,6 +2044,39 @@ export default function Game() {
           setDialogs([])
         }
         return
+      case 'battle':
+        if (movesOpen) {
+          if (control === 'up' || control === 'left') {
+            setBattleMenuSelection(prev => prev === 0 ? 3 : prev === 1 ? 0 : prev === 2 ? 1 : 2)
+            return
+          }
+          if (control === 'down' || control === 'right') {
+            setBattleMenuSelection(prev => prev === 3 ? 0 : prev === 0 ? 1 : prev === 1 ? 2 : 3)
+            return
+          }
+          if (control === 'a' || control === 'start') {
+            selectBattleAction(battleMenuSelection)
+            return
+          }
+          if (control === 'b') {
+            setMovesOpen(false)
+            return
+          }
+        } else {
+          if (control === 'a' || control === 'start') {
+            setMovesOpen(true)
+            return
+          }
+          if (control === 'b') {
+            setShowBallSelect(false)
+            return
+          }
+          if (control === 'up' || control === 'down' || control === 'left' || control === 'right') {
+            cycleBattleOption()
+            return
+          }
+        }
+        return
       case 'shop':
         if (control === 'a' || control === 'b' || control === 'start') {
           setInShop(false)
@@ -2052,7 +2123,7 @@ export default function Game() {
         }
         return
     }
-  }, [advanceDialog, advanceStoryIntro, checkEvents, confirmNewGameSetup, cycleSetupIdentity, getControlMode, hasSave, menuSelection, move, runMenuAction, showObjectiveHint, skipIntro, startNewGame, startSavedGame, titleSelection, toggleMenu])
+  }, [advanceDialog, advanceStoryIntro, battleMenuSelection, battleOption, checkEvents, confirmNewGameSetup, cycleBattleOption, cycleSetupIdentity, getControlMode, hasSave, menuSelection, movesOpen, move, runMenuAction, selectBattleAction, showObjectiveHint, skipIntro, startNewGame, startSavedGame, titleSelection, toggleMenu])
 
   const handleA = useCallback(() => {
     handleControlAction('a')
@@ -2153,52 +2224,72 @@ export default function Game() {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null
-      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return
       try {
-        if (e.repeat && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D'].includes(e.key)) {
-          e.preventDefault()
+        e.preventDefault()
+        e.stopPropagation()
+        
+        const key = e.key
+        
+        if (key === 'ArrowUp' || key === 'w' || key === 'W') {
+          handleDirectionInput('up')
           return
         }
-        switch (e.key) {
-          case 'ArrowUp': case 'w': case 'W':
-            e.preventDefault()
-            handleDirectionInput('up')
-            break
-          case 'ArrowDown': case 's': case 'S':
-            e.preventDefault()
-            handleDirectionInput('down')
-            break
-          case 'ArrowLeft': case 'a': case 'A':
-            e.preventDefault()
-            handleDirectionInput('left')
-            break
-          case 'ArrowRight': case 'd': case 'D':
-            e.preventDefault()
-            handleDirectionInput('right')
-            break
-          case 'Enter': case 'z': case 'Z':
-            e.preventDefault()
-            handleA()
-            break
-          case 'Escape': case 'x': case 'X':
-            e.preventDefault()
-            handleB()
-            break
-          case ' ':
-            e.preventDefault()
-            if (inDialog) advanceDialog()
-            break
+        if (key === 'ArrowDown' || key === 's' || key === 'S') {
+          handleDirectionInput('down')
+          return
+        }
+        if (key === 'ArrowLeft' || key === 'a' || key === 'A') {
+          handleDirectionInput('left')
+          return
+        }
+        if (key === 'ArrowRight' || key === 'd' || key === 'D') {
+          handleDirectionInput('right')
+          return
+        }
+        if (key === 'Enter' || key === 'z' || key === 'Z') {
+          handleA()
+          return
+        }
+        if (key === 'Escape' || key === 'x' || key === 'X' || key === 'Backspace') {
+          handleB()
+          return
+        }
+        if (key === ' ') {
+          if (inDialog) advanceDialog()
+          return
+        }
+        if (key === 'Enter') {
+          handleA()
+          return
         }
       } catch (error) {
         console.error('Keyboard input failed:', error)
       }
     }
-    window.addEventListener('keydown', handleKey)
+    window.addEventListener('keydown', handleKey, { passive: false })
     return () => window.removeEventListener('keydown', handleKey)
-  }, [advanceDialog, gameStarted, handleA, handleB, handleDirectionInput, inDialog, showStoryIntro])
+  }, [handleA, handleB, handleDirectionInput, inDialog, advanceDialog])
+
+  const gameWrapperRef = useCallback((node: HTMLDivElement | null) => {
+    if (node) {
+      node.tabIndex = 0
+      node.focus()
+    }
+  }, [])
+
+  useEffect(() => {
+    const focusGame = () => {
+      const wrapper = document.querySelector('.game-wrapper') as HTMLElement
+      if (wrapper) wrapper.focus()
+    }
+    focusGame()
+    window.addEventListener('click', focusGame)
+    return () => window.removeEventListener('click', focusGame)
+  }, [gameStarted])
 
   return (
-    <div className="game-wrapper">
+    <div className="game-wrapper" ref={gameWrapperRef} tabIndex={0} onFocus={() => {}}>
       <div className="gba-console">
         {/* TOP SCREEN */}
         <div className="top-screen">
