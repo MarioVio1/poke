@@ -2226,41 +2226,42 @@ export default function Game() {
       const target = e.target as HTMLElement | null
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return
       try {
-        e.preventDefault()
-        e.stopPropagation()
-        
         const key = e.key
         
         if (key === 'ArrowUp' || key === 'w' || key === 'W') {
+          e.preventDefault()
+          e.stopPropagation()
           handleDirectionInput('up')
           return
         }
         if (key === 'ArrowDown' || key === 's' || key === 'S') {
+          e.preventDefault()
+          e.stopPropagation()
           handleDirectionInput('down')
           return
         }
-        if (key === 'ArrowLeft' || key === 'a' || key === 'A') {
+        if (key === 'ArrowLeft' || key === 'q' || key === 'Q') {
+          e.preventDefault()
+          e.stopPropagation()
           handleDirectionInput('left')
           return
         }
-        if (key === 'ArrowRight' || key === 'd' || key === 'D') {
+        if (key === 'ArrowRight' || key === 'e' || key === 'E') {
+          e.preventDefault()
+          e.stopPropagation()
           handleDirectionInput('right')
           return
         }
-        if (key === 'Enter' || key === 'z' || key === 'Z') {
+        if (key === 'Enter' || key === 'z' || key === 'Z' || key === ' ') {
+          e.preventDefault()
+          e.stopPropagation()
           handleA()
           return
         }
         if (key === 'Escape' || key === 'x' || key === 'X' || key === 'Backspace') {
+          e.preventDefault()
+          e.stopPropagation()
           handleB()
-          return
-        }
-        if (key === ' ') {
-          if (inDialog) advanceDialog()
-          return
-        }
-        if (key === 'Enter') {
-          handleA()
           return
         }
       } catch (error) {
@@ -2269,7 +2270,7 @@ export default function Game() {
     }
     window.addEventListener('keydown', handleKey, { passive: false })
     return () => window.removeEventListener('keydown', handleKey)
-  }, [handleA, handleB, handleDirectionInput, inDialog, advanceDialog])
+  }, [handleA, handleB, handleDirectionInput, advanceDialog])
 
   const gameWrapperRef = useCallback((node: HTMLDivElement | null) => {
     if (node) {

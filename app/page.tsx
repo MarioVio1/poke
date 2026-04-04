@@ -2221,46 +2221,47 @@ export default function Game() {
       const target = e.target as HTMLElement | null
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return
       try {
-        if (e.repeat && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D'].includes(e.key)) {
-          e.preventDefault()
-          return
-        }
-        switch (e.key) {
+        const key = e.key
+        switch (key) {
           case 'ArrowUp': case 'w': case 'W':
             e.preventDefault()
+            e.stopPropagation()
             handleDirectionInput('up')
             break
           case 'ArrowDown': case 's': case 'S':
             e.preventDefault()
+            e.stopPropagation()
             handleDirectionInput('down')
             break
-          case 'ArrowLeft': case 'a': case 'A':
+          case 'ArrowLeft': case 'q': case 'Q':
             e.preventDefault()
+            e.stopPropagation()
             handleDirectionInput('left')
             break
-          case 'ArrowRight': case 'd': case 'D':
+          case 'ArrowRight': case 'e': case 'E':
             e.preventDefault()
+            e.stopPropagation()
             handleDirectionInput('right')
             break
-          case 'Enter': case 'z': case 'Z':
+          case 'Enter': case 'z': case 'Z': case ' ':
             e.preventDefault()
+            e.stopPropagation()
             handleA()
             break
           case 'Escape': case 'x': case 'X': case 'Backspace':
             e.preventDefault()
+            e.stopPropagation()
             handleB()
             break
           case 'Shift':
             e.preventDefault()
+            e.stopPropagation()
             handleStartButton()
             break
           case 'Control':
             e.preventDefault()
+            e.stopPropagation()
             handleSelectButton()
-            break
-          case ' ':
-            e.preventDefault()
-            if (inDialog) advanceDialog()
             break
         }
       } catch (error) {
@@ -2269,7 +2270,7 @@ export default function Game() {
     }
     window.addEventListener('keydown', handleKey, { passive: false })
     return () => window.removeEventListener('keydown', handleKey)
-  }, [advanceDialog, handleA, handleB, handleDirectionInput, handleSelectButton, handleStartButton, inDialog])
+  }, [handleA, handleB, handleDirectionInput, handleSelectButton, handleStartButton])
 
   const gameWrapperRef = useCallback((node: HTMLDivElement | null) => {
     if (node) {
