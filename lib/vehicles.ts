@@ -125,8 +125,8 @@ export const canMoveOnTile = (
   tile: number,
   currentVehicle: VehicleType
 ): boolean => {
-  // Wall/obstacle tiles
-  if (tile === 1 || tile === 3) return false
+  // Wall/obstacle tiles (tile 3 is building - but we allow it for warp entry)
+  if (tile === 1) return false
   
   // Water tiles
   if (DEEP_WATER_TILES.includes(tile)) {
