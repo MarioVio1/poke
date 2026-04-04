@@ -236,6 +236,9 @@ const OPENING_STORY: StoryIntroScene[] = [
 export default function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const lastVirtualPressRef = useRef<Record<string, number>>({})
+  const lastMoveAtRef = useRef<number>(0)
+  const heldDirectionRef = useRef<string | null>(null)
+  const moveIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const normalizePlayer = useCallback((player: Partial<GameState['player']> | undefined): GameState['player'] => ({
     name: player?.name || 'Federico',
@@ -875,6 +878,8 @@ export default function Game() {
   // Move player
   const move = useCallback((dir: string) => {
     try {
+      const now = Date.now()
+      if (now - lastMoveAtRef.current < 120) return
       if (inBattle || inDialog || inShop || animating || !gameStarted || showStoryIntro || showPlayerSetup) return
 
       setGs(prev => {
@@ -891,9 +896,35 @@ export default function Game() {
         const tile = map.tiles[ny][nx]
         if (!canMoveOnTile(tile, prev.vehicle)) return prev
 
+        const warpEvent = map.events?.find((e: MapEvent) => 
+          e.type === 'warp' && typeof e.x === 'number' && typeof e.y === 'number' && 
+          e.x === nx && e.y === ny && e.dest
+        )
+
+        if (warpEvent) {
+          const we = warpEvent as any
+          if (prev.map === 'casa' && we.dest === 'canalborgo' && !prev.flags.hasStarter && prev.storyProgress < 2) {
+            setTimeout(() => {
+              setDialogs(['Aspeta un secondo.', 'Prima parla con la Mamma che xe vegnua in camera a sveiarte.'])
+              setSpeaker('Narratore')
+              setInDialog(true)
+            }, 50)
+            return prev
+          }
+          setTimeout(() => {
+            setMapTransition(true)
+            setTimeout(() => {
+              setGs(g => ({ ...g, map: we.dest, player: { ...g.player, x: we.dx, y: we.dy } }))
+              setTimeout(() => setMapTransition(false), 160)
+            }, 160)
+          }, 50)
+          return prev
+        }
+
         return { ...prev, player: { ...prev.player, x: nx, y: ny } }
       })
 
+      lastMoveAtRef.current = now
       soundManager.footstep()
     } catch (error) {
       console.error('Move failed:', error)
@@ -2148,35 +2179,86 @@ export default function Game() {
   const handleVirtualPress = useCallback((control: VirtualControl) => {
     const now = Date.now()
     const last = lastVirtualPressRef.current[control] || 0
-    if (now - last < 180) return
+    if (now - last < 80) return
     lastVirtualPressRef.current[control] = now
     handleControlAction(control)
   }, [handleControlAction])
 
-  const bindVirtualControl = useCallback((control: VirtualControl) => ({
-    onPointerDown: (e: React.PointerEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      e.stopPropagation()
-      handleVirtualPress(control)
-    },
-    onTouchStart: (e: React.TouchEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      e.stopPropagation()
-      handleVirtualPress(control)
-    },
-    onMouseDown: (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      e.stopPropagation()
-      handleVirtualPress(control)
-    },
-    onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      e.stopPropagation()
-    },
-    onContextMenu: (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-    },
-  }), [handleVirtualPress])
+  const bindVirtualControl = useCallback((control: VirtualControl) => {
+    const isDirection = ['up', 'down', 'left', 'right'].includes(control)
+    return {
+      onPointerDown: (e: React.PointerEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (isDirection) {
+          heldDirectionRef.current = control
+          handleControlAction(control)
+        } else {
+          handleVirtualPress(control)
+        }
+      },
+      onPointerUp: (e: React.PointerEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (isDirection && heldDirectionRef.current === control) {
+          heldDirectionRef.current = null
+        }
+      },
+      onPointerLeave: (e: React.PointerEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        if (isDirection && heldDirectionRef.current === control) {
+          heldDirectionRef.current = null
+        }
+      },
+      onTouchStart: (e: React.TouchEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (isDirection) {
+          heldDirectionRef.current = control
+          handleControlAction(control)
+        } else {
+          handleVirtualPress(control)
+        }
+      },
+      onTouchEnd: (e: React.TouchEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (isDirection && heldDirectionRef.current === control) {
+          heldDirectionRef.current = null
+        }
+      },
+      onMouseDown: (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (isDirection) {
+          heldDirectionRef.current = control
+          handleControlAction(control)
+        } else {
+          handleVirtualPress(control)
+        }
+      },
+      onMouseUp: (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (isDirection && heldDirectionRef.current === control) {
+          heldDirectionRef.current = null
+        }
+      },
+      onMouseLeave: (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        if (isDirection && heldDirectionRef.current === control) {
+          heldDirectionRef.current = null
+        }
+      },
+      onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
+      },
+      onContextMenu: (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+      },
+    }
+  }, [handleControlAction])
 
   // Effects
   useEffect(() => {
@@ -2186,6 +2268,18 @@ export default function Game() {
     }, 100)
     return () => clearInterval(interval)
   }, [gameStarted, inBattle, inDialog, inShop, draw])
+
+  // Continuous movement when holding direction buttons
+  useEffect(() => {
+    if (!gameStarted || showStoryIntro) return
+    
+    const interval = setInterval(() => {
+      if (heldDirectionRef.current && !inBattle && !inDialog && !inShop && !inMenu && !showOverlay && !mapTransition && !animating && !showPlayerSetup) {
+        handleDirectionInput(heldDirectionRef.current as 'up' | 'down' | 'left' | 'right')
+      }
+    }, 120)
+    return () => clearInterval(interval)
+  }, [gameStarted, showStoryIntro, inBattle, inDialog, inShop, inMenu, showOverlay, mapTransition, animating, showPlayerSetup])
 
   useEffect(() => {
     if (!gameStarted || showStoryIntro) return
