@@ -402,8 +402,7 @@ export const renderTile = (
     ctx.fillStyle = '#ffab00'
     ctx.fillRect(x + 5, y + 4, size - 10, 2)
   }
-}
-  
+
   if (tile.type === 'tree') {
     if (tileType === 9) {
       ctx.fillStyle = '#7c5c3a'
