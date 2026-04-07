@@ -41,6 +41,7 @@ interface GameFlags {
   collectedItems?: string[]
   receivedGifts?: string[]
   defeatedTrainers?: string[]
+  caughtBesti?: number[]
 }
 
 type PlayerIdentity = 'maschio' | 'femmina' | 'trans'
@@ -1744,18 +1745,26 @@ export default function Game() {
     setBattleAnimation('capturing')
     
     setTimeout(() => {
-      if (Math.random() < rate) {
+        if (Math.random() < rate) {
         const caught = { ...battleState.enemy }
         if (gs.party.length < 6) {
           setGs(prev => ({
             ...prev,
             party: [...prev.party, caught],
+            flags: {
+              ...prev.flags,
+              caughtBesti: [...(prev.flags.caughtBesti || []), caught.id],
+            },
             inv: prev.inv.map(i => i.item.id === ballId ? { ...i, qty: i.qty - 1 } : i)
           }))
         } else {
           setGs(prev => ({
             ...prev,
             pc: [...prev.pc, caught],
+            flags: {
+              ...prev.flags,
+              caughtBesti: [...(prev.flags.caughtBesti || []), caught.id],
+            },
             inv: prev.inv.map(i => i.item.id === ballId ? { ...i, qty: i.qty - 1 } : i)
           }))
         }
