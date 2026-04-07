@@ -195,10 +195,9 @@ export const MAPS: Record<string, GameMap> = {
         team: [{ id: 'gabbianzo', lvl: 6 }, { id: 'pesce_dorato', lvl: 5 }],
         dialog: ['Anche ti xe un allenatore?'], badge: 'canalborgo' },
       
-      // Wild encounters in water
-      wild: ['gabbianzo', 'pesce_dorato', 'lucciodrio'],
-      wildLvl: [3, 4, 5],
     ],
+    wild: ['gabbianzo', 'pesce_dorato', 'lucciodrio'],
+    wildLvl: [3, 4, 5],
   },
 
   // New: Porto di Canalborgo
