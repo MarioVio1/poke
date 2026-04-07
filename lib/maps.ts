@@ -222,7 +222,7 @@ export const MAPS: Record<string, GameMap> = {
         dialog: ['Benvenuto al porto!', 'Da qua se parte par le altre isole!'] },
       { type: 'npc', x: 10, y: 3, name: 'Marinaio Carlo', npcId: 'marinaio',
         dialog: ['Xè tempo de tempesta!', 'Ma no te preoccupar!'] },
-      { type: 'shop', x: 3, y: 5, items: [{ name: 'Gondolball', price: 200 }, { name: 'Spritzball', price: 400 }] },
+      { type: 'shop', x: 3, y: 5, items: [{ name: 'Gondolball', price: 200, type: 'capture', val: 0 }, { name: 'Spritzball', price: 400, type: 'capture', val: 0 }] },
     ],
   },
 
