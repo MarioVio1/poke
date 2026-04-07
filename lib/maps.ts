@@ -276,8 +276,6 @@ export const MAPS: Record<string, GameMap> = {
       { type: 'warp', x: 8, y: 9, dest: 'casa', dx: 2, dy: 9, text: 'Scendi le scale' },
     ],
   },
-    ],
-  },
 
   laboratorio: {
     name: 'Laboratorio GheSboro',
@@ -1484,18 +1482,3 @@ export const MAPS: Record<string, GameMap> = {
   },
 
 }
-
-// Tiles legend:
-// 0 = grass
-// 1 = wall/edge
-// 2 = water (canals)
-// 3 = building
-// 4 = indoor floor
-// 5 = center floor (healing)
-// 6 = vineyard (route2)
-// 7 = radicchio fields (trevisella)
-// 8 = snow/mountain (dolomax)
-// 9 = stairs up
-// 10 = stairs down
-// 11 = locked door
-// 12 = treasure chest

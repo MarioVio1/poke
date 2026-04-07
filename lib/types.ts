@@ -90,6 +90,8 @@ export const isIndoorMap = (mapName: string): boolean => {
          mapName.includes('shop') ||
          mapName.includes('gym') ||
          mapName.includes('prof') ||
+         mapName.includes('laboratorio') ||
+         mapName.includes('porto') ||
          mapName.includes('inside')
 }
 
