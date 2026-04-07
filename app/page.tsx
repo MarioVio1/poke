@@ -2650,38 +2650,55 @@ export default function Game() {
               {/* Title Screen */}
               {!gameStarted && !showIntro && !showPlayerSetup && (
                 <div className="title-screen">
+                  {/* Background elements */}
                   <div className="title-particles">
-                    {[...Array(15)].map((_, i) => (
+                    {[...Array(12)].map((_, i) => (
                       <div 
                         key={i} 
                         className="particle"
-                        style={getTitleParticleStyle(i)}
+                        style={{
+                          left: `${Math.random() * 100}%`,
+                          top: `${Math.random() * 100}%`,
+                          animationDelay: `${Math.random() * 2}s`
+                        }}
                       />
                     ))}
                   </div>
+                  
+                  <div className="title-bg-dragon">
+                    <img src={getBestiaSprite('lagorion')} alt="Lagorion" />
+                  </div>
+
+                  <div className="title-spritz-bubble" style={{ left: '15%', top: '30%' }} />
+                  <div className="title-spritz-bubble" />
+                  <div className="title-spritz-bubble" />
+
                   <div className="title-frame">
-                    <div className="firered-brand">
-                      <div className="firered-brand-top">POKEMONA VERSIONE</div>
-                      <div className="title-logo">ROSSO SPRITZ</div>
-                      <div className="title-subtitle">Besti di Venetia</div>
+                    <div className="title-main">
+                      <div className="title-pokemona">POKEMONA</div>
+                      <div className="title-venetia">DE VENETIA</div>
+                      <div className="title-version">ROSSO SPRITZ</div>
+                      <div className="title-subtext">
+                        Cacia i Besti·Ghefa i Spritz·Drio la Gloria
+                      </div>
                     </div>
 
                     <div className="title-hero">
-                      <img src={getBestiaSprite('serenissima')} alt="Serenissima" className="title-hero-main pixel-sprite" />
                       <img src={getBestiaSprite('lagorion')} alt="Lagorion" className="title-hero-side pixel-sprite" />
+                      <img src={getBestiaSprite('serenissima')} alt="Serenissima" className="title-hero-main pixel-sprite" />
                       <img src={getBestiaSprite('ombradriz')} alt="Ombradriz" className="title-hero-side pixel-sprite" />
                     </div>
 
                     <div className="title-menu-card">
                       <button className={`start-btn-large ${titleSelection === 0 ? 'selected' : ''}`} onClick={startNewGame}>
-                        NUOVA PARTITA
+                        NUOVA PARTIA
                       </button>
                       <button className={`start-btn-large secondary ${titleSelection === 1 ? 'selected' : ''}`} onClick={startSavedGame} disabled={!hasSave()}>
-                        CARICA PARTITA
+                        CARIGA PARTIA
                       </button>
                       {hasSave() && (
                         <div className="title-save-info">
-                          <div>{getSaveInfo()?.playerName || 'Allenatore'}</div>
+                          <div>{getSaveInfo()?.playerName || 'Alenador'}</div>
                           <div>{getSaveInfo()?.map || 'Venetia'} · Lv {getSaveInfo()?.level || 1}</div>
                         </div>
                       )}
@@ -3125,9 +3142,15 @@ export default function Game() {
                   <button 
                     type="button"
                     className="start-btn" 
+                    aria-label="Start"
                     {...bindVirtualControl('start')}
-                  >Start</button>
-                  <button type="button" className="select-btn" {...bindVirtualControl('select')}>Select</button>
+                  />
+                  <button 
+                    type="button"
+                    className="select-btn" 
+                    aria-label="Select"
+                    {...bindVirtualControl('select')}
+                  />
                 </div>
               </div>
             </div>
@@ -3430,9 +3453,7 @@ export default function Game() {
         .title-screen {
           position: absolute;
           inset: 0;
-          background:
-            radial-gradient(circle at 50% 18%, rgba(255,239,170,0.35) 0%, rgba(255,239,170,0) 24%),
-            linear-gradient(180deg, #7cc9d3 0%, #b5ece2 32%, #8fd37c 32%, #6db25c 100%);
+          background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 30%, #4a2c6a 60%, #6b3d7a 100%);
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -3442,6 +3463,58 @@ export default function Game() {
           padding: 6px;
         }
 
+        .title-bg-dragon {
+          position: absolute;
+          bottom: -20px;
+          right: -30px;
+          width: 180px;
+          height: 180px;
+          opacity: 0.25;
+          filter: drop-shadow(0 0 20px rgba(255,107,107,0.3));
+          animation: dragonFloat 6s ease-in-out infinite;
+        }
+
+        .title-bg-dragon img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          image-rendering: pixelated;
+        }
+
+        .title-spritz-bubble {
+          position: absolute;
+          width: 12px;
+          height: 12px;
+          background: radial-gradient(circle at 30% 30%, #ff9966 0%, #ff5e62 50%, #ff2d55 100%);
+          border-radius: 50%;
+          opacity: 0.7;
+          animation: bubbleFloat 3s ease-in-out infinite;
+        }
+
+        .title-spritz-bubble:nth-child(2) {
+          width: 8px;
+          height: 8px;
+          left: 20%;
+          animation-delay: 0.5s;
+        }
+
+        .title-spritz-bubble:nth-child(3) {
+          width: 10px;
+          height: 10px;
+          left: 70%;
+          animation-delay: 1s;
+        }
+
+        @keyframes dragonFloat {
+          0%, 100% { transform: translateY(0) rotate(-2deg); }
+          50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        @keyframes bubbleFloat {
+          0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+          50% { transform: translateY(-20px) scale(1.2); opacity: 0.3; }
+        }
+
         .title-particles {
           position: absolute;
           inset: 0;
@@ -3449,85 +3522,95 @@ export default function Game() {
 
         .particle {
           position: absolute;
-          width: 6px;
-          height: 6px;
-          background: rgba(255,255,255,0.55);
+          width: 4px;
+          height: 4px;
+          background: rgba(255,200,100,0.6);
           border-radius: 50%;
-          animation: rise 5s infinite;
+          animation: sparkle 2s ease-in-out infinite;
         }
 
-        @keyframes rise {
-          0% { transform: translateY(160px) scale(0); opacity: 0; }
-          50% { opacity: 1; }
-          100% { transform: translateY(-20px) scale(1); opacity: 0; }
+        @keyframes sparkle {
+          0%, 100% { opacity: 0; transform: scale(0); }
+          50% { opacity: 1; transform: scale(1); }
         }
 
         .title-frame {
           position: relative;
           z-index: 1;
-          width: min(250px, 80%);
+          width: min(280px, 90%);
           max-height: 100%;
           display: grid;
           grid-template-rows: auto auto auto;
           align-content: center;
-          gap: 4px;
+          gap: 8px;
           justify-items: center;
           align-items: center;
         }
 
-        .firered-brand {
-          width: 100%;
-          padding: 5px 7px 4px;
-          border: 3px solid #1b1b1b;
-          border-radius: 10px;
-          background: linear-gradient(180deg, rgba(24,50,89,0.95) 0%, rgba(15,25,53,0.94) 100%);
-          box-shadow: 0 4px 0 rgba(16,24,42,0.45);
+        .title-main {
           text-align: center;
         }
 
-        .firered-brand-top {
-          font-size: 4px;
-          color: #ffdd77;
-          margin-bottom: 2px;
-          letter-spacing: 1px;
+        .title-pokemona {
+          font-size: clamp(28px, 10vw, 48px);
+          font-weight: 900;
+          background: linear-gradient(180deg, #ffd700 0%, #ff8c00 30%, #ff4500 60%, #8b0000 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          text-shadow: none;
+          filter: drop-shadow(2px 2px 0 #3d1a00) drop-shadow(4px 4px 0 #1a0d00);
+          letter-spacing: 4px;
+          line-height: 1.1;
+          font-family: 'Press Start 2P', cursive;
         }
 
-        .title-logo {
-          font-size: clamp(12px, 4.2vw, 18px);
-          color: #ffe082;
-          text-shadow: 1px 1px 0 #7a3212, 3px 3px 0 #3c1c12;
-          line-height: 1.05;
+        .title-venetia {
+          font-size: clamp(10px, 4vw, 16px);
+          color: #87ceeb;
+          margin-top: 4px;
+          letter-spacing: 6px;
+          text-shadow: 1px 1px 0 #1a3a5c;
+          font-style: italic;
         }
 
-        .title-subtitle {
-          font-size: 3px;
-          margin-top: 3px;
-          color: #d5f7ff;
+        .title-version {
+          font-size: clamp(8px, 3vw, 12px);
+          color: #98fb98;
+          margin-top: 2px;
+          letter-spacing: 2px;
+        }
+
+        .title-subtext {
+          font-size: clamp(6px, 2.5vw, 9px);
+          color: #dda0dd;
+          margin-top: 8px;
+          text-align: center;
+          line-height: 1.6;
         }
 
         .title-hero {
           width: 100%;
-          min-height: 42px;
-          display: grid;
-          grid-template-columns: 1fr auto 1fr;
-          align-items: end;
-          justify-items: center;
-          padding: 0 2px;
+          min-height: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          padding: 10px 0;
         }
 
         .title-hero-main {
-          width: 34px;
-          height: 34px;
-          grid-column: 2;
-          filter: drop-shadow(0 4px 0 rgba(0,0,0,0.25));
+          width: 48px;
+          height: 48px;
+          filter: drop-shadow(0 4px 0 rgba(0,0,0,0.4));
           animation: titleFloat 2.4s ease-in-out infinite;
         }
 
         .title-hero-side {
-          width: 20px;
-          height: 20px;
-          opacity: 0.95;
-          filter: drop-shadow(0 3px 0 rgba(0,0,0,0.22));
+          width: 28px;
+          height: 28px;
+          opacity: 0.9;
+          filter: drop-shadow(0 3px 0 rgba(0,0,0,0.3));
           animation: titleFloat 2.8s ease-in-out infinite;
         }
 
@@ -4971,28 +5054,26 @@ export default function Game() {
         }
 
         .start-btn, .select-btn {
-          width: 62px;
-          height: 14px;
-          background: linear-gradient(180deg, #767676 0%, #4d4d4d 100%);
-          border: 2px solid #1b1b1b;
-          border-radius: 999px;
+          width: 52px;
+          height: 18px;
+          background: linear-gradient(180deg, #6a6a6a 0%, #3d3d3d 100%);
+          border: 2px solid #1a1a1a;
+          border-radius: 10px;
           cursor: pointer;
           transform: rotate(-10deg);
           outline: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .start-btn::after,
         .select-btn::after {
-          display: block;
-          font-size: 6px;
-          color: #f1f1f1;
-          letter-spacing: 1px;
-          text-align: center;
-          line-height: 10px;
+          display: none;
         }
 
-        .start-btn::after { content: 'START'; }
-        .select-btn::after { content: 'SELECT'; }
+        .start-btn::before { content: ''; }
+        .select-btn::before { content: ''; }
 
         .start-btn:hover, .select-btn:hover {
           background: #777;
@@ -5042,6 +5123,18 @@ export default function Game() {
 
         /* Delta-like mobile layout */
         @media (max-width: 768px) {
+          * {
+            max-width: 100vw;
+            overflow-x: hidden;
+          }
+
+          html, body {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+            overscroll-behavior: none;
+          }
+
           body {
             padding: 0;
             align-items: stretch;
@@ -5051,6 +5144,7 @@ export default function Game() {
             width: 100vw;
             min-height: 100dvh;
             height: 100dvh;
+            max-width: 100vw;
           }
 
           .gba-console {
@@ -5060,9 +5154,9 @@ export default function Game() {
             border-radius: 0;
             padding: 0;
             gap: 0;
-            grid-template-rows: 1fr auto;
             background: linear-gradient(180deg, #0d1834 0%, #08101f 100%);
             box-shadow: none;
+            overflow: hidden;
           }
 
           .gba-console::before,
@@ -5076,6 +5170,8 @@ export default function Game() {
             justify-content: center;
             align-items: stretch;
             min-height: 0;
+            flex: 1;
+            overflow: hidden;
           }
 
           .screen-bezel {
@@ -5085,30 +5181,40 @@ export default function Game() {
             border-radius: 0;
             background: #000;
             box-shadow: none;
+            overflow: hidden;
           }
 
           .game-container {
-            width: 100vw;
+            width: 100%;
             height: 100%;
             max-width: 100vw;
             border-radius: 0;
+            aspect-ratio: auto;
+            min-height: 0;
+            flex: 1;
+          }
+
+          .top-screen, .bottom-screen {
+            width: 100%;
+            flex: 1;
           }
 
           .bottom-screen {
             display: flex;
             align-items: stretch;
+            flex-shrink: 0;
           }
 
           .screen-bezel-bottom {
             width: 100%;
-          min-height: 26dvh;
-          border-radius: 0;
-          background: linear-gradient(180deg, #111a33 0%, #0b1224 100%);
-        }
+            min-height: 26dvh;
+            border-radius: 0;
+            background: linear-gradient(180deg, #111a33 0%, #0b1224 100%);
+          }
 
-        .bottom-content {
-          min-height: 26dvh;
-        }
+          .bottom-content {
+            min-height: 26dvh;
+          }
 
           .info-panel {
             top: 10px;
@@ -5165,16 +5271,27 @@ export default function Game() {
 
           .start-btn,
           .select-btn {
-            width: 52px;
-            height: 12px;
+            width: 48px;
+            height: 16px;
             transform: rotate(0deg);
           }
         }
 
         @media (max-width: 400px) {
+          .top-screen {
+            flex: 1;
+            min-height: 0;
+          }
+
           .screen-bezel-bottom,
           .bottom-content {
             min-height: 28dvh;
+            flex-shrink: 0;
+          }
+
+          .bottom-screen {
+            flex-shrink: 0;
+            height: auto;
           }
 
           .dpad-container {
