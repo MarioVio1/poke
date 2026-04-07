@@ -246,8 +246,8 @@ export const MAPS: Record<string, GameMap> = {
     events: [
       { type: 'npc', x: 4, y: 4, name: 'Mamma', npcId: 'mamma', 
         dialog: ['Te son qua in camera apposta: sveiate ben, fio mio.', 'Prima sistema la testa, dopo va dal Dottor GheSboro.', 'No sta vegnir zo dal letto come un sacco de patate.'] },
-      { type: 'warp', x: 7, y: 10, dest: 'canalborgo', dx: 3, dy: 5 },
-      { type: 'warp', x: 8, y: 10, dest: 'canalborgo', dx: 8, dy: 5 },
+      { type: 'warp', x: 7, y: 10, dest: 'canalborgo', dx: 7, dy: 11 },
+      { type: 'warp', x: 8, y: 10, dest: 'canalborgo', dx: 8, dy: 11 },
       { type: 'warp', x: 2, y: 9, dest: 'casa_piano1', dx: 8, dy: 8, text: 'Scendi le scale' },
     ],
   },
@@ -270,7 +270,7 @@ export const MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     ],
     events: [
-      { type: 'warp', x: 8, y: 9, dest: 'casa', dx: 2, dy: 9, text: 'Scendi le scale' },
+      { type: 'warp', x: 8, y: 9, dest: 'casa', dx: 7, dy: 9, text: 'Scendi le scale' },
     ],
   },
 

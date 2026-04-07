@@ -1881,17 +1881,58 @@ export default function Game() {
   }
 
   const showPokedex = () => {
-    setOverlayTitle('BESTIDEX')
+    const caughtBesti = gs.flags.caughtBesti || []
+    const allBesti = Object.values(BESTI)
+    
+    // Mostra tutti i besti, evidenziando quelli catturati
+    setOverlayTitle(`BESTIDEX ${caughtBesti.length}/${allBesti.length}`)
     setOverlayContent(
-      <div className="dex-grid">
-        {Object.values(BESTI).slice(0, 50).map(b => (
-          <div key={b.id} className="dex-entry">
-            <img src={getBestiaIcon(b.id)} className="dex-sprite" alt={b.name} />
-            <div className="dex-num">#{String(b.id).padStart(3, '0')}</div>
-            <div className="dex-name">{b.name}</div>
-            <div className="dex-types">{b.types.map(t => <span key={t} className={`type-badge type-${t}`}>{t}</span>)}</div>
-          </div>
-        ))}
+      <div className="dex-full">
+        <div className="dex-list">
+          {allBesti.map(b => {
+            const isCaught = caughtBesti.includes(b.id)
+            return (
+              <div 
+                key={b.id} 
+                className={`dex-row ${isCaught ? 'caught' : 'uncaught'}`}
+                onClick={() => {
+                  if (isCaught) {
+                    // Mostra dettagli
+                    const evol = b.ev ? BESTI[b.ev] : null
+                    setOverlayContent(
+                      <div className="dex-detail">
+                        <div className="dex-detail-header">
+                          <img src={getBestiaIcon(b.id)} className="dex-detail-sprite" alt={b.name} />
+                          <div className="dex-detail-info">
+                            <div className="dex-detail-name">{b.name}</div>
+                            <div className="dex-detail-num">#{String(b.id).padStart(3, '0')}</div>
+                            <div className="dex-detail-types">{b.types.map(t => <span key={t} className={`type-badge type-${t}`}>{t}</span>)}</div>
+                          </div>
+                        </div>
+                        <div className="dex-detail-desc">{b.desc}</div>
+                        <div className="dex-detail-stats">
+                          <div className="stat-row"><span>HP</span><span>{b.bs.hp}</span></div>
+                          <div className="stat-row"><span>ATK</span><span>{b.bs.atk}</span></div>
+                          <div className="stat-row"><span>DEF</span><span>{b.bs.def}</span></div>
+                          <div className="stat-row"><span>SPD</span><span>{b.bs.spd}</span></div>
+                        </div>
+                        {b.ev && <div className="dex-detail-ev">Evoluzione: {b.ev} (livello {b.evLvl})</div>}
+                        {b.evItem && <div className="dex-detail-ev">Evoluzione: {b.evItem}</div>}
+                        <div className="dex-detail-moves">Mosse: {b.moves.join(', ')}</div>
+                        <button className="back-btn" onClick={() => showPokedex()}>← Indietro</button>
+                      </div>
+                    )
+                  }
+                }}
+              >
+                <span className="dex-num">#{String(b.id).padStart(3, '0')}</span>
+                <img src={isCaught ? getBestiaIcon(b.id) : 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><rect fill="%23333" width="24" height="24"/><text x="12" y="16" text-anchor="middle" fill="%23666" font-size="10">?</text></svg>'} className="dex-icon" alt="" />
+                <span className="dex-name">{isCaught ? b.name : '???'}</span>
+                <span className="dex-types">{b.types.map(t => <span key={t} className={`type-badge type-${t}`}>{t}</span>)}</span>
+              </div>
+            )
+          })}
+        </div>
       </div>
     )
     setShowOverlay(true)
@@ -2108,11 +2149,21 @@ export default function Game() {
     } else {
       setOverlayTitle('MENU')
       setMenuSelection(0)
-      setOverlayContent(null)
+      setOverlayContent(
+        <div className="menu-options">
+          <div className={`menu-option ${menuSelection === 0 ? 'selected' : ''}`} onClick={() => runMenuAction(0)}>🏠 SQUADRA</div>
+          <div className={`menu-option ${menuSelection === 1 ? 'selected' : ''}`} onClick={() => runMenuAction(1)}>🎒 ZAINO</div>
+          <div className={`menu-option ${menuSelection === 2 ? 'selected' : ''}`} onClick={() => runMenuAction(2)}>📖 BESTIDEX</div>
+          <div className={`menu-option ${menuSelection === 3 ? 'selected' : ''}`} onClick={() => runMenuAction(3)}>🗺️ TELEPORTO</div>
+          <div className={`menu-option ${menuSelection === 4 ? 'selected' : ''}`} onClick={() => runMenuAction(4)}>🏆 TROFEI</div>
+          <div className={`menu-option ${menuSelection === 5 ? 'selected' : ''}`} onClick={() => runMenuAction(5)}>💾 SALVA</div>
+          <div className={`menu-option ${menuSelection === 6 ? 'selected' : ''}`} onClick={() => { setInMenu(false); setShowOverlay(false) }}>❌ ESCI</div>
+        </div>
+      )
       setShowOverlay(true)
       setInMenu(true)
     }
-  }, [inMenu])
+  }, [inMenu, menuSelection])
 
   // Shop functions
   const buyItem = (item: GameItem) => {
@@ -2382,6 +2433,12 @@ export default function Game() {
     const handlePress = () => {
       if (isDirection) {
         heldDirectionRef.current = control
+      }
+      if (control === 'start') {
+        handleControlAction('start')
+      } else if (control === 'select') {
+        handleControlAction('select')
+      } else if (isDirection) {
         handleControlAction(control)
       } else {
         handleVirtualPress(control)
@@ -3060,8 +3117,8 @@ export default function Game() {
                     type="button"
                     className="start-btn" 
                     {...bindVirtualControl('start')}
-                  ></button>
-                  <button type="button" className="select-btn" {...bindVirtualControl('select')}></button>
+                  >Start</button>
+                  <button type="button" className="select-btn" {...bindVirtualControl('select')}>Select</button>
                 </div>
               </div>
             </div>
@@ -4143,6 +4200,31 @@ export default function Game() {
           font-size: 7px;
         }
 
+        .menu-options {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          padding: 10px;
+        }
+
+        .menu-option {
+          padding: 12px 15px;
+          background: #f8f8f8;
+          border: 2px solid #ddd;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 10px;
+          text-align: left;
+          transition: all 0.1s;
+        }
+
+        .menu-option:hover, .menu-option.selected {
+          background: #e94560;
+          color: white;
+          border-color: #c62828;
+          transform: scale(1.02);
+        }
+
         .menu-grid {
           display: flex;
           flex-direction: column;
@@ -4247,6 +4329,123 @@ export default function Game() {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 5px;
+        }
+
+        .dex-full {
+          max-height: 400px;
+          overflow-y: auto;
+        }
+
+        .dex-list {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+        }
+
+        .dex-row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 5px 8px;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 8px;
+        }
+
+        .dex-row.caught {
+          background: rgba(76, 175, 80, 0.15);
+        }
+
+        .dex-row.uncaught {
+          background: rgba(0, 0, 0, 0.2);
+          opacity: 0.6;
+        }
+
+        .dex-row:hover {
+          background: rgba(255, 193, 7, 0.2);
+        }
+
+        .dex-icon {
+          width: 24px;
+          height: 24px;
+        }
+
+        .dex-detail {
+          padding: 10px;
+        }
+
+        .dex-detail-header {
+          display: flex;
+          gap: 15px;
+          margin-bottom: 10px;
+        }
+
+        .dex-detail-sprite {
+          width: 64px;
+          height: 64px;
+        }
+
+        .dex-detail-info {
+          flex: 1;
+        }
+
+        .dex-detail-name {
+          font-size: 12px;
+          font-weight: bold;
+          color: #333;
+        }
+
+        .dex-detail-num {
+          font-size: 8px;
+          color: #666;
+        }
+
+        .dex-detail-types {
+          margin-top: 5px;
+        }
+
+        .dex-detail-desc {
+          font-size: 7px;
+          color: #555;
+          margin-bottom: 10px;
+          line-height: 1.4;
+        }
+
+        .dex-detail-stats {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 5px;
+          margin-bottom: 10px;
+        }
+
+        .stat-row {
+          display: flex;
+          justify-content: space-between;
+          font-size: 7px;
+          background: #f0f0f0;
+          padding: 3px 6px;
+          border-radius: 2px;
+        }
+
+        .stat-row span:first-child {
+          color: #666;
+        }
+
+        .dex-detail-ev, .dex-detail-moves {
+          font-size: 7px;
+          color: #555;
+          margin-bottom: 5px;
+        }
+
+        .back-btn {
+          margin-top: 10px;
+          padding: 5px 10px;
+          font-size: 7px;
+          background: #e94560;
+          color: white;
+          border: none;
+          border-radius: 3px;
+          cursor: pointer;
         }
 
         .dex-entry {
