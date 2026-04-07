@@ -941,7 +941,20 @@ export default function Game() {
         if (!map?.tiles?.[ny] || typeof map.tiles[ny][nx] === 'undefined') return prev
 
         const tile = map.tiles[ny][nx]
+        
+        // Block on furniture and obstacles (tiles 9,10,11,12,13,17,18 are not walkable)
+        const INDOOR_OBSTACLES = [9, 10, 11, 12, 13, 17, 18]
+        if (INDOOR_OBSTACLES.includes(tile)) return prev
+        
         if (!canMoveOnTile(tile, prev.vehicle)) return prev
+
+        // Block on NPCs and other characters
+        const npcBlocking = map.events?.find((e: MapEvent) => 
+          (e.type === 'npc' || e.type === 'trainer' || e.type === 'gym' || e.type === 'gymLeader') && 
+          typeof e.x === 'number' && typeof e.y === 'number' && 
+          e.x === nx && e.y === ny
+        )
+        if (npcBlocking) return prev
 
         const warpEvent = map.events?.find((e: MapEvent) => 
           e.type === 'warp' && typeof e.x === 'number' && typeof e.y === 'number' && 
@@ -2366,79 +2379,41 @@ export default function Game() {
 
   const bindVirtualControl = useCallback((control: VirtualControl) => {
     const isDirection = ['up', 'down', 'left', 'right'].includes(control)
+    const handlePress = () => {
+      if (isDirection) {
+        heldDirectionRef.current = control
+        handleControlAction(control)
+      } else {
+        handleVirtualPress(control)
+      }
+    }
+    const handleRelease = () => {
+      if (isDirection && heldDirectionRef.current === control) {
+        heldDirectionRef.current = null
+      }
+    }
     return {
-      onPointerDown: (e: React.PointerEvent<HTMLButtonElement>) => {
+      onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         e.stopPropagation()
-        if (isDirection) {
-          heldDirectionRef.current = control
-          handleControlAction(control)
-        } else {
-          handleVirtualPress(control)
-        }
-      },
-      onPointerUp: (e: React.PointerEvent<HTMLButtonElement>) => {
-        e.preventDefault()
-        e.stopPropagation()
-        if (isDirection && heldDirectionRef.current === control) {
-          heldDirectionRef.current = null
-        }
-      },
-      onPointerLeave: (e: React.PointerEvent<HTMLButtonElement>) => {
-        e.preventDefault()
-        if (isDirection && heldDirectionRef.current === control) {
-          heldDirectionRef.current = null
-        }
+        handlePress()
       },
       onTouchStart: (e: React.TouchEvent<HTMLButtonElement>) => {
         e.preventDefault()
         e.stopPropagation()
-        if (isDirection) {
-          heldDirectionRef.current = control
-          handleControlAction(control)
-        } else {
-          handleVirtualPress(control)
-        }
+        handlePress()
       },
       onTouchEnd: (e: React.TouchEvent<HTMLButtonElement>) => {
         e.preventDefault()
         e.stopPropagation()
-        if (isDirection && heldDirectionRef.current === control) {
-          heldDirectionRef.current = null
-        }
+        handleRelease()
       },
-      onMouseDown: (e: React.MouseEvent<HTMLButtonElement>) => {
+      onTouchCancel: (e: React.TouchEvent<HTMLButtonElement>) => {
         e.preventDefault()
-        e.stopPropagation()
-        if (isDirection) {
-          heldDirectionRef.current = control
-          handleControlAction(control)
-        } else {
-          handleVirtualPress(control)
-        }
-      },
-      onMouseUp: (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault()
-        e.stopPropagation()
-        if (isDirection && heldDirectionRef.current === control) {
-          heldDirectionRef.current = null
-        }
-      },
-      onMouseLeave: (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault()
-        if (isDirection && heldDirectionRef.current === control) {
-          heldDirectionRef.current = null
-        }
-      },
-      onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault()
-        e.stopPropagation()
-      },
-      onContextMenu: (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault()
+        handleRelease()
       },
     }
-  }, [handleControlAction])
+  }, [handleControlAction, handleVirtualPress])
 
   // Effects
   useEffect(() => {

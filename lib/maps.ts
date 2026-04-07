@@ -246,8 +246,6 @@ export const MAPS: Record<string, GameMap> = {
     events: [
       { type: 'npc', x: 4, y: 4, name: 'Mamma', npcId: 'mamma', 
         dialog: ['Te son qua in camera apposta: sveiate ben, fio mio.', 'Prima sistema la testa, dopo va dal Dottor GheSboro.', 'No sta vegnir zo dal letto come un sacco de patate.'] },
-      { type: 'item', x: 12, y: 5, item: { name: 'Pozioncino', type: 'heal', val: 20 } },
-      { type: 'item', x: 2, y: 5, item: { name: 'Gondolball', type: 'capture', val: 0 } },
       { type: 'warp', x: 7, y: 10, dest: 'canalborgo', dx: 3, dy: 5 },
       { type: 'warp', x: 8, y: 10, dest: 'canalborgo', dx: 8, dy: 5 },
       { type: 'warp', x: 2, y: 9, dest: 'casa_piano1', dx: 8, dy: 8, text: 'Scendi le scale' },
@@ -272,7 +270,6 @@ export const MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     ],
     events: [
-      { type: 'item', x: 3, y: 6, item: { name: 'Pokedex', type: 'key', val: 0 } },
       { type: 'warp', x: 8, y: 9, dest: 'casa', dx: 2, dy: 9, text: 'Scendi le scale' },
     ],
   },
@@ -302,8 +299,6 @@ export const MAPS: Record<string, GameMap> = {
         dialog: ['Qua dentro cataloghemo tutto.', 'Se te servi una mano, basta domandare.'] },
       { type: 'npc', x: 12, y: 5, name: 'Assistente Pino', npcId: 'scientist',
         dialog: ['Xe ora de caffè!', 'Vuoi un po?'] },
-      { type: 'item', x: 6, y: 7, item: { name: 'Pozioncino', type: 'heal', val: 20 } },
-      { type: 'item', x: 10, y: 7, item: { name: 'Gondolball', type: 'capture', val: 0 } },
       { type: 'warp', x: 7, y: 12, dest: 'canalborgo', dx: 17, dy: 9 },
       { type: 'warp', x: 8, y: 12, dest: 'canalborgo', dx: 22, dy: 9 },
       { type: 'warp', x: 7, y: 2, dest: 'laboratorio_2', dx: 7, dy: 10, text: 'Piano di sopra' },
@@ -330,8 +325,6 @@ export const MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     ],
     events: [
-      { type: 'item', x: 6, y: 5, item: { name: 'Mascheraball', type: 'capture', val: 0 } },
-      { type: 'item', x: 10, y: 5, item: { name: 'Spritzball', type: 'capture', val: 0 } },
       { type: 'npc', x: 8, y: 8, name: 'Registratore', npcId: 'computer',
         dialog: ['Registra i tuoi Besti!', 'Controlla i tuoi progressi!'] },
       { type: 'warp', x: 7, y: 12, dest: 'laboratorio', dx: 7, dy: 3, text: 'Scendi le scale' },
