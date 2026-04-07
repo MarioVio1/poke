@@ -73,7 +73,7 @@ export const INDOOR_TILES: Record<number, {
   10: { base: '#5d4037', detail: '#4e342e', walkable: false, type: 'table' },
   11: { base: '#8d6e63', detail: '#795548', walkable: true, type: 'chair' },
   12: { base: '#87ceeb', detail: '#4fc3f7', walkable: false, type: 'window' },
-  13: { base: '#4e342e', detail: '#3e2723', walkable: false, type: 'door' },
+  13: { base: '#4e342e', detail: '#3e2723', walkable: true, type: 'door' },
   14: { base: '#b71c1c', detail: '#c62828', walkable: true, type: 'rug' },
   15: { base: '#2e7d32', detail: '#1b5e20', walkable: true, type: 'plant' },
   16: { base: '#ffeb3b', detail: '#ffc107', walkable: true, type: 'lamp' },

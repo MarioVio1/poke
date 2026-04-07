@@ -964,14 +964,6 @@ export default function Game() {
 
         if (warpEvent) {
           const we = warpEvent as any
-          if (prev.map === 'casa' && we.dest === 'canalborgo' && !prev.flags.hasStarter && prev.storyProgress < 2) {
-            setTimeout(() => {
-              setDialogs(['Aspeta un secondo.', 'Prima parla con la Mamma che xe vegnua in camera a sveiarte.'])
-              setSpeaker('Narratore')
-              setInDialog(true)
-            }, 50)
-            return prev
-          }
           setTimeout(() => {
             setMapTransition(true)
             setTimeout(() => {
@@ -2459,25 +2451,25 @@ export default function Game() {
       }
     }
     return {
-      onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
+      onPointerDown: (e: React.PointerEvent<HTMLButtonElement>) => {
         e.preventDefault()
         e.stopPropagation()
         handlePress()
       },
-      onTouchStart: (e: React.TouchEvent<HTMLButtonElement>) => {
-        e.preventDefault()
-        e.stopPropagation()
-        handlePress()
-      },
-      onTouchEnd: (e: React.TouchEvent<HTMLButtonElement>) => {
+      onPointerUp: (e: React.PointerEvent<HTMLButtonElement>) => {
         e.preventDefault()
         e.stopPropagation()
         handleRelease()
       },
-      onTouchCancel: (e: React.TouchEvent<HTMLButtonElement>) => {
+      onPointerLeave: (e: React.PointerEvent<HTMLButtonElement>) => {
         e.preventDefault()
         handleRelease()
       },
+      onPointerCancel: (e: React.PointerEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        handleRelease()
+      },
+      style: { touchAction: 'none' } as React.CSSProperties,
     }
   }, [handleControlAction, handleVirtualPress])
 
@@ -2650,28 +2642,14 @@ export default function Game() {
               {/* Title Screen */}
               {!gameStarted && !showIntro && !showPlayerSetup && (
                 <div className="title-screen">
-                  {/* Background elements */}
-                  <div className="title-particles">
-                    {[...Array(12)].map((_, i) => (
-                      <div 
-                        key={i} 
-                        className="particle"
-                        style={{
-                          left: `${Math.random() * 100}%`,
-                          top: `${Math.random() * 100}%`,
-                          animationDelay: `${Math.random() * 2}s`
-                        }}
-                      />
-                    ))}
-                  </div>
+                  <div className="title-bg-pattern" />
+                  <div className="title-glow" />
                   
-                  <div className="title-bg-dragon">
+                  <div className="title-dragon-container">
                     <img src={getBestiaSprite('lagorion')} alt="Lagorion" />
                   </div>
-
-                  <div className="title-spritz-bubble" style={{ left: '15%', top: '30%' }} />
-                  <div className="title-spritz-bubble" />
-                  <div className="title-spritz-bubble" />
+                  
+                  <div className="title-spritz-glass" />
 
                   <div className="title-frame">
                     <div className="title-main">
@@ -2679,7 +2657,7 @@ export default function Game() {
                       <div className="title-venetia">DE VENETIA</div>
                       <div className="title-version">ROSSO SPRITZ</div>
                       <div className="title-subtext">
-                        Cacia i Besti·Ghefa i Spritz·Drio la Gloria
+                        Cacia i Besti · Ghefa i Spritz · Drio la Gloria
                       </div>
                     </div>
 
@@ -3161,89 +3139,91 @@ export default function Game() {
       {/* CSS Styles */}
       <style jsx global>{`
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+        }
         body { 
-          background: radial-gradient(circle at 30% 20%, #1e2a55 0%, #0f1d3b 35%, #0a1225 70%), #0a1225;
-          min-height: 100vh; 
+          background: #0a1225;
+          width: 100%;
+          height: 100vh;
           display: flex; 
           justify-content: center; 
           align-items: center;
           font-family: 'Press Start 2P', monospace;
-          padding: 16px;
+          overflow: hidden;
         }
 
         .game-wrapper {
-          width: min(540px, 94vw);
-          min-height: calc(100vh - 32px);
-          height: auto;
+          width: 100%;
+          height: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
+          max-width: 100vw;
+          overflow: hidden;
+          background: #0a1225;
         }
 
         .gba-console {
           position: relative;
           width: 100%;
-          height: auto;
-          min-height: min(860px, calc(100vh - 24px));
-          display: grid;
-          grid-template-rows: auto auto;
-          gap: 10px;
+          height: 100%;
+          max-width: 100vw;
+          display: flex;
+          flex-direction: column;
           background:
             radial-gradient(circle at 35% 25%, rgba(132,90,255,0.45) 0%, rgba(132,90,255,0) 38%),
             linear-gradient(180deg, #202026 0%, #131317 22%, #5f19d4 58%, #4d0fb9 100%);
-          border-radius: 34px;
-          padding: 18px 16px 22px;
-          border: 2px solid rgba(255,255,255,0.12);
-          box-shadow:
-            0 28px 60px rgba(0,0,0,0.45),
-            inset 0 1px 0 rgba(255,255,255,0.16),
-            inset 0 -10px 30px rgba(0,0,0,0.18);
+          border-radius: 0;
+          padding: 0;
+          border: 0;
+          box-shadow: none;
           overflow: hidden;
         }
 
         .gba-console::before {
-          content: '';
-          position: absolute;
-          top: 8px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 34%;
-          height: 5px;
-          border-radius: 999px;
-          background: rgba(255,255,255,0.12);
+          display: none;
         }
 
         .gba-console::after {
-          content: 'DELTA';
-          position: absolute;
-          top: 52.5%;
-          left: 50%;
-          transform: translateX(-50%);
-          font-size: 8px;
-          letter-spacing: 2px;
-          color: rgba(255,255,255,0.8);
-          z-index: 2;
+          display: none;
         }
 
-        .top-screen, .bottom-screen {
+        .top-screen {
           width: 100%;
+          flex: 1;
+          display: flex;
+        }
+
+        .bottom-screen {
+          width: 100%;
+          flex-shrink: 0;
+          display: flex;
         }
 
         .screen-bezel {
-          background: linear-gradient(180deg, #0f0f12 0%, #050507 100%);
-          border-radius: 20px;
-          padding: 12px;
-          box-shadow: inset 0 0 24px rgba(0,0,0,0.85);
+          flex: 1;
+          background: #000;
+          border-radius: 0;
+          padding: 0;
+          box-shadow: none;
+          display: flex;
+          flex-direction: column;
         }
 
         .game-container {
           position: relative;
           width: 100%;
+          height: 100%;
           aspect-ratio: 3 / 2;
           min-height: 0;
           background: #000;
           overflow: hidden;
-          border-radius: 12px;
+          border-radius: 0;
         }
 
         .game-canvas {
@@ -3453,174 +3433,192 @@ export default function Game() {
         .title-screen {
           position: absolute;
           inset: 0;
-          background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 30%, #4a2c6a 60%, #6b3d7a 100%);
+          background: 
+            radial-gradient(ellipse at 50% 0%, rgba(139,69,19,0.4) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 80%, rgba(255,99,71,0.3) 0%, transparent 40%),
+            linear-gradient(180deg, #0d0805 0%, #1a0f0a 40%, #2d1810 70%, #1a0f0a 100%);
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           color: white;
           overflow: hidden;
-          padding: 6px;
         }
 
-        .title-bg-dragon {
+        .title-bg-pattern {
           position: absolute;
-          bottom: -20px;
-          right: -30px;
-          width: 180px;
-          height: 180px;
-          opacity: 0.25;
-          filter: drop-shadow(0 0 20px rgba(255,107,107,0.3));
-          animation: dragonFloat 6s ease-in-out infinite;
+          inset: 0;
+          background-image: 
+            repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.02) 20px, rgba(255,255,255,0.02) 40px),
+            repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(255,255,255,0.02) 20px, rgba(255,255,255,0.02) 40px);
+          opacity: 0.5;
         }
 
-        .title-bg-dragon img {
+        .title-dragon-container {
+          position: absolute;
+          bottom: 5%;
+          right: 5%;
+          width: 120px;
+          height: 120px;
+          opacity: 0.6;
+          animation: titleDragonFloat 8s ease-in-out infinite;
+        }
+
+        .title-dragon-container img {
           width: 100%;
           height: 100%;
-          object-fit: contain;
           image-rendering: pixelated;
+          filter: drop-shadow(0 0 10px rgba(255,100,50,0.3));
         }
 
-        .title-spritz-bubble {
+        @keyframes titleDragonFloat {
+          0%, 100% { transform: translateY(0) rotate(-3deg); }
+          50% { transform: translateY(-15px) rotate(3deg); }
+        }
+
+        .title-spritz-glass {
           position: absolute;
-          width: 12px;
-          height: 12px;
-          background: radial-gradient(circle at 30% 30%, #ff9966 0%, #ff5e62 50%, #ff2d55 100%);
-          border-radius: 50%;
+          bottom: 18%;
+          right: 18%;
+          width: 24px;
+          height: 32px;
           opacity: 0.7;
-          animation: bubbleFloat 3s ease-in-out infinite;
         }
 
-        .title-spritz-bubble:nth-child(2) {
-          width: 8px;
+        .title-spritz-glass::before {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 16px;
+          height: 20px;
+          background: linear-gradient(180deg, #ff9966 0%, #ff5e62 100%);
+          border-radius: 2px 2px 4px 4px;
+          clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+        }
+
+        .title-spritz-glass::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 2px;
+          width: 20px;
           height: 8px;
-          left: 20%;
-          animation-delay: 0.5s;
-        }
-
-        .title-spritz-bubble:nth-child(3) {
-          width: 10px;
-          height: 10px;
-          left: 70%;
-          animation-delay: 1s;
-        }
-
-        @keyframes dragonFloat {
-          0%, 100% { transform: translateY(0) rotate(-2deg); }
-          50% { transform: translateY(-10px) rotate(2deg); }
-        }
-
-        @keyframes bubbleFloat {
-          0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
-          50% { transform: translateY(-20px) scale(1.2); opacity: 0.3; }
+          background: rgba(255,255,255,0.3);
+          border-radius: 2px 2px 0 0;
         }
 
         .title-particles {
           position: absolute;
           inset: 0;
+          pointer-events: none;
         }
 
-        .particle {
+        .title-glow {
           position: absolute;
-          width: 4px;
-          height: 4px;
-          background: rgba(255,200,100,0.6);
-          border-radius: 50%;
-          animation: sparkle 2s ease-in-out infinite;
-        }
-
-        @keyframes sparkle {
-          0%, 100% { opacity: 0; transform: scale(0); }
-          50% { opacity: 1; transform: scale(1); }
+          top: 10%;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 200px;
+          height: 100px;
+          background: radial-gradient(ellipse at center, rgba(255,200,100,0.2) 0%, transparent 70%);
+          pointer-events: none;
         }
 
         .title-frame {
           position: relative;
           z-index: 1;
-          width: min(280px, 90%);
-          max-height: 100%;
-          display: grid;
-          grid-template-rows: auto auto auto;
-          align-content: center;
-          gap: 8px;
-          justify-items: center;
+          width: min(320px, 95%);
+          max-height: 95%;
+          display: flex;
+          flex-direction: column;
           align-items: center;
+          gap: 12px;
         }
 
         .title-main {
           text-align: center;
+          padding: 20px;
         }
 
         .title-pokemona {
-          font-size: clamp(28px, 10vw, 48px);
+          font-size: clamp(36px, 12vw, 64px);
           font-weight: 900;
-          background: linear-gradient(180deg, #ffd700 0%, #ff8c00 30%, #ff4500 60%, #8b0000 100%);
+          background: linear-gradient(180deg, #ffd700 0%, #ffb347 25%, #ff6b35 50%, #c41e3a 75%, #800020 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          text-shadow: none;
-          filter: drop-shadow(2px 2px 0 #3d1a00) drop-shadow(4px 4px 0 #1a0d00);
-          letter-spacing: 4px;
-          line-height: 1.1;
-          font-family: 'Press Start 2P', cursive;
+          filter: drop-shadow(3px 3px 0 #1a0a00) drop-shadow(0 0 20px rgba(255,100,50,0.4));
+          letter-spacing: 2px;
+          line-height: 1.15;
+          animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+          from { filter: drop-shadow(3px 3px 0 #1a0a00) drop-shadow(0 0 20px rgba(255,100,50,0.4)); }
+          to { filter: drop-shadow(3px 3px 0 #1a0a00) drop-shadow(0 0 30px rgba(255,150,80,0.6)); }
         }
 
         .title-venetia {
-          font-size: clamp(10px, 4vw, 16px);
-          color: #87ceeb;
-          margin-top: 4px;
-          letter-spacing: 6px;
-          text-shadow: 1px 1px 0 #1a3a5c;
-          font-style: italic;
+          font-size: clamp(14px, 5vw, 22px);
+          color: #d4af37;
+          margin-top: 8px;
+          letter-spacing: 8px;
+          text-shadow: 1px 1px 2px #000;
+          font-weight: 400;
         }
 
         .title-version {
-          font-size: clamp(8px, 3vw, 12px);
-          color: #98fb98;
-          margin-top: 2px;
-          letter-spacing: 2px;
+          font-size: clamp(10px, 4vw, 16px);
+          color: #e8d5b7;
+          margin-top: 4px;
+          letter-spacing: 4px;
+          font-weight: 400;
         }
 
         .title-subtext {
-          font-size: clamp(6px, 2.5vw, 9px);
-          color: #dda0dd;
-          margin-top: 8px;
+          font-size: clamp(7px, 2.5vw, 11px);
+          color: #a08060;
+          margin-top: 16px;
           text-align: center;
-          line-height: 1.6;
+          line-height: 1.8;
         }
 
         .title-hero {
-          width: 100%;
-          min-height: 50px;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 10px;
-          padding: 10px 0;
+          gap: 8px;
+          padding: 15px 0;
         }
 
         .title-hero-main {
-          width: 48px;
-          height: 48px;
-          filter: drop-shadow(0 4px 0 rgba(0,0,0,0.4));
-          animation: titleFloat 2.4s ease-in-out infinite;
+          width: 56px;
+          height: 56px;
+          filter: drop-shadow(0 0 15px rgba(255,200,100,0.4));
+          animation: titleFloat 3s ease-in-out infinite;
         }
 
         .title-hero-side {
-          width: 28px;
-          height: 28px;
-          opacity: 0.9;
-          filter: drop-shadow(0 3px 0 rgba(0,0,0,0.3));
-          animation: titleFloat 2.8s ease-in-out infinite;
+          width: 32px;
+          height: 32px;
+          opacity: 0.85;
+          animation: titleFloatSide 3.5s ease-in-out infinite;
         }
 
         .title-hero-side:last-child {
-          animation-delay: 0.8s;
+          animation-delay: 1s;
         }
 
         @keyframes titleFloat {
           0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-6px); }
+          50% { transform: translateY(-8px); }
+        }
+
+        @keyframes titleFloatSide {
+          0%, 100% { transform: translateY(0) scale(1); }
+          50% { transform: translateY(-4px) scale(1.05); }
         }
 
         .title-menu-card {
@@ -3687,6 +3685,79 @@ export default function Game() {
           font-size: 4px;
           color: #243120;
           line-height: 1.3;
+        }
+
+        @media (max-width: 768px) {
+          .title-screen {
+            padding: 10px;
+          }
+          
+          .title-frame {
+            width: 95%;
+            gap: 8px;
+          }
+          
+          .title-main {
+            padding: 15px 10px;
+          }
+          
+          .title-pokemona {
+            letter-spacing: 1px;
+          }
+          
+          .title-venetia, .title-version {
+            letter-spacing: 4px;
+          }
+          
+          .title-hero {
+            padding: 10px 0;
+            gap: 6px;
+          }
+          
+          .title-hero-main {
+            width: 44px;
+            height: 44px;
+          }
+          
+          .title-hero-side {
+            width: 26px;
+            height: 26px;
+          }
+          
+          .title-menu-card {
+            width: 100%;
+            padding: 8px;
+            gap: 8px;
+          }
+          
+          .start-btn-large {
+            padding: 8px 10px;
+            font-size: 6px;
+          }
+        }
+
+        @media (max-width: 400px) {
+          .title-main {
+            padding: 10px 5px;
+          }
+          
+          .title-pokemona {
+            letter-spacing: 0px;
+          }
+          
+          .title-venetia, .title-version {
+            letter-spacing: 2px;
+          }
+          
+          .title-hero-main {
+            width: 36px;
+            height: 36px;
+          }
+          
+          .title-hero-side {
+            width: 22px;
+            height: 22px;
+          }
         }
 
         .player-setup-screen {
@@ -4258,52 +4329,75 @@ export default function Game() {
         }
 
         .overlay {
-          position: absolute;
+          position: fixed;
           inset: 0;
-          background: rgba(255,255,255,0.95);
-          padding: 10px;
+          background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 50%, #1a0a2e 100%);
+          padding: 20px;
           overflow-y: auto;
           z-index: 30;
+          display: flex;
+          flex-direction: column;
         }
 
         .overlay-header {
-          font-size: 10px;
+          font-size: 14px;
           text-align: center;
-          padding-bottom: 10px;
-          border-bottom: 2px solid #333;
-          margin-bottom: 10px;
+          padding-bottom: 16px;
+          border-bottom: 3px solid #ffd700;
+          margin-bottom: 16px;
+          color: #ffd700;
+          text-shadow: 2px 2px 0 #000;
+          letter-spacing: 2px;
         }
 
         .close-btn {
           position: absolute;
-          top: 5px;
-          right: 5px;
-          background: #f44336;
+          top: 15px;
+          right: 15px;
+          background: #c41e3a;
           color: white;
-          border: none;
-          width: 20px;
-          height: 20px;
+          border: 2px solid #fff;
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
           cursor: pointer;
-          font-size: 10px;
+          font-size: 16px;
+          font-weight: bold;
+        }
+
+        .close-btn:hover {
+          background: #ff5722;
         }
 
         .overlay-content {
-          font-size: 7px;
+          font-size: 8px;
+          color: #fff;
         }
 
         .menu-options {
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: 10px;
           padding: 10px;
         }
 
         .menu-option {
-          padding: 12px 15px;
-          background: #f8f8f8;
-          border: 2px solid #ddd;
-          border-radius: 8px;
+          padding: 16px 20px;
+          background: linear-gradient(180deg, #2a1a4a 0%, #1a0a2e 100%);
+          border: 2px solid #ffd700;
+          border-radius: 12px;
+          cursor: pointer;
+          font-size: 10px;
+          color: #ffd700;
+          text-align: left;
+          transition: all 0.2s;
+        }
+
+        .menu-option:hover, .menu-option.selected {
+          background: linear-gradient(180deg, #ffd700 0%, #ff8c00 100%);
+          color: #1a0a2e;
+          transform: scale(1.02);
+        }
           cursor: pointer;
           font-size: 10px;
           text-align: left;
@@ -4803,20 +4897,26 @@ export default function Game() {
           filter: brightness(0.85) sepia(0.15);
         }
 
-        /* Bottom Screen */
         .screen-bezel-bottom {
           position: relative;
-          background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 24%);
-          border-radius: 24px;
-          min-height: 318px;
+          flex-shrink: 0;
+          background: linear-gradient(180deg, #111a33 0%, #0b1224 100%);
+          border-radius: 0;
+          min-height: 150px;
+          max-height: 40%;
+          height: 30%;
           padding: 0;
           overflow: hidden;
+          display: flex;
         }
 
         .bottom-content {
           position: relative;
           width: 100%;
-          min-height: 318px;
+          flex: 1;
+          overflow: auto;
+          min-height: 0;
+          height: 100%;
         }
 
         .info-panel {
@@ -5067,6 +5167,11 @@ export default function Game() {
           justify-content: center;
         }
 
+        .start-btn:active, .select-btn:active {
+          background: linear-gradient(180deg, #888 0%, #555 100%);
+          transform: rotate(-10deg) scale(0.95);
+        }
+
         .start-btn::after,
         .select-btn::after {
           display: none;
@@ -5122,7 +5227,7 @@ export default function Game() {
         }
 
         /* Delta-like mobile layout */
-        @media (max-width: 768px) {
+        @media (max-width: 768px), (max-height: 600px) {
           * {
             max-width: 100vw;
             overflow-x: hidden;
@@ -5141,13 +5246,16 @@ export default function Game() {
           }
 
           .game-wrapper {
-            width: 100vw;
+            width: 100%;
             min-height: 100dvh;
             height: 100dvh;
             max-width: 100vw;
+            overflow: hidden;
           }
 
           .gba-console {
+            display: flex;
+            flex-direction: column;
             min-height: 100dvh;
             height: 100dvh;
             border: 0;
@@ -5165,16 +5273,17 @@ export default function Game() {
           }
 
           .top-screen {
+            flex: 1;
+            min-height: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: stretch;
-            min-height: 0;
-            flex: 1;
             overflow: hidden;
           }
 
           .screen-bezel {
+            flex: 1;
             width: 100%;
             height: 100%;
             padding: 0;
@@ -5196,24 +5305,30 @@ export default function Game() {
 
           .top-screen, .bottom-screen {
             width: 100%;
-            flex: 1;
+            flex-shrink: 0;
           }
 
           .bottom-screen {
+            flex-shrink: 0;
             display: flex;
             align-items: stretch;
-            flex-shrink: 0;
+            height: auto;
+            min-height: auto;
           }
 
           .screen-bezel-bottom {
             width: 100%;
-            min-height: 26dvh;
+            height: auto;
+            min-height: 22dvh;
+            max-height: 30dvh;
             border-radius: 0;
             background: linear-gradient(180deg, #111a33 0%, #0b1224 100%);
           }
 
           .bottom-content {
-            min-height: 26dvh;
+            height: auto;
+            min-height: 22dvh;
+            max-height: 30dvh;
           }
 
           .info-panel {

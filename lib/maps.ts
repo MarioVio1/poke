@@ -238,7 +238,7 @@ export const MAPS: Record<string, GameMap> = {
       [2,6,10,0,13,0,13,0,0,13,0,13,0,10,6,2],
       [2,6,10,0,0,0,0,0,0,0,0,0,0,10,6,2],
       [2,6,10,0,15,0,0,0,0,0,15,0,0,10,6,2],
-      [2,6,9,10,10,10,0,0,0,11,11,10,10,9,6,2],
+      [2,6,9,10,10,10,13,13,13,11,11,10,10,9,6,2],
       [2,6,14,14,14,14,14,14,14,14,14,14,14,14,6,2],
       [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -246,9 +246,10 @@ export const MAPS: Record<string, GameMap> = {
     events: [
       { type: 'npc', x: 4, y: 4, name: 'Mamma', npcId: 'mamma', 
         dialog: ['Te son qua in camera apposta: sveiate ben, fio mio.', 'Prima sistema la testa, dopo va dal Dottor GheSboro.', 'No sta vegnir zo dal letto come un sacco de patate.'] },
-      { type: 'warp', x: 7, y: 10, dest: 'canalborgo', dx: 7, dy: 11 },
-      { type: 'warp', x: 8, y: 10, dest: 'canalborgo', dx: 8, dy: 11 },
-      { type: 'warp', x: 2, y: 9, dest: 'casa_piano1', dx: 8, dy: 8, text: 'Scendi le scale' },
+      { type: 'warp', x: 6, y: 9, dest: 'canalborgo', dx: 3, dy: 4, text: 'Esci de casa' },
+      { type: 'warp', x: 7, y: 9, dest: 'canalborgo', dx: 3, dy: 4, text: 'Esci de casa' },
+      { type: 'warp', x: 8, y: 9, dest: 'canalborgo', dx: 3, dy: 4, text: 'Esci de casa' },
+      { type: 'warp', x: 2, y: 9, dest: 'casa_piano1', dx: 8, dy: 8, text: 'Va in camera' },
     ],
   },
 
