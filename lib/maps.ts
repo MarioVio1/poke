@@ -111,59 +111,119 @@ export const MAPS: Record<string, GameMap> = {
   canalborgo: {
     name: 'Canalborgo',
     tiles: [
-      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-      [1,10,10,10,10,10,10,0,0,0,0,0,10,10,10,10,10,10,10,1],
-      [1,9,3,3,3,3,0,0,2,2,2,0,3,3,3,3,0,0,9,1],
-      [1,9,3,3,3,3,0,0,2,2,2,0,3,3,3,3,0,0,9,1],
-      [1,9,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,9,1],
-      [1,9,0,6,0,0,0,0,0,0,0,0,0,0,6,0,0,0,9,1],
-      [1,9,0,0,0,0,0,3,3,3,3,3,0,0,0,0,0,0,9,1],
-      [1,9,0,0,0,0,0,3,3,3,3,3,0,0,0,0,0,0,9,1],
-      [1,9,3,3,3,3,0,0,0,0,0,0,0,0,3,3,3,0,9,1],
-      [1,9,3,3,3,3,0,0,7,0,0,0,0,0,3,3,3,0,9,1],
-      [1,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,1],
-      [1,10,10,10,10,0,0,0,0,0,0,0,0,0,0,10,10,10,10,1],
-      [1,1,1,1,1,0,0,6,0,0,0,0,6,0,0,1,1,1,1,1],
-      [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
-      [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,10,10,10,10,10,10,10,0,0,0,0,10,10,10,10,10,10,10,10,10,10,10,10,10,1,1,1,1],
+      [1,1,10,10,10,10,10,10,10,0,0,0,0,10,10,10,10,10,10,10,10,10,10,10,10,10,1,1,1,1],
+      [1,1,9,3,3,3,3,3,0,0,2,2,0,0,3,3,3,3,3,0,0,3,3,3,3,3,0,9,1,1],
+      [1,1,9,3,3,3,3,3,0,0,2,2,0,0,3,3,3,3,3,0,0,3,3,3,3,3,0,9,1,1],
+      [1,1,9,3,3,0,0,0,0,0,2,2,0,0,0,0,3,3,3,0,0,0,0,3,3,3,0,9,1,1],
+      [1,1,9,3,3,0,6,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,6,0,3,3,0,9,1,1],
+      [1,1,9,3,3,0,0,0,3,3,3,3,3,3,3,3,0,0,3,3,3,3,0,0,3,3,0,9,1,1],
+      [1,1,9,3,3,0,0,0,3,3,3,3,3,3,3,3,0,0,3,3,3,3,0,0,3,3,0,9,1,1],
+      [1,1,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,1,1],
+      [1,1,9,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0,0,0,9,1,1],
+      [1,1,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,1,1],
+      [1,1,9,3,3,3,3,3,0,0,0,0,0,0,3,3,3,3,3,0,0,3,3,3,3,3,0,9,1,1],
+      [1,1,9,3,3,3,3,3,0,0,7,0,0,0,3,3,3,3,3,0,0,7,3,3,3,3,0,9,1,1],
+      [1,1,9,3,3,3,3,3,0,0,0,0,0,0,3,3,3,3,3,0,0,0,3,3,3,3,0,9,1,1],
+      [1,1,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,1,1],
+      [1,1,10,10,10,10,10,0,0,0,0,0,0,0,0,0,0,0,10,10,10,10,10,0,0,10,10,10,1,1],
+      [1,1,1,1,1,1,1,0,0,6,0,0,0,0,0,6,0,0,1,1,1,1,1,0,0,1,1,1,1,1],
+      [1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1],
+      [1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1],
     ],
     events: [
-      // Town NPCs
-      { type: 'npc', x: 4, y: 5, name: 'Mamma', npcId: 'mamma',
-        dialog: ['Bravo, te si rivà fin in piazza.', 'Adesso va dal Dottor GheSboro in laboratorio, vicino al canale.'] },
+      // Player home (top left)
+      { type: 'warp', x: 3, y: 4, dest: 'casa', dx: 4, dy: 5 },
       
-      // Old man near canal
-      { type: 'npc', x: 6, y: 5, name: 'Nonno Piero', npcId: 'nonno_piero',
+      // Neighbor house
+      { type: 'warp', x: 7, y: 4, dest: 'casa_vicina', dx: 4, dy: 5 },
+      
+      // Professor lab (top right area)
+      { type: 'warp', x: 17, y: 8, dest: 'laboratorio', dx: 5, dy: 6 },
+      
+      // Pokemon Center (middle right)
+      { type: 'warp', x: 25, y: 4, dest: 'centro', dx: 4, dy: 4 },
+      
+      // Shop (bottom right)
+      { type: 'warp', x: 25, y: 12, dest: 'shop_centro', dx: 3, dy: 4 },
+      
+      // New area: Porto (bottom left)
+      { type: 'warp', x: 2, y: 18, dest: 'porto_canalborgo', dx: 5, dy: 4 },
+      
+      // Route to Spritzia (south)
+      { type: 'warp', x: 13, y: 20, dest: 'route1', dx: 10, dy: 1 },
+      
+      // Route to Padoana (east via bridge)
+      { type: 'warp', x: 28, y: 10, dest: 'route7', dx: 2, dy: 10 },
+      
+      // NPCs
+      { type: 'npc', x: 5, y: 5, name: 'Mamma', npcId: 'mamma',
+        dialog: ['Bravo, te si rivà fin in piazza.', 'Va dal Dottor GheSboro in laboratorio, vicino al canale.'] },
+      
+      { type: 'npc', x: 9, y: 5, name: 'Nonno Piero', npcId: 'nonno_piero',
         dialog: ['Nel mio tempo...', '...i Besti si chiamavano Bestie!', 'E non c\'era ste palle!'] },
       
-      // Gondoliere
-      { type: 'npc', x: 10, y: 4, name: 'Gondoliere', npcId: 'gondoliere_nero',
+      { type: 'npc', x: 13, y: 6, name: 'Gondoliere', npcId: 'gondoliere_nero',
         dialog: ['Vogando per i canali...', 'Vuoi attraversare? Costa 50€!'] },
       
-      // Sign
-      { type: 'sign', x: 8, y: 9, text: 'Benvenuti a CANALBORGO!\nLa città dei canali.' },
-      { type: 'sign', x: 3, y: 1, text: 'Casa di Federico' },
-      { type: 'sign', x: 9, y: 5, text: 'Laboratorio GheSboro ➜' },
-      { type: 'sign', x: 15, y: 1, text: 'Centro Besti ➜' },
-      { type: 'sign', x: 15, y: 8, text: 'Bottega di Bruna' },
+      { type: 'npc', x: 20, y: 10, name: 'Pescatore Toni', npcId: 'pescatore',
+        dialog: ['El pesce xe na specialità!', 'Prova el piatto speciale!'] },
       
-      // Home entrance
-      { type: 'warp', x: 3, y: 3, dest: 'casa', dx: 4, dy: 5 },
+      { type: 'npc', x: 14, y: 14, name: 'Bottegaio Bepi', npcId: 'bottegaio',
+        dialog: ['Benvenuto! Xè tutto in vendita!', 'Ma nol xe caro, no!'] },
+      
+      { type: 'npc', x: 22, y: 6, name: 'Signora Maria', npcId: 'signora_maria',
+        dialog: ['Che bel tempo oggi!', 'Te voi un caffè?'] },
+      
+      { type: 'npc', x: 4, y: 12, name: 'Ragazzino Leo', npcId: 'ragazzino',
+        dialog: ['Ho visto un bestio strano!', 'Era verdissimo e volava!'] },
+      
+      // Signs
+      { type: 'sign', x: 10, y: 10, text: 'CANALBORGO\nLa città dei canali' },
+      { type: 'sign', x: 3, y: 2, text: 'Casa di Federico' },
+      { type: 'sign', x: 17, y: 6, text: 'Laboratorio ➜' },
+      { type: 'sign', x: 25, y: 2, text: 'Centro Besti ➜' },
+      { type: 'sign', x: 25, y: 10, text: 'Bottega ➜' },
+      { type: 'sign', x: 2, y: 16, text: 'Porto ➜' },
+      { type: 'sign', x: 14, y: 18, text: 'Per Spritzia ➜' },
+      { type: 'sign', x: 26, y: 8, text: 'Per Padoana ➜' },
+      
+      // Water trainers
+      { type: 'trainer', x: 12, y: 7, name: 'Lorenzo', isEnemy: true,
+        team: [{ id: 'gabbianzo', lvl: 6 }, { id: 'pesce_dorato', lvl: 5 }],
+        dialog: ['Anche ti xe un allenatore?'], badge: 'canalborgo' },
+      
+      // Wild encounters in water
+      wild: ['gabbianzo', 'pesce_dorato', 'lucciodrio'],
+      wildLvl: [3, 4, 5],
+    ],
+  },
 
-      // Professor lab
-      { type: 'warp', x: 9, y: 7, dest: 'laboratorio', dx: 5, dy: 6 },
-      
-      // Center entrance
-      { type: 'warp', x: 14, y: 3, dest: 'centro', dx: 4, dy: 4 },
-      
-      // Shop entrance
-      { type: 'warp', x: 15, y: 9, dest: 'shop_centro', dx: 3, dy: 4 },
-
-      // Neighbor house
-      { type: 'warp', x: 15, y: 3, dest: 'casa_vicina', dx: 4, dy: 5 },
-      
-      // Route to Spritzia
-      { type: 'warp', x: 7, y: 14, dest: 'route1', dx: 10, dy: 1 },
+  // New: Porto di Canalborgo
+  porto_canalborgo: {
+    name: 'Porto di Canalborgo',
+    tiles: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,3,3,3,3,3,3,3,3,3,3,3,3,3,1],
+      [1,3,6,6,6,6,6,6,6,6,6,6,6,3,1],
+      [1,3,6,0,0,0,0,0,0,0,0,0,6,3,1],
+      [1,3,6,0,3,3,0,0,3,3,0,0,6,3,1],
+      [1,3,6,0,3,4,0,0,4,3,0,0,6,3,1],
+      [1,3,6,0,0,0,0,0,0,0,0,0,6,3,1],
+      [1,3,6,0,0,0,0,0,0,0,0,0,6,3,1],
+      [1,3,6,6,6,6,6,6,6,6,6,6,6,3,1],
+      [1,3,3,3,3,3,3,3,3,3,3,3,3,3,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+    events: [
+      { type: 'warp', x: 5, y: 5, dest: 'canalborgo', dx: 2, dy: 17 },
+      { type: 'npc', x: 5, y: 3, name: 'Capitano Porto', npcId: 'capitano',
+        dialog: ['Benvenuto al porto!', 'Da qua se parte par le altre isole!'] },
+      { type: 'npc', x: 10, y: 3, name: 'Marinaio Carlo', npcId: 'marinaio',
+        dialog: ['Xè tempo de tempesta!', 'Ma no te preoccupar!'] },
+      { type: 'shop', x: 3, y: 5, items: [{ name: 'Gondolball', price: 200 }, { name: 'Spritzball', price: 400 }] },
     ],
   },
 
@@ -308,7 +368,7 @@ export const MAPS: Record<string, GameMap> = {
       { type: 'item', x: 14, y: 5, item: { name: 'Pozioncino', type: 'heal', val: 20 } },
       
       // Warps
-      { type: 'warp', x: 10, y: 0, dest: 'canalborgo', dx: 7, dy: 13 },
+      { type: 'warp', x: 10, y: 0, dest: 'canalborgo', dx: 13, dy: 19 },
       { type: 'warp', x: 10, y: 11, dest: 'spritzia', dx: 10, dy: 1 },
     ],
   },
@@ -369,6 +429,7 @@ export const MAPS: Record<string, GameMap> = {
       // Routes
       { type: 'warp', x: 10, y: 0, dest: 'route1', dx: 10, dy: 10 },
       { type: 'warp', x: 10, y: 11, dest: 'route2', dx: 10, dy: 1 },
+      { type: 'warp', x: 16, y: 11, dest: 'route8', dx: 10, dy: 10 },
     ],
   },
 
@@ -965,6 +1026,99 @@ export const MAPS: Record<string, GameMap> = {
       
       { type: 'warp', x: 10, y: 0, dest: 'dolomax', dx: 10, dy: 10 },
       { type: 'warp', x: 10, y: 11, dest: 'gardalago', dx: 10, dy: 1 },
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // ROUTE 7 - Canalborgo to Padoana (new connection via bridge)
+  // ═══════════════════════════════════════════════════════════════════
+  route7: {
+    name: 'Via dei Ponti',
+    tiles: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,10,10,10,10,0,0,0,0,0,0,0,0,10,10,10,10,10,10,1],
+      [1,9,3,3,3,0,0,0,0,0,0,0,0,3,3,3,3,3,9,1],
+      [1,9,3,3,3,0,0,2,2,2,2,0,0,3,3,3,3,3,9,1],
+      [1,9,3,3,3,0,0,2,2,2,2,0,0,3,3,3,3,3,9,1],
+      [1,9,3,3,3,0,0,0,0,0,0,0,0,3,3,3,3,3,9,1],
+      [1,9,3,3,3,0,0,0,0,0,0,0,0,3,3,3,3,3,9,1],
+      [1,9,3,3,3,0,0,0,0,0,0,0,0,3,3,3,3,3,9,1],
+      [1,9,3,3,3,0,0,2,2,2,2,0,0,3,3,3,3,3,9,1],
+      [1,9,3,3,3,0,0,2,2,2,2,0,0,3,3,3,3,3,9,1],
+      [1,9,3,3,3,0,0,0,0,0,0,0,0,3,3,3,3,3,9,1],
+      [1,10,10,10,10,0,0,0,0,0,0,0,0,10,10,10,10,10,10,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+    canSurf: true,
+    wild: ['gabbianzo', 'pesce_dorato', 'lucciodrio', 'canalot'],
+    wildLvl: [5, 6, 7, 5],
+    wildRate: 15,
+    events: [
+      // Bridge NPC
+      { type: 'npc', x: 10, y: 5, name: 'Guardiano Ponte', npcId: 'guardiano',
+        dialog: ['El ponte xe antico!', 'Passa con caution, no far cascar la roba in acqua!'] },
+      
+      // Water trainer
+      { type: 'trainer', x: 8, y: 4, name: 'Pescatore Nedo', npcId: 'pescatore',
+        dialog: ['Xe ora de pranzo!'], team: [{ id: 'pesce_dorato', lvl: 7 }, { id: 'lucciodrio', lvl: 6 }] },
+      
+      // Items
+      { type: 'item', x: 5, y: 4, item: { name: 'Gondolball', type: 'capture', val: 0 } },
+      { type: 'item', x: 15, y: 8, item: { name: 'Pozioncino', type: 'heal', val: 20 } },
+      
+      // Signs
+      { type: 'sign', x: 10, y: 2, text: 'Via dei Ponti\nCanalborgo ← → Padoana' },
+      
+      // Warps
+      { type: 'warp', x: 2, y: 10, dest: 'canalborgo', dx: 28, dy: 11 },
+      { type: 'warp', x: 18, y: 10, dest: 'padoana', dx: 2, dy: 8 },
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  // ROUTE 8 - Alternative route Spritzia to Veronara (via vineyards)
+  // ═══════════════════════════════════════════════════════════════════
+  route8: {
+    name: 'Via delle Vigne',
+    tiles: [
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,10,10,10,10,10,10,10,0,0,0,0,10,10,10,10,10,10,10,1],
+      [1,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,1],
+      [1,9,0,0,0,0,6,6,6,0,0,6,6,6,0,0,0,0,9,1],
+      [1,9,0,0,0,0,6,6,6,0,0,6,6,6,0,0,0,0,9,1],
+      [1,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,1],
+      [1,9,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,9,1],
+      [1,9,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,9,1],
+      [1,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,1],
+      [1,9,0,6,6,6,0,0,0,0,0,0,0,6,6,6,0,0,9,1],
+      [1,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,1],
+      [1,10,10,10,10,10,10,10,0,0,0,0,10,10,10,10,10,10,10,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ],
+    wild: ['colombo', 'gabbianzo', 'vitespin', 'uvacar'],
+    wildLvl: [6, 5, 7, 8],
+    wildRate: 12,
+    events: [
+      // Vineyard worker
+      { type: 'npc', x: 12, y: 4, name: 'Viticoltore Dino', npcId: 'contadino',
+        dialog: ['Quest\'anno el vin xe speciale!', 'Teipi, teengo anca un Besti!'] },
+      
+      // Trainer
+      { type: 'trainer', x: 6, y: 6, name: 'Ragazzo Uva', npcId: 'kid',
+        dialog: ['El moscerino!'], team: [{ id: 'vitespin', lvl: 8 }] },
+      
+      { type: 'trainer', x: 14, y: 8, name: 'Contadina', npcId: 'lass',
+        dialog: ['El verzotto!'], team: [{ id: 'uvacar', lvl: 9 }] },
+      
+      // Items
+      { type: 'item', x: 10, y: 7, item: { name: 'Vinoball', type: 'capture', val: 0 } },
+      
+      // Signs
+      { type: 'sign', x: 10, y: 2, text: 'Via delle Vigne\nVino e sole' },
+      
+      // Warps
+      { type: 'warp', x: 10, y: 0, dest: 'spritzia', dx: 15, dy: 12 },
+      { type: 'warp', x: 10, y: 11, dest: 'veronara', dx: 10, dy: 1 },
     ],
   },
 
