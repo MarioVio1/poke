@@ -58,7 +58,7 @@ export const INDOOR_TILES: Record<number, {
   base: string
   detail?: string
   walkable: boolean
-  type: 'floor' | 'wall' | 'counter' | 'carpet' | 'heal'
+  type: 'floor' | 'wall' | 'counter' | 'carpet' | 'heal' | 'bed' | 'table' | 'chair' | 'window' | 'door' | 'rug' | 'plant' | 'lamp' | 'bookshelf' | 'fireplace'
 }> = {
   0: { base: '#efeff7', detail: '#d6d8ea', walkable: true, type: 'floor' },
   1: { base: '#7d7364', detail: '#5c554a', walkable: false, type: 'wall' },
@@ -69,6 +69,18 @@ export const INDOOR_TILES: Record<number, {
   6: { base: '#ead58f', detail: '#d1b665', walkable: true, type: 'floor' },
   7: { base: '#92a7ef', detail: '#6e82d4', walkable: true, type: 'carpet' },
   8: { base: '#d45353', detail: '#a73f3f', walkable: false, type: 'wall' },
+  9: { base: '#8b5a2b', detail: '#6b4423', walkable: false, type: 'bed' },
+  10: { base: '#5d4037', detail: '#4e342e', walkable: false, type: 'table' },
+  11: { base: '#8d6e63', detail: '#795548', walkable: true, type: 'chair' },
+  12: { base: '#87ceeb', detail: '#4fc3f7', walkable: false, type: 'window' },
+  13: { base: '#4e342e', detail: '#3e2723', walkable: false, type: 'door' },
+  14: { base: '#b71c1c', detail: '#c62828', walkable: true, type: 'rug' },
+  15: { base: '#2e7d32', detail: '#1b5e20', walkable: true, type: 'plant' },
+  16: { base: '#ffeb3b', detail: '#ffc107', walkable: true, type: 'lamp' },
+  17: { base: '#5d4037', detail: '#3e2723', walkable: false, type: 'bookshelf' },
+  18: { base: '#bf360c', detail: '#d84315', walkable: false, type: 'fireplace' },
+  19: { base: '#f5f5f5', detail: '#e0e0e0', walkable: true, type: 'floor' },
+  20: { base: '#9e9e9e', detail: '#757575', walkable: false, type: 'wall' },
 }
 
 // Detect if map is indoor
@@ -237,6 +249,160 @@ export const renderTile = (
     ctx.fillStyle = '#6d6480'
     ctx.fillRect(x, y + size - 2, size, 2)
   }
+
+  // New indoor furniture rendering
+  if (tile.type === 'bed') {
+    ctx.fillStyle = '#f5f5f5'
+    ctx.fillRect(x + 1, y + 4, size - 2, size - 5)
+    ctx.fillStyle = '#e0e0e0'
+    ctx.fillRect(x + 2, y + 5, size - 4, 2)
+    ctx.fillStyle = '#8b5a2b'
+    ctx.fillRect(x + 1, y + 2, 3, 3)
+    ctx.fillRect(x + size - 4, y + 2, 3, 3)
+    ctx.fillStyle = '#2196f3'
+    ctx.fillRect(x + 3, y + 6, size - 6, 4)
+    ctx.fillStyle = '#1565c0'
+    ctx.fillRect(x + 1, y + 9, size - 2, 2)
+  }
+
+  if (tile.type === 'table') {
+    ctx.fillStyle = '#5d4037'
+    ctx.fillRect(x + 1, y + 3, size - 2, 3)
+    ctx.fillStyle = '#4e342e'
+    ctx.fillRect(x + 2, y + 6, 2, size - 6)
+    ctx.fillRect(x + size - 4, y + 6, 2, size - 6)
+    ctx.fillStyle = '#3e2723'
+    ctx.fillRect(x + 1, y + size - 2, 2, 2)
+    ctx.fillRect(x + size - 3, y + size - 2, 2, 2)
+    ctx.fillStyle = '#8d6e63'
+    ctx.fillRect(x + 3, y + 3, 4, 1)
+    ctx.fillRect(x + size - 7, y + 3, 4, 1)
+  }
+
+  if (tile.type === 'chair') {
+    ctx.fillStyle = '#8d6e63'
+    ctx.fillRect(x + 2, y + 1, size - 4, 3)
+    ctx.fillRect(x + 2, y + 4, 2, size - 5)
+    ctx.fillRect(x + size - 4, y + 4, 2, size - 5)
+    ctx.fillStyle = '#a1887f'
+    ctx.fillRect(x + 3, y + 5, size - 6, 3)
+  }
+
+  if (tile.type === 'window') {
+    ctx.fillStyle = '#87ceeb'
+    ctx.fillRect(x + 1, y + 1, size - 2, size - 2)
+    ctx.fillStyle = '#4fc3f7'
+    ctx.fillRect(x + 1, y + 1, size - 2, 2)
+    ctx.fillStyle = '#0288d1'
+    ctx.fillRect(x + 1, y + 1, 2, size - 2)
+    ctx.fillRect(x + size/2 - 1, y + 1, 2, size - 2)
+    ctx.fillRect(x + 1, y + size/2 - 1, size - 2, 2)
+    ctx.fillStyle = 'rgba(255,255,255,0.3)'
+    ctx.fillRect(x + 3, y + 3, 3, 3)
+    ctx.fillRect(x + size - 6, y + 3, 3, 3)
+  }
+
+  if (tile.type === 'door') {
+    ctx.fillStyle = '#4e342e'
+    ctx.fillRect(x + 1, y + 1, size - 2, size - 1)
+    ctx.fillStyle = '#3e2723'
+    ctx.fillRect(x + 1, y + 1, 2, size - 1)
+    ctx.fillStyle = '#ffb300'
+    ctx.beginPath()
+    ctx.arc(x + size - 4, y + size/2, 1.5, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.fillStyle = '#5d4037'
+    ctx.fillRect(x + 3, y + 3, size - 6, size - 5)
+  }
+
+  if (tile.type === 'rug') {
+    ctx.fillStyle = '#c62828'
+    ctx.fillRect(x + 1, y + 1, size - 2, size - 2)
+    ctx.fillStyle = '#b71c1c'
+    ctx.fillRect(x + 2, y + 2, size - 4, size - 4)
+    ctx.fillStyle = '#ffeb3b'
+    ctx.fillRect(x + 3, y + 3, size - 6, 1)
+    ctx.fillRect(x + 3, y + size - 4, size - 6, 1)
+    ctx.fillRect(x + 3, y + 3, 1, size - 6)
+    ctx.fillRect(x + size - 4, y + 3, 1, size - 6)
+    ctx.fillStyle = '#d32f2f'
+    ctx.fillRect(x + 4, y + 4, size - 8, size - 8)
+  }
+
+  if (tile.type === 'plant') {
+    ctx.fillStyle = '#5d4037'
+    ctx.fillRect(x + 5, y + 10, 6, 6)
+    ctx.fillStyle = '#4e342e'
+    ctx.fillRect(x + 6, y + 11, 4, 1)
+    ctx.fillRect(x + 6, y + 14, 4, 1)
+    ctx.fillStyle = '#2e7d32'
+    ctx.beginPath()
+    ctx.arc(x + 8, y + 6, 5, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.fillStyle = '#388e3c'
+    ctx.beginPath()
+    ctx.arc(x + 5, y + 8, 3, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(x + 11, y + 8, 3, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.fillStyle = '#1b5e20'
+    ctx.beginPath()
+    ctx.arc(x + 8, y + 4, 2, 0, Math.PI * 2)
+    ctx.fill()
+  }
+
+  if (tile.type === 'lamp') {
+    ctx.fillStyle = '#ffeb3b'
+    ctx.fillRect(x + 6, y + 2, 4, 3)
+    ctx.fillStyle = '#ffc107'
+    ctx.fillRect(x + 5, y + 5, 6, 1)
+    ctx.fillStyle = '#5d4037'
+    ctx.fillRect(x + 7, y + 6, 2, 8)
+    ctx.fillStyle = '#3e2723'
+    ctx.fillRect(x + 6, y + 13, 4, 2)
+    const glow = ctx.createRadialGradient(x + 8, y + 4, 0, x + 8, y + 4, 8)
+    glow.addColorStop(0, 'rgba(255,235,59,0.4)')
+    glow.addColorStop(1, 'rgba(255,235,59,0)')
+    ctx.fillStyle = glow
+    ctx.fillRect(x, y, size, size)
+  }
+
+  if (tile.type === 'bookshelf') {
+    ctx.fillStyle = '#5d4037'
+    ctx.fillRect(x + 1, y + 1, size - 2, size - 2)
+    ctx.fillStyle = '#3e2723'
+    ctx.fillRect(x + 1, y + 4, size - 2, 1)
+    ctx.fillRect(x + 1, y + 8, size - 2, 1)
+    ctx.fillRect(x + 1, y + 12, size - 2, 1)
+    ctx.fillStyle = '#c62828'
+    ctx.fillRect(x + 2, y + 5, 2, 3)
+    ctx.fillStyle = '#1976d2'
+    ctx.fillRect(x + 5, y + 5, 2, 3)
+    ctx.fillStyle = '#388e3c'
+    ctx.fillRect(x + 8, y + 9, 2, 3)
+    ctx.fillStyle = '#fbc02d'
+    ctx.fillRect(x + 3, y + 9, 2, 3)
+    ctx.fillStyle = '#7b1fa2'
+    ctx.fillRect(x + 7, y + 13, 2, 3)
+  }
+
+  if (tile.type === 'fireplace') {
+    ctx.fillStyle = '#5d4037'
+    ctx.fillRect(x + 2, y + 3, size - 4, size - 3)
+    ctx.fillStyle = '#3e2723'
+    ctx.fillRect(x + 3, y + 4, size - 6, 1)
+    ctx.fillRect(x + 3, y + size - 2, size - 6, 1)
+    ctx.fillRect(x + 2, y + 3, 1, size - 3)
+    ctx.fillRect(x + size - 3, y + 3, 1, size - 3)
+    ctx.fillStyle = '#bf360c'
+    ctx.fillRect(x + 3, y + 5, size - 6, 3)
+    ctx.fillStyle = '#ff5722'
+    ctx.fillRect(x + 4, y + 6, size - 8, 1)
+    ctx.fillStyle = '#ffab00'
+    ctx.fillRect(x + 5, y + 4, size - 10, 2)
+  }
+}
   
   if (tile.type === 'tree') {
     if (tileType === 9) {
