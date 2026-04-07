@@ -38,6 +38,9 @@ interface GameFlags {
   hasBoat: boolean
   defeatedRival: boolean
   battlesWon?: number
+  collectedItems?: string[]
+  receivedGifts?: string[]
+  defeatedTrainers?: string[]
 }
 
 type PlayerIdentity = 'maschio' | 'femmina' | 'trans'
@@ -248,6 +251,42 @@ export default function Game() {
     badges: Array.isArray(player?.badges) ? player.badges : [],
     gender: player?.gender === 'femmina' || player?.gender === 'trans' ? player.gender : 'maschio',
   }), [])
+
+  const normalizeFlags = useCallback((flags: Partial<GameFlags> | undefined): GameFlags => ({
+    hasStarter: !!flags?.hasStarter,
+    hasBike: !!flags?.hasBike,
+    hasBoat: !!flags?.hasBoat,
+    defeatedRival: !!flags?.defeatedRival,
+    battlesWon: typeof flags?.battlesWon === 'number' ? flags.battlesWon : 0,
+    collectedItems: Array.isArray(flags?.collectedItems) ? flags.collectedItems : [],
+    receivedGifts: Array.isArray(flags?.receivedGifts) ? flags.receivedGifts : [],
+    defeatedTrainers: Array.isArray(flags?.defeatedTrainers) ? flags.defeatedTrainers : [],
+  }), [])
+
+  const normalizeInventory = useCallback((inventory: Array<{ item: unknown; qty: number }> | undefined) => {
+    if (!Array.isArray(inventory)) return []
+
+    return inventory.flatMap((entry) => {
+      const qty = typeof entry?.qty === 'number' && entry.qty > 0 ? entry.qty : 0
+      if (!qty) return []
+
+      const rawItem = entry.item
+      let item: GameItem | undefined
+
+      if (typeof rawItem === 'string') {
+        item = ITEMS[rawItem]
+      } else if (rawItem && typeof rawItem === 'object') {
+        const candidate = rawItem as Partial<GameItem>
+        item = (candidate.id && ITEMS[candidate.id]) || Object.values(ITEMS).find(i => i.name === candidate.name)
+      }
+
+      return item ? [{ item, qty }] : []
+    })
+  }, [])
+
+  const getEventKey = useCallback((mapId: string, ev: MapEvent, fallback: string) => (
+    `${mapId}:${ev.type}:${ev.name || ev.npcId || fallback}:${ev.x ?? 'na'}:${ev.y ?? 'na'}`
+  ), [])
   
   // Game states
   const [gameStarted, setGameStarted] = useState(false)
@@ -329,9 +368,9 @@ export default function Game() {
     inv: [
       { item: ITEMS.pozioncino, qty: 5 },
       { item: ITEMS.gondolball, qty: 5 },
-      { item: ITEMS.caffe, qty: 3 },
+      { item: ITEMS.caffette, qty: 3 },
     ],
-    flags: { hasStarter: false, hasBike: false, hasBoat: false, defeatedRival: false },
+    flags: { hasStarter: false, hasBike: false, hasBoat: false, defeatedRival: false, battlesWon: 0, collectedItems: [], receivedGifts: [], defeatedTrainers: [] },
     map: 'canalborgo',
     vehicle: 'none',
     storyProgress: 0,
@@ -382,15 +421,12 @@ export default function Game() {
           party: saveData.party,
           rival: saveData.rival,
           pc: saveData.pc,
-          inv: saveData.inv.map((i: { item: string; qty: number }) => ({
-            item: ITEMS[i.item] || ITEMS.pozioncino,
-            qty: i.qty
-          })),
-          flags: saveData.flags,
+          inv: normalizeInventory(saveData.inv),
+          flags: normalizeFlags(saveData.flags),
           map: saveData.map,
           vehicle: saveData.vehicle,
           storyProgress: saveData.storyProgress,
-          defeatedRival: saveData.defeatedRival,
+          defeatedRival: saveData.defeatedRival ?? !!saveData.flags?.defeatedRival,
           achievements: saveData.achievements || [],
           evolutions: saveData.evolutions || 0,
           citiesVisited: saveData.citiesVisited || [],
@@ -404,7 +440,7 @@ export default function Game() {
       setNotification('Errore nel caricamento!')
     }
     return false
-  }, [normalizePlayer])
+  }, [normalizeFlags, normalizeInventory, normalizePlayer])
 
   const hasSave = useCallback(() => {
     if (typeof window === 'undefined') return false
@@ -456,9 +492,9 @@ export default function Game() {
       inv: [
         { item: ITEMS.pozioncino, qty: 5 },
         { item: ITEMS.gondolball, qty: 5 },
-        { item: ITEMS.caffe, qty: 3 },
+        { item: ITEMS.caffette, qty: 3 },
       ],
-      flags: { hasStarter: false, hasBike: false, hasBoat: false, defeatedRival: false },
+      flags: { hasStarter: false, hasBike: false, hasBoat: false, defeatedRival: false, battlesWon: 0, collectedItems: [], receivedGifts: [], defeatedTrainers: [] },
       map: 'casa',
       vehicle: 'none',
       storyProgress: 0,
@@ -507,13 +543,25 @@ export default function Game() {
     if (nextStep >= OPENING_STORY.length) {
       setGs(prev => ({ ...prev, storyProgress: Math.max(prev.storyProgress, 2) }))
       setShowStoryIntro(false)
-      setNotification('La Mamma ti ha svegliato. Ora puoi uscire e andare dal Dottor GheSboro.')
+      setNotification('La Mamma ti ha svegliato. Prendi quello che trovi in camera e poi vai dal Dottor GheSboro.')
       setTimeout(() => setNotification(''), 2200)
       return
     }
     setStoryIntroStep(nextStep)
     soundManager.dialogText()
-  }, [gs.player.name, storyIntroStep])
+  }, [storyIntroStep])
+
+  const addItemToInventory = useCallback((item: GameItem, qty: number = 1) => {
+    setGs(prev => {
+      const existing = prev.inv.find(entry => entry.item.id === item.id)
+      return {
+        ...prev,
+        inv: existing
+          ? prev.inv.map(entry => entry.item.id === item.id ? { ...entry, qty: entry.qty + qty } : entry)
+          : [...prev.inv, { item, qty }],
+      }
+    })
+  }, [])
 
   // Auto-load on mount
   useEffect(() => {
@@ -526,21 +574,22 @@ export default function Game() {
           party: saveData.party,
           rival: saveData.rival,
           pc: saveData.pc,
-          inv: saveData.inv.map((i: { item: string; qty: number }) => ({
-            item: ITEMS[i.item] || ITEMS.pozioncino,
-            qty: i.qty
-          })),
-          flags: saveData.flags,
+          inv: normalizeInventory(saveData.inv),
+          flags: normalizeFlags(saveData.flags),
           map: saveData.map,
           vehicle: saveData.vehicle,
           storyProgress: saveData.storyProgress,
-          defeatedRival: saveData.defeatedRival,
+          defeatedRival: saveData.defeatedRival ?? !!saveData.flags?.defeatedRival,
+          achievements: saveData.achievements || [],
+          evolutions: saveData.evolutions || 0,
+          citiesVisited: saveData.citiesVisited || [],
         })
+        setAchievements(saveData.achievements || [])
       } catch (e) {
         console.error('Auto-load failed:', e)
       }
     }
-  }, [normalizePlayer])
+  }, [normalizeFlags, normalizeInventory, normalizePlayer])
 
   // Intro animation effect
   useEffect(() => {
@@ -774,6 +823,9 @@ export default function Game() {
         }
         
         if (e.type === 'item') {
+          const itemKey = getEventKey(gs.map, e, e.item?.name || 'item')
+          if ((gs.flags.collectedItems || []).includes(itemKey)) return
+
           // Item on ground with sparkle
           ctx.fillStyle = 'rgba(255,255,0,0.5)'
           ctx.beginPath()
@@ -928,16 +980,34 @@ export default function Game() {
 
   // Handle map events
   const handleEvent = useCallback((ev: MapEvent) => {
+    const eventKey = getEventKey(gs.map, ev, ev.type)
+    const giftKey = ev.gift ? `${eventKey}:gift:${ev.gift}` : ''
+    const giftAlreadyReceived = giftKey ? (gs.flags.receivedGifts || []).includes(giftKey) : false
+    const trainerKey = `${gs.map}:${ev.name || ev.npcId || 'trainer'}`
+    const trainerAlreadyDefeated = (gs.flags.defeatedTrainers || []).includes(trainerKey)
+
     switch (ev.type) {
       case 'npc':
         if (gs.map === 'casa' && ev.name === 'Mamma' && !gs.flags.hasStarter) {
           setGs(prev => ({ ...prev, storyProgress: Math.max(prev.storyProgress, 2) }))
-          setDialogs(ev.dialog || [])
+          setDialogs(gs.storyProgress < 2 ? [
+            `${gs.player.name}, finalmente te sì in piedi.`,
+            'Prima di uscire, controlla bene la stanza: qualche aiuto te farà comodo.',
+            'Dopo va in laboratorio dal Dottor GheSboro. Oggi comincia davvero il tuo viaggio.',
+          ] : [
+            'Sei ancora qua?',
+            'Vai dal Dottor GheSboro prima che scelga il tuo Besti per conto suo.',
+          ])
           setSpeaker(ev.name || '')
           setDialogCallback(null)
           setInDialog(true)
         } else if (ev.givesStarter && !gs.flags.hasStarter) {
-          setDialogs(ev.dialog || [])
+          setDialogs([
+            'Finalmente te son rivà fin qua!',
+            'I Besti di Venetia xe più agitati del solito, e qualcuno deve capirne il motivo.',
+            'Non ti serve solo forza: ti serve testa, curiosità e un compagno giusto.',
+            'Scegli il Besti che senti tuo, e portalo con dignità.',
+          ])
           setSpeaker(ev.name || '')
           setDialogCallback(() => {
             setGs(prev => ({ ...prev, storyProgress: Math.max(prev.storyProgress, 3) }))
@@ -945,7 +1015,34 @@ export default function Game() {
           })
           setInDialog(true)
         } else if (ev.dialog) {
-          setDialogs(ev.dialog)
+          if (trainerAlreadyDefeated && (ev.team?.length || ev.badge)) {
+            setDialogs([
+              `${ev.name || 'Allenatore'}: Stavolta niente sfida.`,
+              'Hai già dimostrato abbastanza. Continua pure il viaggio.',
+            ])
+            setSpeaker(ev.name || '')
+            setDialogCallback(null)
+            setInDialog(true)
+            break
+          }
+
+          const dialogLines = [...ev.dialog]
+          if (ev.gift === 'pokedex') {
+            if (giftAlreadyReceived) {
+              dialogLines.splice(0, dialogLines.length, 'Il PokeDioex te l\'ho già dato.', 'Adesso riempilo, non lasciarlo a far polvere.')
+            } else {
+              dialogLines.push('Tienilo stretto: ti aiuterà a capire chi hai incontrato e cosa ti manca ancora.')
+            }
+          }
+          if (ev.gift === 'biciRubata') {
+            if (giftAlreadyReceived) {
+              dialogLines.splice(0, dialogLines.length, 'La bici te l\'ho già passata.', 'Se te la fai portar via, però, non torno a cercartene un\'altra.')
+            } else {
+              dialogLines.push('Pedala piano sui ponti, che non xe pista da corsa.')
+            }
+          }
+
+          setDialogs(dialogLines)
           setSpeaker(ev.name || '')
           setDialogCallback(() => {
             if (ev.gift) {
@@ -953,9 +1050,28 @@ export default function Game() {
                 setShowStarterChoice(true)
                 return
               }
+              if (ev.gift === 'pokedex' && !giftAlreadyReceived) {
+                addItemToInventory(ITEMS.pokedex)
+                setGs(prev => ({
+                  ...prev,
+                  flags: { ...prev.flags, receivedGifts: [...(prev.flags.receivedGifts || []), giftKey] },
+                }))
+                setNotification('Ottenuto: PokeDioex!')
+                return
+              }
               if (ev.gift === 'biciRubata') {
-                setGs(prev => ({ ...prev, vehicle: 'biciRubata' as VehicleType, flags: { ...prev.flags, hasBike: true } }))
-                setNotification('Ottenuto: Bici Rubata!')
+                if (!giftAlreadyReceived) {
+                  setGs(prev => ({
+                    ...prev,
+                    vehicle: 'biciRubata' as VehicleType,
+                    flags: {
+                      ...prev.flags,
+                      hasBike: true,
+                      receivedGifts: [...(prev.flags.receivedGifts || []), giftKey],
+                    },
+                  }))
+                  setNotification('Ottenuto: Bici Rubata!')
+                }
                 return
               }
             }
@@ -1007,15 +1123,28 @@ export default function Game() {
           setDialogs(['Hai già questo badge!'])
           setSpeaker('')
           setInDialog(true)
+        } else if (trainerAlreadyDefeated) {
+          setDialogs(['Hai già vinto questa sfida.', 'Torna pure quando vuoi, ma il badge ormai è tuo.'])
+          setSpeaker(ev.name || '')
+          setInDialog(true)
         } else {
           startTrainerBattle(ev)
         }
         break
       case 'trainer':
-        startTrainerBattle(ev)
+        if (trainerAlreadyDefeated) {
+          setDialogs([
+            `${ev.name || 'Allenatore'}: Mi ricordo ancora l’ultima batosta.`,
+            'Per oggi passo.',
+          ])
+          setSpeaker(ev.name || '')
+          setInDialog(true)
+        } else {
+          startTrainerBattle(ev)
+        }
         break
     }
-  }, [gs])
+  }, [addItemToInventory, getEventKey, gs])
 
   // Automatic tile events only
   const checkAutoEvents = useCallback(() => {
@@ -1024,20 +1153,22 @@ export default function Game() {
     // Item pickup
     const itemEv = map.events?.find((e: MapEvent) => e.type === 'item' && typeof e.x === 'number' && typeof e.y === 'number' && e.x === gs.player.x && e.y === gs.player.y)
     if (itemEv && itemEv.item) {
-      const foundItem = ITEMS[itemEv.item.name.toLowerCase().replace(/ /g, '')] || Object.values(ITEMS).find(i => i.name === itemEv.item!.name)
-      if (foundItem) {
-        const existing = gs.inv.find(i => i.item.name === foundItem.name)
-        if (existing) {
+      const itemKey = getEventKey(gs.map, itemEv, itemEv.item.name)
+      if (!(gs.flags.collectedItems || []).includes(itemKey)) {
+        const foundItem = ITEMS[itemEv.item.name.toLowerCase().replace(/ /g, '')] || Object.values(ITEMS).find(i => i.name === itemEv.item!.name)
+        if (foundItem) {
+          addItemToInventory(foundItem)
           setGs(prev => ({
             ...prev,
-            inv: prev.inv.map(i => i.item.name === foundItem.name ? { ...i, qty: i.qty + 1 } : i)
+            flags: {
+              ...prev.flags,
+              collectedItems: [...(prev.flags.collectedItems || []), itemKey],
+            },
           }))
-        } else {
-          setGs(prev => ({ ...prev, inv: [...prev.inv, { item: foundItem, qty: 1 }] }))
+          soundManager.itemFound()
+          setNotification(`Trovato: ${foundItem.name}!`)
+          setTimeout(() => setNotification(''), 2000)
         }
-        soundManager.itemFound()
-        setNotification(`Trovato: ${foundItem.name}!`)
-        setTimeout(() => setNotification(''), 2000)
       }
     }
 
@@ -1050,7 +1181,7 @@ export default function Game() {
     })
 
     if (ev) handleEvent(ev)
-  }, [gs, handleEvent])
+  }, [addItemToInventory, getEventKey, gs, handleEvent])
 
   // Manual interaction with A button
   const checkInteractionEvents = useCallback(() => {
@@ -1100,9 +1231,10 @@ export default function Game() {
     setShowStarterChoice(false)
     setDialogs([
       `Hai scelto ${b.name}!`,
-      `Come osi! Io prendo ${rivalStarter.name}!`,
-      `Il più forte, ovviamente!`,
-      `Preparati, perchè ti batterò!`,
+      `Marco: Come osi! Io prendo ${rivalStarter.name}!`,
+      `Marco: Il più forte, ovviamente.`,
+      `Prof. GheSboro: Bene. Adesso vediamo se contano più le chiacchiere o l'intesa col proprio Besti.`,
+      `Marco: Preparati, perché non ti regalo niente!`,
     ])
     setSpeaker('Marco')
     setDialogCallback(() => {
@@ -1262,11 +1394,15 @@ export default function Game() {
       party: prev.party.map((p, idx) => idx === 0 ? { ...p, exp: p.exp + exp } : p),
       player: { ...prev.player, money: prev.player.money + money },
       defeatedRival: isRivalBattle ? true : prev.defeatedRival,
+      flags: {
+        ...prev.flags,
+        defeatedRival: isRivalBattle ? true : prev.flags.defeatedRival,
+      },
     }))
 
     // Check for level up
     setTimeout(() => checkLevelUp(), 500)
-  }, [battleState])
+  }, [battleState, gs.defeatedRival])
 
   // Check for level up
   const checkLevelUp = useCallback(() => {
@@ -1327,12 +1463,24 @@ export default function Game() {
       setInBattle(false)
       setShowBattleMsg(false)
       setAnimating(false)
+      setGs(prev => ({
+        ...prev,
+        flags: { ...prev.flags, battlesWon: (prev.flags.battlesWon || 0) + 1 },
+      }))
     } else {
       const nextIdx = battleState!.enemyIdx + 1
       
       // Check if it was rival battle
       if (battleState!.trainerName === 'Marco' && nextIdx === battleState!.enemyTeam.length) {
         setBattleMsg(`Hai vinto contro Marco!`)
+        setGs(prev => ({
+          ...prev,
+          flags: {
+            ...prev.flags,
+            battlesWon: (prev.flags.battlesWon || 0) + 1,
+            defeatedTrainers: [...new Set([...(prev.flags.defeatedTrainers || []), `${prev.map}:Marco`])],
+          },
+        }))
         setTimeout(() => {
           setInBattle(false)
           setShowBattleMsg(false)
@@ -1399,7 +1547,17 @@ export default function Game() {
         if (['Il Fuocoso', "L'Acquoso", 'Il Naturale', 'Il Magico'].includes(battleState!.trainerName || '')) {
           soundManager.success()
           setBattleMsg(`Hai sconfitto ${battleState!.trainerName}!`)
-          setGs(prev => ({ ...prev, player: { ...prev.player, money: prev.player.money + reward, badges: ['league_pass', ...prev.player.badges] } }))
+          setGs(prev => ({
+            ...prev,
+            player: { ...prev.player, money: prev.player.money + reward, badges: ['league_pass', ...prev.player.badges] },
+            flags: {
+              ...prev.flags,
+              battlesWon: (prev.flags.battlesWon || 0) + 1,
+              defeatedTrainers: battleState!.trainerName
+                ? [...new Set([...(prev.flags.defeatedTrainers || []), `${prev.map}:${battleState!.trainerName}`])]
+                : prev.flags.defeatedTrainers,
+            },
+          }))
           setTimeout(() => {
             setInBattle(false)
             setShowBattleMsg(false)
@@ -1420,6 +1578,13 @@ export default function Game() {
         setGs(prev => ({
           ...prev,
           player: { ...prev.player, money: prev.player.money + reward, badges: battleState!.badge ? [...prev.player.badges, battleState!.badge!] : prev.player.badges },
+          flags: {
+            ...prev.flags,
+            battlesWon: (prev.flags.battlesWon || 0) + 1,
+            defeatedTrainers: battleState!.trainerName
+              ? [...new Set([...(prev.flags.defeatedTrainers || []), `${prev.map}:${battleState!.trainerName}`])]
+              : prev.flags.defeatedTrainers,
+          },
         }))
         
         if (battleState!.badge) {
@@ -1459,7 +1624,7 @@ export default function Game() {
 
   // Cycle through battle options (fight/bag/run)
   const cycleBattleOption = useCallback(() => {
-    setBattleOption(prev => (prev + 1) % 3)
+    setBattleOption(prev => (prev + 1) % 4)
   }, [])
 
   // Select battle action
@@ -1795,6 +1960,11 @@ export default function Game() {
     if (gs.flags.defeatedRival) unlockAchievement('rival_defeated')
   }
 
+  useEffect(() => {
+    if (!gameStarted || showStoryIntro) return
+    checkAchievements()
+  }, [achievements, gameStarted, gs.flags.battlesWon, gs.flags.defeatedRival, gs.party.length, gs.pc.length, gs.player.badges.length, showStoryIntro])
+
   // ═══════════════════════════════════════════════════════════════════
   // STONE EVOLUTION SYSTEM
   // ═══════════════════════════════════════════════════════════════════
@@ -2012,9 +2182,14 @@ export default function Game() {
   }, [setupIdentity])
 
   const showObjectiveHint = useCallback(() => {
-    setNotification(gs.flags.hasStarter ? `Obiettivo: esplora ${MAPS[gs.map]?.name || 'Venetia'}` : (gs.storyProgress < 2 ? 'Obiettivo: parla con la Mamma' : 'Obiettivo: vai dal Dottor GheSboro'))
+    const hint = !gs.flags.hasStarter
+      ? (gs.storyProgress < 2 ? 'Obiettivo: parla con la Mamma e raccogli gli oggetti in camera' : 'Obiettivo: vai dal Dottor GheSboro in laboratorio')
+      : gs.defeatedRival
+        ? `Obiettivo: lascia ${MAPS[gs.map]?.name || 'Canalborgo'} e punta a nord verso Spritzia`
+        : 'Obiettivo: scegli il tuo Besti e supera Marco'
+    setNotification(hint)
     setTimeout(() => setNotification(''), 1600)
-  }, [gs.flags.hasStarter, gs.map, gs.storyProgress])
+  }, [gs.defeatedRival, gs.flags.hasStarter, gs.map, gs.storyProgress])
 
   const handleControlAction = useCallback((control: VirtualControl) => {
     const mode = getControlMode()
@@ -2835,7 +3010,12 @@ export default function Game() {
                     <div className="location">{MAPS[gs.map]?.name || '???'}</div>
                     {!gs.flags.hasStarter && (
                       <div className="current-objective">
-                        {gs.storyProgress < 2 ? 'Parla con la Mamma in camera' : 'Vai dal Dottor GheSboro'}
+                        {gs.storyProgress < 2 ? 'Parla con la Mamma e cerca gli oggetti in camera' : 'Vai dal Dottor GheSboro'}
+                      </div>
+                    )}
+                    {gs.flags.hasStarter && gs.defeatedRival && (
+                      <div className="current-objective">
+                        Esci da Canalborgo e raggiungi Spritzia
                       </div>
                     )}
                     <div className="party-preview">
