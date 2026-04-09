@@ -1,5 +1,5 @@
-// Besti SVG Sprites - Pokemon Style
-// Sprites dettagliati per ogni Bestia
+// Besti Sprites - Uses PNG images from public/sprites/
+// If no PNG found, falls back to generated SVG
 
 export interface SpriteData {
   front: string
@@ -10,9 +10,93 @@ export interface SpriteData {
 
 export const BESTI_SVG_SPRITES: Record<string, SpriteData> = {}
 
-// Helper per creare SVG
+// Helper per creare SVG (fallback)
 const createSvg = (content: string, width = 96, height = 96): string => 
   `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">${content}</svg>`)}`
+
+// Helper per ottenere il percorso dell'immagine PNG
+const getPngPath = (name: string): string => `/sprites/${name}.PNG`
+
+// Mappa che tiene traccia degli sprite PNG disponibili
+const pngSpritesLoaded: Set<string> = new Set()
+
+// Inizializza gli sprite PNG (carica le immagini disponibili)
+const initPngSprites = () => {
+  const spriteNames = [
+    'fogaron', 'fogarox', 'fogarion', 'fogarion2',
+    'radiccor', 'radicorso', 'radicthron',
+    'canalot', 'canalisk', 'canalord',
+    'gabbianzo',
+  ]
+  
+  spriteNames.forEach(name => {
+    pngSpritesLoaded.add(name)
+  })
+}
+
+initPngSprites()
+
+// RADICCOR - Nature Starter
+BESTI_SVG_SPRITES.radiccor = {
+  front: getPngPath('Radiccor'),
+  back: getPngPath('Radiccor'),
+  icon: getPngPath('Radiccor'),
+}
+
+BESTI_SVG_SPRITES.radicorso = {
+  front: getPngPath('Radicorso'),
+  back: getPngPath('Radicorso'),
+  icon: getPngPath('Radicorso'),
+}
+
+BESTI_SVG_SPRITES.radicthron = {
+  front: getPngPath('Radicthron'),
+  back: getPngPath('Radicthron'),
+  icon: getPngPath('Radicthron'),
+}
+
+// CANALOT - Water Starter
+BESTI_SVG_SPRITES.canalot = {
+  front: getPngPath('Canalot'),
+  back: getPngPath('Canalot'),
+  icon: getPngPath('Canalot'),
+}
+
+BESTI_SVG_SPRITES.canalisk = {
+  front: getPngPath('Canalisk'),
+  back: getPngPath('Canalisk'),
+  icon: getPngPath('Canalisk'),
+}
+
+BESTI_SVG_SPRITES.canalord = {
+  front: getPngPath('Canalord'),
+  back: getPngPath('Canalord'),
+  icon: getPngPath('Canalord'),
+}
+
+// GABBIANZO - Air
+BESTI_SVG_SPRITES.gabbianzo = {
+  front: getPngPath('Gabbianzo'),
+  back: getPngPath('Gabbianzo'),
+  icon: getPngPath('Gabbianzo'),
+}
+BESTI_SVG_SPRITES.fogaron = {
+  front: getPngPath('Fogaron'),
+  back: getPngPath('Fogaron'),
+  icon: getPngPath('Fogaron'),
+}
+
+BESTI_SVG_SPRITES.fogarox = {
+  front: getPngPath('Fogarox'),
+  back: getPngPath('Fogarox'),
+  icon: getPngPath('Fogarox'),
+}
+
+BESTI_SVG_SPRITES.fogarion = {
+  front: getPngPath('Fogarion'),
+  back: getPngPath('Fogarion'),
+  icon: getPngPath('Fogarion'),
+}
 
 // ═══════════════════════════════════════════════════════════════
 // DOLOMITOR - Ice/Earth Legendary (Dolomites Spirit)

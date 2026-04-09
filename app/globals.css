@@ -31,34 +31,102 @@ body {
 }
 
 .gba-console {
-  background: linear-gradient(145deg, #6b5b95, #4a4a6a);
-  border-radius: 20px 20px 40px 40px;
+  background: linear-gradient(180deg, #4a3a6a 0%, #2a2a4a 50%, #1a1a2a 100%);
+  border-radius: 12px 12px 40px 40px;
   padding: 20px;
   box-shadow: 
-    0 10px 30px rgba(0, 0, 0, 0.5),
-    inset 0 2px 5px rgba(255, 255, 255, 0.2);
+    0 20px 60px rgba(0, 0, 0, 0.8),
+    inset 0 1px 3px rgba(255, 255, 255, 0.1),
+    inset 0 -3px 8px rgba(0, 0, 0, 0.4);
   position: relative;
+  border: 4px solid #1a1a2a;
+}
+
+.gba-console::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  width: 8px;
+  height: 8px;
+  background: #00ff00;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #00ff00, 0 0 15px #00ff00;
+  animation: power-led 2s ease-in-out infinite;
+}
+
+@keyframes power-led {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px #00ff00, 0 0 15px #00ff00; }
+  50% { opacity: 0.7; box-shadow: 0 0 4px #00ff00, 0 0 8px #00ff00; }
 }
 
 .screen-bezel {
-  background: #2a2a2a;
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.8);
+  background: #0a0a0a;
+  border-radius: 6px;
+  padding: 10px;
+  box-shadow: 
+    inset 0 4px 20px rgba(0, 0, 0, 1),
+    0 1px 2px rgba(255, 255, 255, 0.05);
+  border: 3px solid #111;
+  position: relative;
+}
+
+.screen-bezel::before {
+  content: 'POKEMONA';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 5px;
+  color: #444;
+  font-family: 'Press Start 2P', cursive;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.screen-bezel::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 20px;
+  height: 8px;
+  background: linear-gradient(90deg, #111, #222, #111);
+  border-radius: 2px;
 }
 
 .game-container {
   position: relative;
   background: #000;
-  border: 3px solid #333;
-  border-radius: 5px;
+  border: 2px solid #111;
+  border-radius: 3px;
   overflow: hidden;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
 }
 
 .game-canvas {
   display: block;
   image-rendering: pixelated;
   background: #000;
+  position: relative;
+}
+
+.game-canvas::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  pointer-events: none;
 }
 
 /* D-Pad */
@@ -213,9 +281,24 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(180deg, #87CEEB 0%, #98D8C8 100%);
+  background: linear-gradient(180deg, #88c8d8 0%, #a8e0c8 50%, #78c078 100%);
   display: none;
   z-index: 30;
+}
+
+.battle-ui::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px),
+    linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-size: 4px 4px;
+  pointer-events: none;
+  opacity: 0.3;
 }
 
 .battle-hud {
@@ -317,7 +400,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  background: linear-gradient(180deg, #0f0f23 0%, #1a1a3e 50%, #0a0a1a 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -325,19 +408,42 @@ body {
   z-index: 100;
 }
 
+.title-screen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+  pointer-events: none;
+}
+
 .title-logo {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: bold;
-  color: #e94560;
-  text-shadow: 3px 3px 0 #8b0000;
+  background: linear-gradient(180deg, #ff6b6b, #e94560, #c73e54);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
   margin-bottom: 5px;
   letter-spacing: 2px;
+  filter: drop-shadow(2px 2px 0 #8b0000);
 }
 
 .title-subtitle {
-  font-size: 12px;
-  color: #f5e6c8;
+  font-size: 10px;
+  color: #c9b896;
   margin-bottom: 30px;
+  text-shadow: 1px 1px 1px #000;
 }
 
 .title-sprite {

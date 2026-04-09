@@ -644,25 +644,41 @@ export default function Game() {
     }
   }, [])
 
-  // Get sprite URL for a Bestia (try pixel art first, then SVG)
+  // Get sprite URL for a Bestia (try PNG first, then pixel art, then SVG)
   const getBestiaSprite = (id: string | number, isBack: boolean = false): string => {
-    // Try pixel sprites first
+    const idStr = String(id)
+    
+    // Try PNG sprites first (custom user-generated)
+    const pngSprite = BESTI_SVG_SPRITES[idStr]
+    if (pngSprite && pngSprite.front.startsWith('/sprites/')) {
+      return isBack ? (pngSprite.back || pngSprite.front) : pngSprite.front
+    }
+    
+    // Try pixel sprites
     const pixelUrl = getSpriteUrl(id, isBack)
     if (pixelUrl) return pixelUrl
     
     // Fallback to SVG sprites
-    const sprite = BESTI_SVG_SPRITES[String(id)] || BESTI_SPRITES[String(id)] || getDefaultSprite()
+    const sprite = BESTI_SVG_SPRITES[idStr] || BESTI_SPRITES[idStr] || getDefaultSprite()
     return isBack ? (sprite.back || sprite.front) : sprite.front
   }
 
   // Get icon sprite
   const getBestiaIcon = (id: string | number): string => {
-    // Try pixel sprites first
+    const idStr = String(id)
+    
+    // Try PNG sprites first
+    const pngSprite = BESTI_SVG_SPRITES[idStr]
+    if (pngSprite && pngSprite.icon.startsWith('/sprites/')) {
+      return pngSprite.icon
+    }
+    
+    // Try pixel sprites
     const iconUrl = getIconUrl(id)
     if (iconUrl) return iconUrl
     
     // Fallback to SVG sprites
-    const sprite = BESTI_SVG_SPRITES[String(id)] || BESTI_SPRITES[String(id)] || getDefaultSprite()
+    const sprite = BESTI_SVG_SPRITES[idStr] || BESTI_SPRITES[idStr] || getDefaultSprite()
     return sprite.icon || sprite.front
   }
 
