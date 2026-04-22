@@ -30,7 +30,7 @@ export const ITEMS: Record<string, GameItem> = {
   mascheraball: {
     id: 'mascheraball',
     name: 'Mascheraball',
-    desc: 'Palla del carnevale. Efficace su Besti notturni.',
+    desc: 'Palla del carnevale. Efficace su Bestie notturni.',
     type: 'capture',
     price: 300,
     effect: 'night_bonus',
@@ -50,7 +50,7 @@ export const ITEMS: Record<string, GameItem> = {
   polentaball: {
     id: 'polentaball',
     name: 'Polentaball',
-    desc: 'Palla pesante. Migliore su Besti forti.',
+    desc: 'Palla pesante. Migliore su Bestie forti.',
     type: 'capture',
     price: 600,
     effect: 'strong_bonus',
@@ -59,7 +59,7 @@ export const ITEMS: Record<string, GameItem> = {
   scampaball: {
     id: 'scampaball',
     name: 'Scampaball',
-    desc: 'Palla luccicante. Migliore su Besti acquatici.',
+    desc: 'Palla luccicante. Migliore su Bestie acquatici.',
     type: 'capture',
     price: 500,
     effect: 'water_bonus',
@@ -68,7 +68,7 @@ export const ITEMS: Record<string, GameItem> = {
   vinoball: {
     id: 'vinoball',
     name: 'Vinoball',
-    desc: 'Palla rossastra. Per Besti Terra.',
+    desc: 'Palla rossastra. Per Bestie Terra.',
     type: 'capture',
     price: 500,
     effect: 'earth_bonus',
@@ -86,7 +86,7 @@ export const ITEMS: Record<string, GameItem> = {
   montagnaball: {
     id: 'montagnaball',
     name: 'Montagnaball',
-    desc: 'Palla delle Dolomiti. Per Besti Ice.',
+    desc: 'Palla delle Dolomiti. Per Bestie Ice.',
     type: 'capture',
     price: 600,
     effect: 'ice_bonus',
@@ -95,7 +95,7 @@ export const ITEMS: Record<string, GameItem> = {
   aereoball: {
     id: 'aereoball',
     name: 'Aereoball',
-    desc: 'Palla leggera. Per Besti Air.',
+    desc: 'Palla leggera. Per Bestie Air.',
     type: 'capture',
     price: 500,
     effect: 'air_bonus',
@@ -106,7 +106,7 @@ export const ITEMS: Record<string, GameItem> = {
   graticciaball: {
     id: 'graticciaball',
     name: 'Graticciaball',
-    desc: 'Palla delle maschere. Per Besti Magic.',
+    desc: 'Palla delle maschere. Per Bestie Magic.',
     type: 'capture',
     price: 800,
     effect: 'magic_bonus',
@@ -115,7 +115,7 @@ export const ITEMS: Record<string, GameItem> = {
   serenaball: {
     id: 'serenaball',
     name: 'Serenaball',
-    desc: 'Palla della serenata. Per Besti Psycho.',
+    desc: 'Palla della serenata. Per Bestie Psycho.',
     type: 'capture',
     price: 800,
     effect: 'psycho_bonus',
@@ -124,7 +124,7 @@ export const ITEMS: Record<string, GameItem> = {
   dragoball: {
     id: 'dragoball',
     name: 'Dragoball',
-    desc: 'Palla del Drago. Solo per Besti Drago!',
+    desc: 'Palla del Drago. Solo per Bestie Drago!',
     type: 'capture',
     price: 1000,
     effect: 'dragon_bonus',
@@ -162,7 +162,7 @@ export const ITEMS: Record<string, GameItem> = {
   fantasmaball: {
     id: 'fantasmaball',
     name: 'Fantasma Ball',
-    desc: 'Palla eterea. Per Besti Ombra.',
+    desc: 'Palla eterea. Per Bestie Ombra.',
     type: 'capture',
     price: 700,
     effect: 'shadow_bonus',
@@ -224,7 +224,7 @@ export const ITEMS: Record<string, GameItem> = {
   caffette: {
     id: 'caffette',
     name: 'Caffè Corretto',
-    desc: 'Caffè con grappa. +10 PS a tutto il gruppo.',
+    desc: 'Caffè con grappa de quea bona. +10 PS a tutto il gruppo e te sveia de colpo.',
     type: 'heal',
     price: 80,
     val: 10,
@@ -234,7 +234,7 @@ export const ITEMS: Record<string, GameItem> = {
   cicchetto: {
     id: 'cicchetto',
     name: 'Cicchetto',
-    desc: 'Spruzzo di grappa. +1 livello a un Bestia casuale!',
+    desc: 'Spruzzo di grappa. +1 livello a una Bestia casuale!',
     type: 'food',
     price: 500,
     effect: 'random_level_up',
@@ -272,8 +272,8 @@ export const ITEMS: Record<string, GameItem> = {
   },
   grappa_medicinale: {
     id: 'grappa_medicinale',
-    name: 'Grappa Medicinale',
-    desc: 'Grappa forte. +20 PS e +5 Atk.',
+    name: 'Grappa del Nonno',
+    desc: 'Grappa fatta in casa che scusa i muri. +20 PS e +5 Atk.',
     type: 'heal',
     price: 200,
     val: 20,
@@ -330,7 +330,7 @@ export const ITEMS: Record<string, GameItem> = {
   revive: {
     id: 'revive',
     name: 'Revitalizzante',
-    desc: 'Rianima un Bestia sconfitto. 50% PS.',
+    desc: 'Rianima una Bestia sconfitto. 50% PS.',
     type: 'heal',
     price: 800,
     effect: 'revive',
@@ -339,7 +339,7 @@ export const ITEMS: Record<string, GameItem> = {
   maxrevive: {
     id: 'maxrevive',
     name: 'Mega Revitalizzante',
-    desc: 'Rianima un Bestia sconfitto. PS pieni!',
+    desc: 'Rianima una Bestia sconfitto. PS pieni!',
     type: 'heal',
     price: 2000,
     effect: 'revive_full',
@@ -354,7 +354,7 @@ export const ITEMS: Record<string, GameItem> = {
   pietra_focaia: {
     id: 'pietra_focaia',
     name: 'Pietra Focaia',
-    desc: 'Pietra infuocata. Per Besti Fuoco.',
+    desc: 'Pietra infuocata. Per Bestie Fuoco.',
     type: 'stone',
     price: 800,
     effect: 'fire_evo',
@@ -363,7 +363,7 @@ export const ITEMS: Record<string, GameItem> = {
   pietra_acquatica: {
     id: 'pietra_acquatica',
     name: 'Pietra Acquatica',
-    desc: 'Pietra marina. Per Besti Acqua.',
+    desc: 'Pietra marina. Per Bestie Acqua.',
     type: 'stone',
     price: 800,
     effect: 'water_evo',
@@ -372,7 +372,7 @@ export const ITEMS: Record<string, GameItem> = {
   pietra_tuono: {
     id: 'pietra_tuono',
     name: 'Pietra Tuono',
-    desc: 'Pietra elettrica. Per Besti Electric.',
+    desc: 'Pietra elettrica. Per Bestie Electric.',
     type: 'stone',
     price: 800,
     effect: 'electric_evo',
@@ -381,7 +381,7 @@ export const ITEMS: Record<string, GameItem> = {
   pietra_verde: {
     id: 'pietra_verde',
     name: 'Pietra Verde',
-    desc: 'Pietra delle Dolomiti. Per Besti Natura.',
+    desc: 'Pietra delle Dolomiti. Per Bestie Natura.',
     type: 'stone',
     price: 800,
     effect: 'nature_evo',
@@ -390,7 +390,7 @@ export const ITEMS: Record<string, GameItem> = {
   pietra_ghiaccio: {
     id: 'pietra_ghiaccio',
     name: 'Pietra Ghiaccio',
-    desc: 'Pietra gelida. Per Besti Ice.',
+    desc: 'Pietra gelida. Per Bestie Ice.',
     type: 'stone',
     price: 900,
     effect: 'ice_evo',
@@ -399,7 +399,7 @@ export const ITEMS: Record<string, GameItem> = {
   pietra_terra: {
     id: 'pietra_terra',
     name: 'Pietra Terra',
-    desc: 'Pietra pesante. Per Besti Terra.',
+    desc: 'Pietra pesante. Per Bestie Terra.',
     type: 'stone',
     price: 900,
     effect: 'earth_evo',
@@ -410,7 +410,7 @@ export const ITEMS: Record<string, GameItem> = {
   pietra_luna: {
     id: 'pietra_luna',
     name: 'Pietra Luna',
-    desc: 'Pietra lunare. Per Besti notturni.',
+    desc: 'Pietra lunare. Per Bestie notturni.',
     type: 'stone',
     price: 1000,
     effect: 'moon_evo',
@@ -419,7 +419,7 @@ export const ITEMS: Record<string, GameItem> = {
   pietra_sole: {
     id: 'pietra_sole',
     name: 'Pietra Sole',
-    desc: 'Pietra solare. Per Besti diurni.',
+    desc: 'Pietra solare. Per Bestie deurni.',
     type: 'stone',
     price: 1000,
     effect: 'sun_evo',
@@ -446,7 +446,7 @@ export const ITEMS: Record<string, GameItem> = {
   pietra_fulmine: {
     id: 'pietra_fulmine',
     name: 'Pietra Fulmine',
-    desc: 'Pietra scintillante. Per Besti Psycho.',
+    desc: 'Pietra scintillante. Per Bestie Psycho.',
     type: 'stone',
     price: 1000,
     effect: 'shiny_evo',
@@ -457,7 +457,7 @@ export const ITEMS: Record<string, GameItem> = {
   pietra_temporale: {
     id: 'pietra_temporale',
     name: 'Pietra Temporale',
-    desc: 'Pietra antica. Per Besti Air/Psycho.',
+    desc: 'Pietra antica. Per Bestie Air/Psycho.',
     type: 'stone',
     price: 1000,
     effect: 'air_evo',
@@ -466,7 +466,7 @@ export const ITEMS: Record<string, GameItem> = {
   pietra_polenta: {
     id: 'pietra_polenta',
     name: 'Pietra Polenta',
-    desc: 'Pietra dorata. Per Besti Terra.',
+    desc: 'Pietra dorata. Per Bestie Terra.',
     type: 'stone',
     price: 1000,
     effect: 'earth_evo',
@@ -475,7 +475,7 @@ export const ITEMS: Record<string, GameItem> = {
   pietra_maschera: {
     id: 'pietra_maschera',
     name: 'Pietra Maschera',
-    desc: 'Pietra del carnevale. Per Besti Magic.',
+    desc: 'Pietra del carnevale. Per Bestie Magic.',
     type: 'stone',
     price: 1200,
     effect: 'magic_evo',
@@ -484,7 +484,7 @@ export const ITEMS: Record<string, GameItem> = {
   pietra_ombra: {
     id: 'pietra_ombra',
     name: 'Pietra Ombra',
-    desc: 'Pietra oscura. Per Besti Ombra.',
+    desc: 'Pietra oscura. Per Bestie Ombra.',
     type: 'stone',
     price: 1200,
     effect: 'shadow_evo',
@@ -493,7 +493,7 @@ export const ITEMS: Record<string, GameItem> = {
   pietra_drago: {
     id: 'pietra_drago',
     name: 'Pietra Drago',
-    desc: 'Pietra leggendaria. Per Besti Drago.',
+    desc: 'Pietra leggendaria. Per Bestie Drago.',
     type: 'stone',
     price: 2000,
     effect: 'dragon_evo',
@@ -1048,7 +1048,7 @@ export const ITEMS: Record<string, GameItem> = {
   },
 
   // ═══════════════════════════════════════════════════════════════════
-  // HOLD ITEMS - Items that Besti can hold
+  // HOLD ITEMS - Items that Bestie can hold
   // ═══════════════════════════════════════════════════════════════════
   
   gioielli_veneti: {
@@ -1214,7 +1214,7 @@ export const ITEMS: Record<string, GameItem> = {
   pokedex: {
     id: 'pokedex',
     name: 'PokeDioex',
-    desc: 'Enciclopedia ufficiale dei Besti di Venetia, distribuita nei Centri Besti e in alcune botteghe.',
+    desc: 'Enciclopedia ufficiale dei Bestie de Venetia, distribuita nei Centri Bestie e in alcune botteghe.',
     type: 'key',
     price: 0,
     effect: 'bestidex_unlock',
@@ -1296,7 +1296,7 @@ export const ITEMS: Record<string, GameItem> = {
   cattura_master: {
     id: 'cattura_master',
     name: 'Titolo Cattura Master',
-    desc: 'Riconoscimento per i migliori catturatori di Besti.',
+    desc: 'Riconoscimento per i migliori catturatori di Bestie.',
     type: 'key',
     price: 0,
     effect: 'capture_master',

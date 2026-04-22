@@ -19,13 +19,13 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
   
   // CATTURA
   first_capture: { id: 'first_capture', name: 'Cacciatore', desc: 'Hai catturato il tuo primo Bestia!', icon: '🎯' },
-  ten_captures: { id: 'ten_captures', name: 'Collezionista', desc: 'Hai catturato 10 Besti!', icon: '📦' },
-  twenty_five_captures: { id: 'twenty_five_captures', name: 'Catturatore Pro', desc: 'Hai catturato 25 Besti!', icon: '🎯' },
-  fifty_captures: { id: 'fifty_captures', name: 'Maestro Catturatore', desc: 'Hai catturato 50 Besti!', icon: '🏅' },
+  ten_captures: { id: 'ten_captures', name: 'Collezionista', desc: 'Hai catturato 10 Bestie!', icon: '📦' },
+  twenty_five_captures: { id: 'twenty_five_captures', name: 'Catturatore Pro', desc: 'Hai catturato 25 Bestie!', icon: '🎯' },
+  fifty_captures: { id: 'fifty_captures', name: 'Maestro Catturatore', desc: 'Hai catturato 50 Bestie!', icon: '🏅' },
   
   // EVOLUZIONE
   first_evolution: { id: 'first_evolution', name: 'Crescita', desc: 'Il tuo Bestia si è evoluto per la prima volta!', icon: '✨' },
-  ten_evolutions: { id: 'ten_evolutions', name: 'Allevatore', desc: 'Hai fatto evolvere 10 Besti!', icon: '🌟' },
+  ten_evolutions: { id: 'ten_evolutions', name: 'Allevatore', desc: 'Hai fatto evolvere 10 Bestie!', icon: '🌟' },
   
   // GAMESTI
   first_badge: { id: 'first_badge', name: 'Sfidante', desc: 'Hai ottenuto il tuo primo Badge!', icon: '🏅' },
@@ -41,7 +41,7 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
   secret_found: { id: 'secret_found', name: 'Esploratore', desc: 'Hai trovato un luogo segreto!', icon: '🔍' },
   
   // SPECIALI
-  legendary_caught: { id: 'legendary_caught', name: 'Cacciatore di Leggende', desc: 'Hai catturato un Bestia Leggendario!', icon: '🌟', reward: { money: 5000 } },
+  legendary_caught: { id: 'legendary_caught', name: 'Cacciatore di Leggende', desc: 'Hai catturato una Bestia Leggendario!', icon: '🌟', reward: { money: 5000 } },
   starter_legendary: { id: 'starter_legendary', name: 'Scelta del Destino', desc: 'Hai scelto un Leggendario come starter!', icon: '✨' },
   
   // TRADING / STORY
@@ -139,17 +139,17 @@ export const TIME_EFFECTS: Record<TimeOfDay, { bg: string; filter: string; messa
   night: { bg: '#1a1a3e', filter: 'brightness(0.6) sepia(0.2)', message: '🌙 Notte' },
 }
 
-// Wild Besti rate modifier based on time
-export function getWildEncounterModifier(time: TimeOfDay): { rate: number; specialBesti: string[] } {
+// Wild Bestie rate modifier based on time
+export function getWildEncounterModifier(time: TimeOfDay): { rate: number; specialBestie: string[] } {
   switch (time) {
     case 'morning':
-      return { rate: 1.0, specialBesti: ['gabbianzo', 'colombo'] }
+      return { rate: 1.0, specialBestie: ['gabbianzo', 'colombo'] }
     case 'afternoon':
-      return { rate: 1.2, specialBesti: ['fogaron', 'polentaur'] }
+      return { rate: 1.2, specialBestie: ['fogaron', 'polentaur'] }
     case 'evening':
-      return { rate: 1.5, specialBesti: ['spritzino', 'mascarin'] }
+      return { rate: 1.5, specialBestie: ['spritzino', 'mascarin'] }
     case 'night':
-      return { rate: 2.0, specialBesti: ['smogatto', 'stregatto', 'fantasma'] }
+      return { rate: 2.0, specialBestie: ['smogatto', 'stregatto', 'fantasma'] }
   }
 }
 

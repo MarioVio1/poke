@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pokemona - Besti di Venetia</title>
+  <title>Bestie de Venetia - Bestie de Venetia</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
     
@@ -649,8 +649,8 @@
             
             <!-- Title Screen -->
             <div class="title-screen" id="titleScreen">
-              <div class="title-logo">POKEMONA</div>
-              <div class="title-subtitle">Besti di Venetia</div>
+              <div class="title-logo">BESTIE DE VENETIA</div>
+              <div class="title-subtitle">Bestie de Venetia</div>
               <button class="start-btn-large" onclick="startGame()">NUOVA PARTITA</button>
             </div>
             
@@ -701,7 +701,7 @@
               <div class="battle-menu" id="battleMenu">
                 <button class="battle-btn" onclick="showMoves()">MOSSA</button>
                 <button class="battle-btn" onclick="showMenu()">ZAINO</button>
-                <button class="battle-btn" onclick="showParty()">BESTIA</button>
+                <button class="battle-btn" onclick="showParty()">BESTIE</button>
                 <button class="battle-btn" id="captureBtn" onclick="tryCapture()">CATTURA</button>
               </div>
               
@@ -710,7 +710,7 @@
             
             <!-- Starter Choice -->
             <div class="starter-choice" id="starterChoice" style="display:none">
-              <h2>Scegli il tuo Besti Leggendario!</h2>
+              <h2>Scegli il tuo Bestia Leggendaria!</h2>
               <p class="starter-subtitle">Come in Pokemon Marron Merda!</p>
               <div class="starter-container">
                 <div class="starter-btn" onclick="selectStarter('dolomitor')">
@@ -734,7 +734,7 @@
                   <span class="type-badge type-air">Aria</span>
                   <div class="starter-desc">Spirito di Venezia</div>
                 </div>
-                <div class="starter-btn" onclick="selectStarter('ombradriz')">
+                <div class="starter-btn" onclick="selectStarter('ombraspritz')">
                   <div style="width:32px;height:32px;background:linear-gradient(135deg,#e91e63,#880e4f);border-radius:50%;margin:0 auto 5px;"></div>
                   <div class="starter-name">OMBRASPRITZ</div>
                   <span class="type-badge type-magic">Magico</span>
@@ -803,7 +803,7 @@
 
   <script>
     // ═══════════════════════════════════════════════════════════
-    // GAME DATA - Besti, Items, Maps
+    // GAME DATA - Bestie, Items, Maps
     // ═══════════════════════════════════════════════════════════
     
     const TILE_COLORS = {
@@ -811,11 +811,11 @@
       5: '#ff69b4', 6: '#8d6e63', 7: '#7cb342', 8: '#b0bec5'
     };
     
-    const BESTI = {
+    const BESTIE = {
       dolomitor: { id: 'dolomitor', name: 'Dolomitor', types: ['ice', 'earth'], bs: {hp:55,atk:55,def:55,spd:55}, moves: ['Gelo', 'Terremoto', 'Valanga', 'Soffio'] },
       lagorion: { id: 'lagorion', name: 'Lagorion', types: ['water', 'dragon'], bs: {hp:55,atk:55,def:55,spd:55}, moves: ['Idropompa', 'Dragospiro', 'Onda', 'Tsunami'] },
       serenissima: { id: 'serenissima', name: 'Serenissima', types: ['psycho', 'air'], bs: {hp:55,atk:55,def:55,spd:55}, moves: ['Psicamisù', 'Ventata', 'Confusione', 'Aura'] },
-     ombradriz: { id: 'ombradriz', name: 'OmbraSpritz', types: ['magic', 'poison'], bs: {hp:55,atk:60,def:50,spd:60}, moves: ['Spritzata', 'Velenmisù', 'Nebbia', 'Aperitivo'] },
+     ombraspritz: { id: 'ombraspritz', name: 'OmbraSpritz', types: ['magic', 'poison'], bs: {hp:55,atk:60,def:50,spd:60}, moves: ['Spritzata', 'Velenmisù', 'Nebbia', 'Aperitivo'] },
       gabbianzo: { id: 'gabbianzo', name: 'Gabbianzo', types: ['air', 'nature'], bs: {hp:35,atk:40,def:35,spd:45}, moves: ['Beccata', 'Raffica', 'Volo'] },
       canalot: { id: 'canalot', name: 'Canalot', types: ['water'], bs: {hp:40,atk:35,def:45,spd:30}, moves: ['Idropompa', 'Morso'] },
       colombo: { id: 'colombo', name: 'Colombo', types: ['air'], bs: {hp:30,atk:35,def:30,spd:40}, moves: ['Beccata', 'Volo'] },
@@ -826,10 +826,10 @@
     };
     
     const LEGENDARY_STARTERS = {
-      dolomitor: { ...BESTI.dolomitor },
-      lagorion: { ...BESTI.lagorion },
-      serenissima: { ...BESTI.serenissima },
-      ombradriz: { ...BESTI.ombradriz },
+      dolomitor: { ...BESTIE.dolomitor },
+      lagorion: { ...BESTIE.lagorion },
+      serenissima: { ...BESTIE.serenissima },
+      ombraspritz: { ...BESTIE.ombraspritz },
     };
     
     const MAPS = {
@@ -849,7 +849,7 @@
           [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
         ],
         events: [
-          { type: 'npc', x: 10, y: 7, name: 'Prof. Barcaro', dialog: ['Ciao! Sono il Prof. Barcaro!', 'Studio i Besti da 40 anni!', 'Scegli il tuo primo Besti!'], givesStarter: true },
+          { type: 'npc', x: 10, y: 7, name: 'Prof. GheSboro', dialog: ['Ciao! Sono il Prof. GheSboro!', 'Studio i Bestia da 40 anni!', 'Scegli il tuo primo Bestie!'], givesStarter: true },
           { type: 'sign', x: 8, y: 9, text: 'Benvenuti a CANALBORGO!' },
           { type: 'warp', x: 7, y: 10, dest: 'casa' },
         ],
@@ -865,7 +865,7 @@
           [1,1,1,1,1,1,1,1,1,1],
         ],
         events: [
-          { type: 'npc', x: 4, y: 3, name: 'Mamma', dialog: ['Vai dal Prof. Barcaro!'] },
+          { type: 'npc', x: 4, y: 3, name: 'Mamma', dialog: ['Vai dal Prof. GheSboro!'] },
           { type: 'warp', x: 4, y: 4, dest: 'canalborgo' },
         ],
       },
@@ -1045,12 +1045,12 @@
       dialogQueue = [
         'Buongiorno, tesoro mio!',
         'Oggi è il giorno importante!',
-        'Devi andare dal Professor Barcaro!',
+        'Devi andare dal Professor GheSboro!',
         'Stai attento e non litigare!',
       ];
       showDialog('Mamma', dialogQueue, () => {
-        dialogQueue = ['Ah, sei arrivato finalmente!', 'Sono il Prof. Barcaro!', 'Ho 4 Besti leggendari per te!', 'Scegli il tuo compagno!'];
-        showDialog('Prof. Barcaro', dialogQueue, () => {
+        dialogQueue = ['Ah, sei arrivato finalmente!', 'Sono il Prof. GheSboro!', 'Ho 4 Bestie leggendarie per te!', 'Scegli il tuo compagno!'];
+        showDialog('Prof. GheSboro', dialogQueue, () => {
           document.getElementById('starterChoice').style.display = 'flex';
         });
       });
@@ -1060,7 +1060,7 @@
     }
     
     function createBestia(id, level) {
-      const base = BESTI[id] || LEGENDARY_STARTERS[id];
+      const base = BESTIE[id] || LEGENDARY_STARTERS[id];
       if (!base) return null;
       const lf = level / 50;
       return {
@@ -1078,7 +1078,7 @@
       document.getElementById('starterChoice').style.display = 'none';
       
       const b = createBestia(id, 5);
-      const rivalBestia = createBestia('ombradriz', 5);
+      const rivalBestia = createBestia('ombraspritz', 5);
       
       game.party = [b];
       game.rival = rivalBestia;

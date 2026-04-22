@@ -20,11 +20,11 @@ Esempi:
 1. Usa **Piskel** (https://www.piskelapp.com) - gratuito online
 2. Crea sprite 64x64 pixel
 3. Esporta in PNG
-4. Metti i file in `public/sprites/besti/`
+4. Metti i file in `public/sprites/bestie/`
 
 ## Come aggiungere al gioco
 
-Dopo aver messo le immagini in `public/sprites/besti/`:
+Dopo aver messo le immagini in `public/sprites/bestie/`:
 
 1. Modifica `lib/sprites.ts` per usare le immagini invece degli SVG
 2. Oppure modifica `lib/pixelSprites.ts` per aggiungere nuovi sprite
@@ -34,7 +34,7 @@ Dopo aver messo le immagini in `public/sprites/besti/`:
 ```
 public/
   sprites/
-    besti/
+    bestie/
       fogaron.png      (fronte)
       fogaron-back.png (retro)
       lagorion.png
@@ -46,10 +46,10 @@ public/
 In `lib/sprites.ts`, cambia da SVG a immagine:
 
 ```typescript
-BESTI_SVG_SPRITES.fogaron = {
-  front: '/sprites/besti/fogaron.png',
-  back: '/sprites/besti/fogaron-back.png',
-  icon: '/sprites/besti/fogaron-icon.png',
+BESTIE_SVG_SPRITES.fogaron = {
+  front: '/sprites/bestie/fogaron.png',
+  back: '/sprites/bestie/fogaron-back.png',
+  icon: '/sprites/bestie/fogaron-icon.png',
 }
 ```
 

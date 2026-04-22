@@ -1,4 +1,4 @@
-// Besti (Monster) Data - Complete with Evolution System
+// Bestie (Monster) Data - Complete with Evolution System
 export interface Bestia {
   id: number
   name: string
@@ -16,10 +16,7 @@ export interface Bestia {
   expYield?: number
 }
 
-export const BESTI: Record<string, Bestia> = {
-  // ═══════════════════════════════════════════════════════════════════
-  // STARTERS (3 scelte iniziali)
-  // ═══════════════════════════════════════════════════════════════════
+export const BESTIE: Record<string, Bestia> = {
   fogaron: { 
     id: 1, name: 'Fogaron', types: ['fire'],
     desc: 'Drago di fuoco nato dai falò veneti. Ama le notti calde.', 
@@ -46,7 +43,6 @@ export const BESTI: Record<string, Bestia> = {
     moveLearn: [{ at: 1, move: 'Ardore' }, { at: 5, move: 'Ruggito' }, { at: 9, move: 'Morso' }, { at: 13, move: 'Lava' }, { at: 18, move: 'Falò' }, { at: 25, move: 'Colpo Rapido' }, { at: 36, move: 'Dragofiamma' }, { at: 45, move: 'Inferno' }],
     isLegendary: false, catchRate: 30, expYield: 218,
   },
-  
   radicor: { 
     id: 4, name: 'Radicor', types: ['nature'], 
     desc: 'Ispirato al radicchio di Treviso. Le sue foglie sono curative.', 
@@ -73,7 +69,6 @@ export const BESTI: Record<string, Bestia> = {
     moveLearn: [{ at: 1, move: 'Vite' }, { at: 5, move: 'Assorbi' }, { at: 9, move: 'Cresci' }, { at: 13, move: 'Radura' }, { at: 18, move: 'Sintesi' }, { at: 25, move: 'Veleno' }, { at: 36, move: 'Tempesta Verde' }, { at: 45, move: 'Radice' }],
     isLegendary: false, catchRate: 30, expYield: 218,
   },
-  
   canalot: { 
     id: 7, name: 'Canalot', types: ['water'], 
     desc: 'Nuota nei canali e ruba panini ai turisti.', 
@@ -100,10 +95,6 @@ export const BESTI: Record<string, Bestia> = {
     moveLearn: [{ at: 1, move: 'Splash' }, { at: 5, move: 'Bolla' }, { at: 9, move: 'Att. Rapido' }, { at: 13, move: 'Idropompa' }, { at: 18, move: 'Onda' }, { at: 25, move: 'Agilità' }, { at: 36, move: 'Dragobolla' }, { at: 45, move: 'Tsunami' }],
     isLegendary: false, catchRate: 30, expYield: 218,
   },
-
-  // ═══════════════════════════════════════════════════════════════
-  // BESTI COMUNI (prima evoluzione)
-  // ═══════════════════════════════════════════════════════════════
   gabbianzo: { 
     id: 10, name: 'Gabbianzo', types: ['air'], 
     desc: 'Gabbiano aggressivo. Ruba il cibo ai bambini.', 
@@ -120,7 +111,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Urlo del Gabbiano', 'Tornado', 'Picchiata', 'Aeroassalto'],
     catchRate: 120, expYield: 156,
   },
-  
   polentaur: { 
     id: 12, name: 'Polentaur', types: ['earth'], 
     desc: 'Creatura di polenta solidificata. Saporito ma pericoloso.', 
@@ -137,7 +127,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Valanga', 'Muro', 'Frana', 'Sfida'],
     catchRate: 90, expYield: 200,
   },
-  
   spritzino: { 
     id: 14, name: 'Spritzino', types: ['magic'], 
     desc: 'Mostro frizzante degli aperitivi. Fa ridere chi lo vede.', 
@@ -154,7 +143,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Spritz Explosivo', 'Tossicità', 'Nebbia', 'Sbornia'],
     catchRate: 120, expYield: 150,
   },
-  
   gondolo: { 
     id: 16, name: 'Gondolo', types: ['water'], 
     desc: 'Il gondoliere dei canali. Lavora per pochi soldi.', 
@@ -171,7 +159,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Voga', 'Tsunami', 'Gondolata', 'Idroauta'],
     catchRate: 100, expYield: 155,
   },
-  
   salamix: { 
     id: 18, name: 'Salamix', types: ['poison'], 
     desc: 'Salamandra velenosa delle cantine venete.', 
@@ -188,7 +175,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Tossina', 'Zanna', 'Fumo', 'Energibomba'],
     catchRate: 90, expYield: 145,
   },
-  
   prosecchino: { 
     id: 20, name: 'Prosecchino', types: ['sweet'], 
     desc: 'Bollicine dolci. Il prosecco prende vita!', 
@@ -205,7 +191,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Spumante', 'Festeggiamento', 'Sciampagna', 'Sbronza'],
     catchRate: 100, expYield: 165,
   },
-  
   mascarin: { 
     id: 22, name: 'Mascarin', types: ['psycho'], 
     desc: 'Maschera veneziana fantasma. Spaventa i turisti.', 
@@ -222,7 +207,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Incantamento', 'Psylaser', 'Ombra', 'Ballo'],
     catchRate: 80, expYield: 180,
   },
-  
   vespolo: { 
     id: 24, name: 'Vespolo', types: ['electric'], 
     desc: 'Vespa elettrica. Punge e fa anche cortocircuito.', 
@@ -239,7 +223,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Tuono', 'Fulmine', 'Sciame', 'Elettroshock'],
     catchRate: 90, expYield: 170,
   },
-  
   nevelet: { 
     id: 26, name: 'Nevelet', types: ['ice'], 
     desc: 'Neve delle Dolomiti. Freddo ma adorable.', 
@@ -256,7 +239,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Blizzard', 'Valanga', 'Congelamento', 'Tempesta'],
     catchRate: 100, expYield: 160,
   },
-  
   alpibex: { 
     id: 28, name: 'Alpibex', types: ['earth'], 
     desc: 'Capra delle Alpi. Salta ovunque senza paura.', 
@@ -273,7 +255,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Valanga', 'Corno Ghiacciato', 'Frana', 'Crollo'],
     catchRate: 90, expYield: 175,
   },
-  
   lagunello: { 
     id: 30, name: 'Lagunello', types: ['water'], 
     desc: 'Abitante della laguna. Mangia pesce e alghe.', 
@@ -290,7 +271,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Marea', 'Nebbia', 'Psiconda', 'Tsunami'],
     catchRate: 90, expYield: 165,
   },
-  
   smogatto: { 
     id: 32, name: 'Smogatto', types: ['poison'], 
     desc: 'Gatto della nebbia velenosa. Miagola e puzza.', 
@@ -307,7 +287,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Tossina', 'Fumo', 'Veleno', 'Esplosione'],
     catchRate: 90, expYield: 170,
   },
-  
   colombo: { 
     id: 34, name: 'Colombo', types: ['air'], 
     desc: 'Piccione veneto. Sporca tutto ma è simpatico.', 
@@ -324,7 +303,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Beccata', 'Tornado', 'Picchiata', 'Tempesta'],
     catchRate: 120, expYield: 150,
   },
-  
   tiramisu: { 
     id: 36, name: 'Tiramisù', types: ['sweet'], 
     desc: 'Crema dolce e caffè. Il dolce più famoso!', 
@@ -341,7 +319,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Dessert Fatale', 'Super Cura', 'Caffè Bomb', 'Sbornia Dolce'],
     catchRate: 80, expYield: 185,
   },
-  
   vignel: { 
     id: 38, name: 'Vignel', types: ['nature'], 
     desc: 'Verme dei vigneti. Ama l\'uva fermentata.', 
@@ -358,7 +335,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Radura', 'Radice', 'Foglie', 'Uva'],
     catchRate: 120, expYield: 140,
   },
-  
   formaggion: { 
     id: 40, name: 'Formaggion', types: ['earth'], 
     desc: 'Formaggio stagionato. Più invecchia, più è forte.', 
@@ -375,10 +351,6 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Grana', 'Stagionato', 'Esplosione', 'Frana'],
     catchRate: 80, expYield: 195,
   },
-
-  // ═══════════════════════════════════════════════════════════════
-  // BESTI RARI (non si evolvono in catena)
-  // ═══════════════════════════════════════════════════════════════
   focacino: { 
     id: 42, name: 'Focacino', types: ['fire', 'earth'], 
     desc: 'Pane ripieno di formaggio fuso. Caldo e filante!', 
@@ -423,7 +395,7 @@ export const BESTI: Record<string, Bestia> = {
   },
   topo_granchio: { 
     id: 48, name: 'Topo Granchio', types: ['water'], 
-    desc: 'Granchio topo. Non è né un topo né un granchio.', 
+    desc: 'Cranchio topo. Non è né un topo né un granchio.',
     bs: { hp: 45, atk: 55, def: 40, spd: 60 },
     moves: ['Pinza', 'Bolla', 'Attacco Rapido', 'Schiaffo'],
     catchRate: 200, expYield: 85,
@@ -442,86 +414,74 @@ export const BESTI: Record<string, Bestia> = {
     moves: ['Profumo', 'Pollen', 'Cura', 'Radice'],
     catchRate: 180, expYield: 95,
   },
-
-  // ═══════════════════════════════════════════════════════════════
-  // BESTI LEGGENDARI (4 totali)
-  // ═══════════════════════════════════════════════════════════════
   dolomitor: { 
     id: 100, name: 'Dolomitor', types: ['ice', 'earth'], 
     desc: 'Spirito delle Dolomiti. Signore del freddo eterno.', 
     bs: { hp: 100, atk: 120, def: 110, spd: 80 },
-    moves: ['Valanga', 'Terremoto', 'Blizzard', 'Tempesta'],
+    moves: ['Graspa', 'Terremoto', 'Blizzard', 'Tempesta'],
     isLegendary: true, catchRate: 5, expYield: 300,
   },
   lagorion: { 
     id: 101, name: 'Lagorion', types: ['water', 'dragon'], 
     desc: 'Signore del lago. Il suo ruggito fa tremare le acque.', 
     bs: { hp: 95, atk: 110, def: 95, spd: 90 },
-    moves: ['Tsunami', 'Dragopulso', 'Idropompa', 'Surf'],
+    moves: ['Spritzata', 'Dragopulso', 'Idropompa', 'Surf'],
     isLegendary: true, catchRate: 5, expYield: 300,
   },
   serenissima: { 
     id: 102, name: 'Serenissima', types: ['psycho', 'air'], 
     desc: 'Spirito di Venezia. Protegge la città lagunare.', 
     bs: { hp: 90, atk: 100, def: 90, spd: 110 },
-    moves: ['Psicic', 'Aria Tagliente', 'Nebbia', 'Carnevale'],
+    moves: ['In mona', 'Aria Tagliente', 'Nebbia', 'Carnevale'],
     isLegendary: true, catchRate: 5, expYield: 300,
   },
   ombraspritz: { 
     id: 103, name: 'OmbraSpritz', types: ['magic', 'poison'], 
-    desc: 'Spirito oscuro degli aperitivi. Troppo spritz fa male!', 
+    desc: 'Spirito oscuro degli aperitivi. Troppo spritz fa male, bocia!',
     bs: { hp: 85, atk: 105, def: 85, spd: 100 },
-    moves: ['Spritz Explosivo', 'Tossicità', 'Nebbia', 'Sera'],
+    moves: ['In mona', 'Tossicità', 'Nebbia', 'Sera'],
     isLegendary: true, catchRate: 5, expYield: 300,
   },
-
-  // ═══════════════════════════════════════════════════════════════
-  // ULTIMATE (non si cattura, si ottiene dalla storia)
-  // ═══════════════════════════════════════════════════════════════
   duxvenetiae: { 
     id: 200, name: 'Dux Venetiae', types: ['dragon', 'psycho'], 
-    desc: 'Il Doge supremo di Venetia. Solo il migliore può averlo.', 
+    desc: 'Il Doge supremo de Venetia. Solo chi beve grappa de mattina può domarlo.',
     bs: { hp: 120, atk: 130, def: 120, spd: 100 },
-    moves: ['Dominio', 'Tsunami', 'Inferno', 'Psicic'],
+    moves: ['Dominio', 'Tsunami', 'Graspa', 'In mona'],
     catchRate: 1, expYield: 400,
   },
 }
 
-// ─────────────────────────────────────────────────────────────────
-// I 4 STARTER LEGGENDARI (come Pokemon Marron Merda con Entei/Raikou/Suicune)
-// ─────────────────────────────────────────────────────────────────
 export const LEGENDARY_STARTERS: Record<string, Bestia> = {
   dolomitor: { 
     id: 100, name: 'Dolomitor', types: ['ice', 'earth'], 
     desc: 'Spirito delle Dolomiti. Signore del freddo eterno. Ha il potere delle montagne innevate. Starter leggendario!', 
     bs: { hp: 100, atk: 120, def: 110, spd: 80 },
-    moves: ['Valanga', 'Terremoto', 'Blizzard', 'Tempesta'],
+    moves: ['Graspa', 'Terremoto', 'Blizzard', 'Tempesta'],
     isLegendary: true, catchRate: 5, expYield: 300,
   },
   lagorion: { 
     id: 101, name: 'Lagorion', types: ['water', 'dragon'], 
     desc: 'Signore del lago. Il suo ruggito fa tremare le acque. Starter leggendario!', 
     bs: { hp: 95, atk: 110, def: 95, spd: 90 },
-    moves: ['Tsunami', 'Dragopulso', 'Idropompa', 'Surf'],
+    moves: ['Spritzata', 'Dragopulso', 'Idropompa', 'Surf'],
     isLegendary: true, catchRate: 5, expYield: 300,
   },
   serenissima: { 
     id: 102, name: 'Serenissima', types: ['psycho', 'air'], 
     desc: 'Spirito di Venezia. Protegge la città lagunare. Starter leggendario!', 
     bs: { hp: 90, atk: 100, def: 90, spd: 110 },
-    moves: ['Psicic', 'Aria Tagliente', 'Nebbia', 'Carnevale'],
+    moves: ['In mona', 'Aria Tagliente', 'Nebbia', 'Carnevale'],
     isLegendary: true, catchRate: 5, expYield: 300,
   },
-  ombradriz: { 
+  ombraspritz: {
     id: 103, name: 'OmbraSpritz', types: ['magic', 'poison'], 
     desc: 'Spirito oscuro degli aperitivi. Starter leggendario!', 
     bs: { hp: 85, atk: 105, def: 85, spd: 100 },
-    moves: ['Spritz Explosivo', 'Tossicità', 'Nebbia', 'Sera'],
+    moves: ['In mona', 'Tossicità', 'Nebbia', 'Sera'],
     isLegendary: true, catchRate: 5, expYield: 300,
   },
 }
 
-// All move data
 export interface MoveData {
   name: string
   power: number
@@ -532,7 +492,6 @@ export interface MoveData {
 }
 
 export const MOVES: Record<string, MoveData> = {
-  // Normali
   Ardore: { name: 'Ardore', power: 40, accuracy: 100, pp: 35, type: 'fire' },
   Ruggito: { name: 'Ruggito', power: 0, accuracy: 100, pp: 40, type: 'normal', effect: 'lower_def' },
   Morso: { name: 'Morso', power: 50, accuracy: 100, pp: 25, type: 'normal' },
@@ -540,8 +499,6 @@ export const MOVES: Record<string, MoveData> = {
   Falò: { name: 'Falò', power: 70, accuracy: 95, pp: 15, type: 'fire' },
   Inferno: { name: 'Inferno', power: 100, accuracy: 75, pp: 5, type: 'fire' },
   Dragofiamma: { name: 'Dragofiamma', power: 80, accuracy: 100, pp: 10, type: 'dragon' },
-  
-  // Acqua
   Splash: { name: 'Splash', power: 0, accuracy: 100, pp: 40, type: 'water', effect: 'flavor' },
   Bolla: { name: 'Bolla', power: 30, accuracy: 100, pp: 30, type: 'water' },
   'Att. Rapido': { name: 'Att. Rapido', power: 40, accuracy: 100, pp: 30, type: 'normal' },
@@ -549,8 +506,6 @@ export const MOVES: Record<string, MoveData> = {
   Onda: { name: 'Onda', power: 55, accuracy: 100, pp: 20, type: 'water' },
   Tsunami: { name: 'Tsunami', power: 90, accuracy: 100, pp: 10, type: 'water' },
   Surf: { name: 'Surf', power: 80, accuracy: 100, pp: 10, type: 'water' },
-  
-  // Natura
   Vite: { name: 'Vite', power: 30, accuracy: 100, pp: 30, type: 'nature' },
   Assorbi: { name: 'Assorbi', power: 30, accuracy: 100, pp: 25, type: 'nature', effect: 'heal' },
   Cresci: { name: 'Cresci', power: 0, accuracy: 100, pp: 40, type: 'nature', effect: 'raise_atk' },
@@ -559,16 +514,12 @@ export const MOVES: Record<string, MoveData> = {
   'Tempesta Verde': { name: 'Tempesta Verde', power: 85, accuracy: 90, pp: 10, type: 'nature' },
   Radice: { name: 'Radice', power: 60, accuracy: 100, pp: 20, type: 'earth' },
   'Cura Solare': { name: 'Cura Solare', power: 0, accuracy: 100, pp: 10, type: 'nature', effect: 'heal_party' },
-  
-  // Terra
   'Polenta Smash': { name: 'Polenta Smash', power: 50, accuracy: 100, pp: 20, type: 'earth' },
   Terremoto: { name: 'Terremoto', power: 80, accuracy: 100, pp: 10, type: 'earth' },
   Protezione: { name: 'Protezione', power: 0, accuracy: 100, pp: 20, type: 'earth', effect: 'protect' },
   Valanga: { name: 'Valanga', power: 75, accuracy: 90, pp: 15, type: 'ice' },
   Muro: { name: 'Muro', power: 0, accuracy: 100, pp: 15, type: 'earth', effect: 'def_up' },
   Frana: { name: 'Frana', power: 60, accuracy: 95, pp: 15, type: 'earth' },
-  
-  // Aria
   Beccata: { name: 'Beccata', power: 35, accuracy: 100, pp: 35, type: 'air' },
   Tornado: { name: 'Tornado', power: 40, accuracy: 100, pp: 25, type: 'air' },
   Volo: { name: 'Volo', power: 70, accuracy: 95, pp: 15, type: 'air' },
@@ -576,23 +527,17 @@ export const MOVES: Record<string, MoveData> = {
   Picchiata: { name: 'Picchiata', power: 65, accuracy: 95, pp: 15, type: 'air' },
   Raffica: { name: 'Raffica', power: 40, accuracy: 100, pp: 30, type: 'air' },
   'Vola Via': { name: 'Vola Via', power: 50, accuracy: 95, pp: 20, type: 'air' },
-  
-  // Ghiaccio
   'Polvere di Neve': { name: 'Polvere di Neve', power: 30, accuracy: 100, pp: 30, type: 'ice' },
   'Vento Gelido': { name: 'Vento Gelido', power: 45, accuracy: 95, pp: 20, type: 'ice' },
   Blizzard: { name: 'Blizzard', power: 90, accuracy: 85, pp: 5, type: 'ice' },
   'Corno Ghiacciato': { name: 'Corno Ghiacciato', power: 70, accuracy: 95, pp: 15, type: 'ice' },
   Congelamento: { name: 'Congelamento', power: 60, accuracy: 95, pp: 15, type: 'ice' },
-  
-  // Elettrico
   Tuonoshock: { name: 'Tuonoshock', power: 35, accuracy: 100, pp: 30, type: 'electric' },
   Tuono: { name: 'Tuono', power: 75, accuracy: 90, pp: 10, type: 'electric' },
   Fulmine: { name: 'Fulmine', power: 80, accuracy: 95, pp: 10, type: 'electric' },
   Pungiglione: { name: 'Pungiglione', power: 40, accuracy: 100, pp: 25, type: 'electric' },
   Sciame: { name: 'Sciame', power: 55, accuracy: 95, pp: 20, type: 'electric' },
   Elettroshock: { name: 'Elettroshock', power: 70, accuracy: 100, pp: 15, type: 'electric' },
-  
-  // Veleno
   'Coda Velenosa': { name: 'Coda Velenosa', power: 35, accuracy: 100, pp: 30, type: 'poison' },
   Tossina: { name: 'Tossina', power: 50, accuracy: 95, pp: 20, type: 'poison' },
   Zanna: { name: 'Zanna', power: 55, accuracy: 95, pp: 20, type: 'poison' },
@@ -601,8 +546,6 @@ export const MOVES: Record<string, MoveData> = {
   'Gas Velenoso': { name: 'Gas Velenoso', power: 30, accuracy: 90, pp: 25, type: 'poison', effect: 'poison' },
   'Tossicità': { name: 'Tossicità', power: 70, accuracy: 90, pp: 10, type: 'poison' },
   Esplosione: { name: 'Esplosione', power: 100, accuracy: 100, pp: 5, type: 'poison' },
-  
-  // Psycho
   Ipnosi: { name: 'Ipnosi', power: 0, accuracy: 60, pp: 20, type: 'psycho', effect: 'sleep' },
   Psicoraggio: { name: 'Psicoraggio', power: 50, accuracy: 100, pp: 20, type: 'psycho' },
   Ombra: { name: 'Ombra', power: 45, accuracy: 95, pp: 20, type: 'psycho' },
@@ -610,23 +553,17 @@ export const MOVES: Record<string, MoveData> = {
   Psylaser: { name: 'Psylaser', power: 75, accuracy: 100, pp: 10, type: 'psycho' },
   Psicic: { name: 'Psicic', power: 90, accuracy: 100, pp: 10, type: 'psycho' },
   Psiconda: { name: 'Psiconda', power: 60, accuracy: 95, pp: 15, type: 'psycho' },
-  
-  // Magic
   'Spritz Splash': { name: 'Spritz Splash', power: 30, accuracy: 100, pp: 30, type: 'magic' },
   Confusione: { name: 'Confusione', power: 35, accuracy: 100, pp: 25, type: 'psycho', effect: 'confuse' },
   'Spritz Explosivo': { name: 'Spritz Explosivo', power: 65, accuracy: 90, pp: 15, type: 'magic' },
   Nebbia: { name: 'Nebbia', power: 40, accuracy: 95, pp: 20, type: 'magic' },
   'Spritz Curativo': { name: 'Spritz Curativo', power: 50, accuracy: 100, pp: 15, type: 'magic' },
-  
-  // Dolce
   Dolce: { name: 'Dolce', power: 35, accuracy: 100, pp: 30, type: 'sweet' },
   Cura: { name: 'Cura', power: 0, accuracy: 100, pp: 15, type: 'sweet', effect: 'heal' },
   Caffè: { name: 'Caffè', power: 40, accuracy: 100, pp: 20, type: 'sweet' },
   'Dessert Fatale': { name: 'Dessert Fatale', power: 80, accuracy: 90, pp: 10, type: 'sweet' },
   'Super Cura': { name: 'Super Cura', power: 0, accuracy: 100, pp: 10, type: 'sweet', effect: 'heal_party' },
   'Caffè Bomb': { name: 'Caffè Bomb', power: 70, accuracy: 90, pp: 10, type: 'sweet' },
-  
-  // Special
   Remata: { name: 'Remata', power: 35, accuracy: 100, pp: 30, type: 'water' },
   Scudo: { name: 'Scudo', power: 0, accuracy: 100, pp: 20, type: 'water', effect: 'protect' },
   Voga: { name: 'Voga', power: 50, accuracy: 100, pp: 20, type: 'water' },
@@ -670,9 +607,11 @@ export const MOVES: Record<string, MoveData> = {
   Energibomba: { name: 'Energibomba', power: 80, accuracy: 90, pp: 10, type: 'poison' },
   Tempesta: { name: 'Tempesta', power: 85, accuracy: 85, pp: 10, type: 'air' },
   'Domination': { name: 'Dominio', power: 100, accuracy: 95, pp: 5, type: 'dragon' },
+  Graspa: { name: 'Graspa', power: 80, accuracy: 95, pp: 15, type: 'ice' },
+  Spritzata: { name: 'Spritzata', power: 70, accuracy: 100, pp: 20, type: 'water' },
+  'In mona': { name: 'In mona', power: 90, accuracy: 85, pp: 10, type: 'psycho' },
 }
 
-// Game map interface
 export interface MapEvent {
   type: string
   x?: number

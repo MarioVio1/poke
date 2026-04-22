@@ -39,8 +39,8 @@ export const TELEPORT_LOCATIONS: TeleportLocation[] = [
   },
   {
     id: 'centro_canalborgo',
-    name: 'Centro Besti',
-    description: 'Cura i tuoi Besti',
+    name: 'Centro Bestie',
+    description: 'Cura i tuoi Bestie',
     map: 'centro',
     x: 4,
     y: 4,
@@ -77,7 +77,7 @@ export const TELEPORT_LOCATIONS: TeleportLocation[] = [
   {
     id: 'centro_spritzia',
     name: 'Centro Spritzia',
-    description: 'Cura i tuoi Besti',
+    description: 'Cura i tuoi Bestie',
     map: 'centro_spritzia',
     x: 4,
     y: 4,
@@ -128,7 +128,7 @@ export const TELEPORT_LOCATIONS: TeleportLocation[] = [
   {
     id: 'centro_veronara',
     name: 'Centro Veronara',
-    description: 'Cura i tuoi Besti',
+    description: 'Cura i tuoi Bestie',
     map: 'centro_veronara',
     x: 4,
     y: 4,
@@ -179,7 +179,7 @@ export const TELEPORT_LOCATIONS: TeleportLocation[] = [
   {
     id: 'centro_padoana',
     name: 'Centro Padoana',
-    description: 'Cura i tuoi Besti',
+    description: 'Cura i tuoi Bestie',
     map: 'centro_padoana',
     x: 4,
     y: 4,
@@ -218,7 +218,7 @@ export const TELEPORT_LOCATIONS: TeleportLocation[] = [
   {
     id: 'centro_trevisella',
     name: 'Centro Trevisella',
-    description: 'Cura i tuoi Besti',
+    description: 'Cura i tuoi Bestie',
     map: 'centro_trevisella',
     x: 4,
     y: 4,
@@ -257,7 +257,7 @@ export const TELEPORT_LOCATIONS: TeleportLocation[] = [
   {
     id: 'centro_dolomax',
     name: 'Centro Dolomax',
-    description: 'Cura i tuoi Besti',
+    description: 'Cura i tuoi Bestie',
     map: 'centro_dolomax',
     x: 4,
     y: 4,
@@ -296,7 +296,7 @@ export const TELEPORT_LOCATIONS: TeleportLocation[] = [
   {
     id: 'centro_gardalago',
     name: 'Centro Gardalago',
-    description: 'Cura i tuoi Besti',
+    description: 'Cura i tuoi Bestie',
     map: 'centro_gardalago',
     x: 4,
     y: 4,
@@ -321,7 +321,7 @@ export const TELEPORT_LOCATIONS: TeleportLocation[] = [
   {
     id: 'league_entrance',
     name: 'Sede della Lega',
-    description: "L'ingresso della Lega Besti",
+    description: "L'ingresso della Lega Bestie",
     map: 'league_entrance',
     x: 10,
     y: 1,

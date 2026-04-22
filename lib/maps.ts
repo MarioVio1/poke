@@ -17,7 +17,7 @@ export const CITY_THEMES: Record<string, {
     accentColor: '#4fc3f7',
     description: 'La città dei canali e delle maschere',
     npcs: [
-      { name: 'Dottor GheSboro', greeting: 'Studio i Besti tra nebbia e cicheti da una vita!' },
+      { name: 'Dottor GheSboro', greeting: 'Studio i Bestie tra nebbia e cicheti da una vita!' },
       { name: 'Gondoliere', greeting: 'Vogando per i canali...' },
       { name: 'Foto Mario', greeting: 'SORRISI! Siamo a Canalborgo!' },
     ]
@@ -163,7 +163,7 @@ export const MAPS: Record<string, GameMap> = {
         dialog: ['Bravo, te si rivà fin in piazza.', 'Va dal Dottor GheSboro in laboratorio, vicino al canale.'] },
       
       { type: 'npc', x: 9, y: 5, name: 'Nonno Piero', npcId: 'nonno_piero',
-        dialog: ['Nel mio tempo...', '...i Besti si chiamavano Bestie!', 'E non c\'era ste palle!'] },
+        dialog: ['Nel mio tempo...', '...i Bestie si chiamavano Bestie!', 'E non c\'era ste palle!'] },
       
       { type: 'npc', x: 13, y: 6, name: 'Gondoliere', npcId: 'gondoliere_nero',
         dialog: ['Vogando per i canali...', 'Vuoi attraversare? Costa 50€!'] },
@@ -184,7 +184,7 @@ export const MAPS: Record<string, GameMap> = {
       { type: 'sign', x: 10, y: 10, text: 'CANALBORGO\nLa città dei canali' },
       { type: 'sign', x: 3, y: 2, text: 'Casa di Federico' },
       { type: 'sign', x: 17, y: 6, text: 'Laboratorio ➜' },
-      { type: 'sign', x: 25, y: 2, text: 'Centro Besti ➜' },
+      { type: 'sign', x: 25, y: 2, text: 'Centro Bestie ➜' },
       { type: 'sign', x: 25, y: 10, text: 'Bottega ➜' },
       { type: 'sign', x: 2, y: 16, text: 'Porto ➜' },
       { type: 'sign', x: 14, y: 18, text: 'Per Spritzia ➜' },
@@ -295,7 +295,7 @@ export const MAPS: Record<string, GameMap> = {
     ],
     events: [
       { type: 'npc', x: 5, y: 3, name: 'Dottor GheSboro', npcId: 'professor',
-        dialog: ['Finalmente te son rivà fin qua!', 'Sono il Dottor GheSboro, e oggi ti affido il tuo primo Besti!', 'Scegli con criterio: el viaggio sarà longo e pien de monade.'], givesStarter: true },
+        dialog: ['Finalmente te son rivà fin qua!', 'Sono il Dottor GheSboro, e oggi ti affido il tuo primo Bestie!', 'Scegli con criterio: el viaggio sarà longo e pien de monade.'], givesStarter: true },
       { type: 'npc', x: 3, y: 5, name: 'Assistente Nora', npcId: 'scientist',
         dialog: ['Qua dentro cataloghemo tutto.', 'Se te servi una mano, basta domandare.'] },
       { type: 'npc', x: 12, y: 5, name: 'Assistente Pino', npcId: 'scientist',
@@ -327,7 +327,7 @@ export const MAPS: Record<string, GameMap> = {
     ],
     events: [
       { type: 'npc', x: 8, y: 8, name: 'Registratore', npcId: 'computer',
-        dialog: ['Registra i tuoi Besti!', 'Controlla i tuoi progressi!'] },
+        dialog: ['Registra i tuoi Bestie!', 'Controlla i tuoi progressi!'] },
       { type: 'warp', x: 7, y: 12, dest: 'laboratorio', dx: 7, dy: 3, text: 'Scendi le scale' },
     ],
   },
@@ -352,9 +352,9 @@ export const MAPS: Record<string, GameMap> = {
     ],
   },
 
-  // Besti Center (expanded)
+  // Bestie Center (expanded)
   centro: {
-    name: 'Centro Besti',
+    name: 'Centro Bestie',
     tiles: [
       [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
       [2,5,5,5,5,5,5,5,5,5,5,5,5,5,5,2],
@@ -372,7 +372,7 @@ export const MAPS: Record<string, GameMap> = {
     ],
     events: [
       { type: 'npc', x: 7, y: 6, name: 'Infermiera', npcId: 'lass',
-        dialog: ['Il tuo Besti è stato curato!', 'Tien qua anche un PokeDioex: cussì no vai in giro come un mona.', 'Buona fortuna nel viaggio!'], gift: 'pokedex' },
+        dialog: ['Il tuo Bestie è stato curato!', 'Tien qua anche un PokeDioex: cussì no vai in giro come un mona.', 'Buona fortuna nel viaggio!'], gift: 'pokedex' },
       { type: 'npc', x: 10, y: 8, name: 'Dottore', npcId: 'professor',
         dialog: ['Il centro xe aperto 24 ore!', 'Te serve qualcosa?'] },
       { type: 'heal' },
@@ -399,7 +399,7 @@ export const MAPS: Record<string, GameMap> = {
     ],
     events: [
       { type: 'npc', x: 3, y: 5, name: 'Commessa Bruna', npcId: 'lass',
-        dialog: ['Se te manca el PokeDioex, qua te lo sistemo subito.', 'Annota i Besti e dopo torna a comprare, fio mio.'], gift: 'pokedex' },
+        dialog: ['Se te manca el PokeDioex, qua te lo sistemo subito.', 'Annota i Bestie e dopo torna a comprare, fio mio.'], gift: 'pokedex' },
       { type: 'shop', x: 8, y: 4, 
         items: [
           { name: 'Pozioncino', price: 100, type: 'heal', val: 20 },
@@ -484,7 +484,7 @@ export const MAPS: Record<string, GameMap> = {
       
       // Photographer
       { type: 'npc', x: 16, y: 4, name: 'Foto Mario', npcId: 'fotografo',
-        dialog: ['SORRISI! Siamo a Spritzia!', 'Posso fotografare il tuo Besti?'], gift: 'camera' },
+        dialog: ['SORRISI! Siamo a Spritzia!', 'Posso fotografare il tuo Bestie?'], gift: 'camera' },
       
       // Old Lady
       { type: 'npc', x: 3, y: 4, name: 'Nonna Marisa', npcId: 'vecchia_spritzia',
@@ -510,9 +510,9 @@ export const MAPS: Record<string, GameMap> = {
     ],
   },
 
-  // Spritzia Besti Center
+  // Spritzia Bestie Center
   centro_spritzia: {
-    name: 'Centro Besti Spritzia',
+    name: 'Centro Bestie Spritzia',
     tiles: [
       [1,1,1,1,1,1,1,1,1,1],
       [1,4,4,4,4,4,4,4,4,1],
@@ -626,7 +626,7 @@ export const MAPS: Record<string, GameMap> = {
       
       // Priest
       { type: 'npc', x: 17, y: 4, name: 'Don Bepi', npcId: 'prete',
-        dialog: ['Dio ti benedica, figliolo!', 'I Besti? Li ha creati Lui pure!'] },
+        dialog: ['Dio ti benedica, figliolo!', 'I Bestie? Li ha creati Lui pure!'] },
       
       // Shop
       { type: 'warp', x: 4, y: 4, dest: 'shop_veronara', dx: 3, dy: 4 },
@@ -644,7 +644,7 @@ export const MAPS: Record<string, GameMap> = {
   },
 
   centro_veronara: {
-    name: 'Centro Besti Veronara',
+    name: 'Centro Bestie Veronara',
     tiles: [
       [1,1,1,1,1,1,1,1,1,1],
       [1,4,4,4,4,4,4,4,4,1],
@@ -774,7 +774,7 @@ export const MAPS: Record<string, GameMap> = {
   },
 
   centro_padoana: {
-    name: 'Centro Besti Padoana',
+    name: 'Centro Bestie Padoana',
     tiles: [
       [1,1,1,1,1,1,1,1,1,1],
       [1,4,4,4,4,4,4,4,4,1],
@@ -904,7 +904,7 @@ export const MAPS: Record<string, GameMap> = {
   },
 
   centro_trevisella: {
-    name: 'Centro Besti Trevisella',
+    name: 'Centro Bestie Trevisella',
     tiles: [
       [1,1,1,1,1,1,1,1,1,1],
       [1,4,4,4,4,4,4,4,4,1],
@@ -915,7 +915,7 @@ export const MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,1,1,1,1,1],
     ],
     events: [
-      { type: 'npc', x: 4, y: 3, name: 'Infermiera', npcId: 'lass', dialog: ['Curato!', 'Se trovi Besti nei campi, segnali subito nel PokeDioex.'], gift: 'pokedex' },
+      { type: 'npc', x: 4, y: 3, name: 'Infermiera', npcId: 'lass', dialog: ['Curato!', 'Se trovi Bestie nei campi, segnali subito nel PokeDioex.'], gift: 'pokedex' },
       { type: 'heal' },
       { type: 'warp', x: 4, y: 5, dest: 'trevisella', dx: 15, dy: 7 },
     ],
@@ -1003,11 +1003,11 @@ export const MAPS: Record<string, GameMap> = {
     events: [
       // Mountain man
       { type: 'npc', x: 5, y: 7, name: 'Bepi de Monte', npcId: 'montanaro',
-        dialog: ['Qui l\'aria xe fina!', 'E i Besti i cognosse el fatto loro!'] },
+        dialog: ['Qui l\'aria xe fina!', 'E i Bestie i cognosse el fatto loro!'] },
       
       // Yeti guy
       { type: 'npc', x: 14, y: 7, name: 'Bepi Yeti', npcId: 'yeti_finto',
-        dialog: ['L\'ho visto! Il Yeti!', '...Era un Besti Nevelet!'] },
+        dialog: ['L\'ho visto! Il Yeti!', '...Era una Bestia Nevelet!'] },
       
       // Gym Leader - Ice type
       { type: 'gym', x: 9, y: 6, name: 'Regina dei Ghiacci', npcId: 'vecchia_spritzia',
@@ -1031,7 +1031,7 @@ export const MAPS: Record<string, GameMap> = {
   },
 
   centro_dolomax: {
-    name: 'Centro Besti Dolomax',
+    name: 'Centro Bestie Dolomax',
     tiles: [
       [1,1,1,1,1,1,1,1,1,1],
       [1,4,4,4,4,4,4,4,4,1],
@@ -1178,7 +1178,7 @@ export const MAPS: Record<string, GameMap> = {
     events: [
       // Vineyard worker
       { type: 'npc', x: 12, y: 4, name: 'Viticoltore Dino', npcId: 'contadino',
-        dialog: ['Quest\'anno el vin xe speciale!', 'Teipi, teengo anca un Besti!'] },
+        dialog: ['Quest\'anno el vin xe speciale!', 'Teipi, teengo anca una Bestia!'] },
       
       // Trainer
       { type: 'trainer', x: 6, y: 6, name: 'Ragazzo Uva', npcId: 'kid',
@@ -1252,7 +1252,7 @@ export const MAPS: Record<string, GameMap> = {
   },
 
   centro_gardalago: {
-    name: 'Centro Besti Gardalago',
+    name: 'Centro Bestie Gardalago',
     tiles: [
       [1,1,1,1,1,1,1,1,1,1],
       [1,4,4,4,4,4,4,4,4,1],
@@ -1401,7 +1401,7 @@ export const MAPS: Record<string, GameMap> = {
 
   // League Entrance
   league_entrance: {
-    name: 'Sede della Lega Besti',
+    name: 'Sede della Lega Bestie',
     width: 20,
     height: 15,
     tiles: [
@@ -1427,7 +1427,7 @@ export const MAPS: Record<string, GameMap> = {
         team: [{ id: 'fogarox', lvl: 40 }, { id: 'dolomitor', lvl: 42 }, { id: 'lagorion', lvl: 41 }] },
       { type: 'trainer', x: 16, y: 4, name: 'L\'Acquoso Luca', npcId: 'elite_2',
         dialog: ['Io sono L\'Acquoso Luca! I miei canali xe profondi e pieni de sorprese!'],
-        team: [{ id: 'canalord', lvl: 40 }, { id: 'nevelet', lvl: 42 }, { id: 'ombradriz', lvl: 41 }] },
+        team: [{ id: 'canalord', lvl: 40 }, { id: 'nevelet', lvl: 42 }, { id: 'ombraspritz', lvl: 41 }] },
       { type: 'trainer', x: 3, y: 10, name: 'Il Naturale Giulia', npcId: 'elite_3',
         dialog: ['Sono Il Naturale Giulia! La natura xe dalla mia parte, e no la puoi fregare!'],
         team: [{ id: 'vignarbor', lvl: 40 }, { id: 'polentitan', lvl: 42 }, { id: 'serenissima', lvl: 41 }] },
@@ -1467,7 +1467,7 @@ export const MAPS: Record<string, GameMap> = {
           { id: 'dolomitor', lvl: 50 },
           { id: 'lagorion', lvl: 50 },
           { id: 'serenissima', lvl: 50 },
-          { id: 'ombradriz', lvl: 50 },
+          { id: 'ombraspritz', lvl: 50 },
           { id: 'fogarox', lvl: 52 },
           { id: 'canalord', lvl: 52 },
         ], badge: 'champion', prize: 50000 },

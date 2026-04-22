@@ -28,13 +28,13 @@ export const COMPLETE_MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
     ],
     events: [
-      { type: 'npc', x: 10, y: 7, name: 'Prof. Barcaro', npcId: 'prof_barcaro', 
-        dialog: ['Ah, sei arrivato!', 'Sono il Prof. Barcaro!', 'Ho 4 Besti leggendari per te!', 'Scegli il tuo!'], givesStarter: true },
-      { type: 'npc', x: 4, y: 9, name: 'Mamma', npcId: 'mamma', dialog: ['Tesoro!', 'Vai dal Prof. Barcaro!', 'E non litigare!'] },
+      { type: 'npc', x: 10, y: 7, name: 'Prof. GheSboro', npcId: 'prof_barcaro',
+        dialog: ['Ah, sei arrivato!', 'Sono il Prof. GheSboro!', 'Ho 4 Bestie leggendarie per te!', 'Scegli il tuo!'], givesStarter: true },
+      { type: 'npc', x: 4, y: 9, name: 'Mamma', npcId: 'mamma', dialog: ['Tesoro!', 'Vai dal Prof. GheSboro!', 'E non litigare!'] },
       { type: 'npc', x: 5, y: 4, name: 'Nonno Piero', npcId: 'nonno_piero', dialog: ['Nel mio tempo...', '...era tutto meglio!'] },
       { type: 'npc', x: 2, y: 5, name: 'Gondoliere', npcId: 'gondoliere_nero', dialog: ['Vogando...', 'Costa 50€ il giro!'] },
       { type: 'sign', x: 8, y: 9, text: 'CANALBORGO\nLa città dei canali!' },
-      { type: 'sign', x: 15, y: 4, text: 'Centro Besti ➜' },
+      { type: 'sign', x: 15, y: 4, text: 'Centro Bestie ➜' },
       { type: 'warp', x: 7, y: 11, dest: 'casa', dx: 4, dy: 5 },
       { type: 'warp', x: 12, y: 11, dest: 'casa', dx: 5, dy: 5 },
       { type: 'warp', x: 9, y: 6, dest: 'centro', dx: 4, dy: 4 },
@@ -64,9 +64,9 @@ export const COMPLETE_MAPS: Record<string, GameMap> = {
     ],
   },
 
-  // BESTI CENTER
+  // BESTIE CENTER
   centro: {
-    name: 'Centro Besti',
+    name: 'Centro Bestie',
     tiles: [
       [1,1,1,1,1,1,1,1,1,1],
       [1,4,4,4,4,4,4,4,4,1],
@@ -272,7 +272,7 @@ export const COMPLETE_MAPS: Record<string, GameMap> = {
   },
 
   centro_veronara: {
-    name: 'Centro Besti Veronara',
+    name: 'Centro Bestie Veronara',
     tiles: [
       [1,1,1,1,1,1,1,1,1,1],
       [1,4,4,4,4,4,4,4,4,1],
@@ -362,7 +362,7 @@ export const COMPLETE_MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     ],
     events: [
-      { type: 'npc', x: 10, y: 6, name: 'Prof. Sansovino', npcId: 'prof_padova', dialog: ['Benvenuto!', 'Studia i Besti!'] },
+      { type: 'npc', x: 10, y: 6, name: 'Prof. Sansovino', npcId: 'prof_padova', dialog: ['Benvenuto!', 'Studia i Bestie!'] },
       { type: 'npc', x: 4, y: 7, name: 'Marco', npcId: 'studente_fannullone', dialog: ['Ma chi me lo fa fare?'] },
       { type: 'trainer', x: 16, y: 7, name: 'Laura', npcId: 'lass', dialog: ['Combattiamo!'], team: [{ id: 'tiramisu', lvl: 18 }, { id: 'prosecchione', lvl: 17 }] },
       { type: 'sign', x: 10, y: 8, text: 'PADOANA\nCittà dell\'Università!' },
@@ -374,7 +374,7 @@ export const COMPLETE_MAPS: Record<string, GameMap> = {
   },
 
   centro_padoana: {
-    name: 'Centro Besti Padoana',
+    name: 'Centro Bestie Padoana',
     tiles: [
       [1,1,1,1,1,1,1,1,1,1],
       [1,4,4,4,4,4,4,4,4,1],
@@ -476,7 +476,7 @@ export const COMPLETE_MAPS: Record<string, GameMap> = {
   },
 
   centro_trevisella: {
-    name: 'Centro Besti Trevisella',
+    name: 'Centro Bestie Trevisella',
     tiles: [
       [1,1,1,1,1,1,1,1,1,1],
       [1,4,4,4,4,4,4,4,4,1],
@@ -578,7 +578,7 @@ export const COMPLETE_MAPS: Record<string, GameMap> = {
   },
 
   centro_dolomax: {
-    name: 'Centro Besti Dolomax',
+    name: 'Centro Bestie Dolomax',
     tiles: [
       [1,1,1,1,1,1,1,1,1,1],
       [1,4,4,4,4,4,4,4,4,1],
@@ -677,7 +677,7 @@ export const COMPLETE_MAPS: Record<string, GameMap> = {
   },
 
   centro_gardalago: {
-    name: 'Centro Besti Gardalago',
+    name: 'Centro Bestie Gardalago',
     tiles: [
       [1,1,1,1,1,1,1,1,1,1],
       [1,4,4,4,4,4,4,4,4,1],

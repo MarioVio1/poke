@@ -15,12 +15,12 @@ export const NPCs: Record<string, NPCData> = {
   // CANALBORGO NPCs
   prof_barcaro: {
     id: 'prof_barcaro',
-    name: 'Prof. Barcaro',
+    name: 'Prof. GheSboro',
     role: 'Scientist',
     dialog: [
-      'Ciao! Sono il Prof. Barcaro!',
-      'Studio i Besti da 40 anni, ma ho ancora i capelli!',
-      'Scegli il tuo primo Besti!',
+      'Ciao! Sono il Prof. GheSboro!',
+      'Studio i Bestie da 40 anni, ma ho ancora i capelli!',
+      'Scegli il tuo primo Bestie!',
     ],
     sprite: 'professor',
     gift: 'starter',
@@ -42,7 +42,7 @@ export const NPCs: Record<string, NPCData> = {
     name: 'Nonno Piero',
     role: 'Old Man',
     dialog: [
-      'Nel mio tempo i Besti si chiamavano... ehm... Bestie!',
+      'Nel mio tempo i Bestie si chiamavano... ehm... Bestie!',
       'E non c\'era ste palle, si usava il cappello!',
       'Vado a pescare, anzi no, il pesce è finito...',
       'Fammi il favore, vieni a trovarmi più spesso!',
@@ -54,9 +54,10 @@ export const NPCs: Record<string, NPCData> = {
     name: 'Gondoliere',
     role: 'Boatman',
     dialog: [
-      'Vogando per i canali, vogando...',
-      'Vuoi attraversare? Costa 50€!',
-      'Ma chi te fè? El Doge? No, el Doge el paga!',
+      'Vogando per i canali, vogando... e bestemmiando!',
+      'Vuoi attraversare? Costa 80€ perché te seti foresto!',
+      'Ma chi te fè? El Doge? No, el Doge el paga in sghèi, ti te paghi in lacrime!',
+      'Ocio ai pìcoli in canal, che i magna le gambe!',
     ],
     sprite: 'gondolier',
   },
@@ -123,7 +124,7 @@ export const NPCs: Record<string, NPCData> = {
     role: 'Photographer',
     dialog: [
       'SORRISI! Siamo a Spritzia!',
-      'Posso fotografare il tuo Besti?',
+      'Posso fotografare il tuo Bestie?',
       'Uè, questo l\'ho già fotografato... vattela!',
     ],
     sprite: 'photographer',
@@ -134,9 +135,10 @@ export const NPCs: Record<string, NPCData> = {
     name: 'Nonna Marisa',
     role: 'Old Lady',
     dialog: [
-      'Nel mio tempo...',
-      '...no, era meglio prima!',
-      'Bevi acqua, non spritz! ...Ma chi te credi?!',
+      'Nel mio tempo i bocia i laorava, mica i coreva drio a ste Bestie de fero!',
+      'Magnate un poco de polenta che te seti un stichetto!',
+      'Bevi acqua, non spritz! ...Scherzavo, dame un goto de bianco anca a mi!',
+      'Ghe sboro, che bel moroso che te seti diventà!',
     ],
     sprite: 'lady',
   },
@@ -176,7 +178,7 @@ export const NPCs: Record<string, NPCData> = {
     role: 'Priest',
     dialog: [
       'Dio ti benedica, figliolo!',
-      'I Besti? Li ha creati Lui pure!',
+      'I Bestie? Li ha creati Lui pure!',
       'Vieni a messa la domenica! ...E pure il martedì!',
     ],
     sprite: 'scientist',
@@ -189,7 +191,7 @@ export const NPCs: Record<string, NPCData> = {
     role: 'Professor',
     dialog: [
       'Benvenuto all\'Università!',
-      'I Besti sono creature straordinarie!',
+      'I Bestie sono creature straordinarie!',
       'Ho bisogno di campioni per la mia ricerca...',
     ],
     sprite: 'professor',
@@ -263,7 +265,7 @@ export const NPCs: Record<string, NPCData> = {
     dialog: [
       'Benvenuto in altura!',
       'Qui l\'aria xe fina!',
-      'E i Besti i cognosse el fatto loro!',
+      'E i Bestie i cognosse el fatto loro!',
     ],
     sprite: 'hiker',
   },
@@ -273,7 +275,7 @@ export const NPCs: Record<string, NPCData> = {
     role: 'Cryptozoologist',
     dialog: [
       'L\'ho visto! Il Yeti!',
-      '...Era un Besti Nevelet!',
+      '...Era una Bestia Nevelet!',
       'Ma l\'ho visto lo stesso!',
     ],
     sprite: 'hiker',
@@ -356,7 +358,7 @@ export const EXTRA_NPCs: Record<string, NPCData> = {
     role: 'Tourist Photographer',
     dialog: [
       'SORRISI! Siamo a Canalborgo!',
-      'POSSO FOTOGRAFARE IL TUO BESTI?',
+      'POSSO FOTOGRAFARE IL TUO BESTIE?',
       'Bellissimo! ...No, era meglio prima!',
       'AH! VEDO! VEDO! ...No, no vedo!',
     ],
@@ -521,7 +523,7 @@ export const EXTRA_NPCs: Record<string, NPCData> = {
     dialog: [
       'Benvenuto in altura!',
       'Qui l\'aria xe fina!',
-      'E i Besti i cognosse el fatto loro!',
+      'E i Bestie i cognosse el fatto loro!',
     ],
     sprite: 'hiker',
   },
@@ -534,7 +536,7 @@ export const EXTRA_NPCs: Record<string, NPCData> = {
     dialog: [
       'L\'HO VISTO! Il Yeti!',
       'Era là, in cima alla montagna!',
-      '...Era un Besti Nevelet!',
+      '...Era una Bestia Nevelet!',
     ],
     sprite: 'hiker',
   },
@@ -555,7 +557,7 @@ export const EXTRA_NPCs: Record<string, NPCData> = {
     role: 'Ice Queen',
     dialog: [
       'IL FREDDO È MIO ALLEATO!',
-      'Le mie Besti vengono dalle Dolomiti!',
+      'Le mie Bestie vengono dalle Dolomiti!',
       'Sono freddi come il mio cuore!',
     ],
     sprite: 'champion',
@@ -711,7 +713,7 @@ export const EXTRA_NPCs: Record<string, NPCData> = {
     role: 'Nonna Fastidiosa',
     dialog: [
       'NEL MIO TEMPO ERA MEGLIO!',
-      'I Besti? Più forti!',
+      'I Bestie? Più forti!',
       'La polenta? Più buona!',
     ],
     sprite: 'lass',
@@ -746,7 +748,7 @@ export const EXTRA_NPCs: Record<string, NPCData> = {
     role: 'Bambino Fastidioso',
     dialog: [
       'VOGLIO! VOGLIO! VOGLIO!',
-      'IL BESTIA! QUELLO VERDE!',
+      'IL BESTIEA! QUELLO VERDE!',
       'NO! QUELLO BLU!',
     ],
     sprite: 'kid',
@@ -845,7 +847,7 @@ export const EXTRA_NPCs: Record<string, NPCData> = {
     name: 'Attivista Animale',
     role: 'Attivista',
     dialog: [
-      'I BESTI SONO LIBERI!',
+      'I BESTIE SONO LIBERI!',
       'LIBERTÀ PER TUTTI!',
       'LA POLENTA È UN CRIMINE!',
     ],
@@ -871,7 +873,7 @@ export const EXTRA_NPCs: Record<string, NPCData> = {
     dialog: [
       'SPAZZOLE! PER CAPELLI!',
       'Per denti! Per casa!',
-      'Per Besti! Per pavimenti!',
+      'Per Bestie! Per pavimenti!',
     ],
     sprite: 'hiker',
   },
@@ -975,7 +977,7 @@ export const EXTRA_NPCs: Record<string, NPCData> = {
     role: 'Scientist',
     dialog: [
       'Benvenuto nel mio laboratorio segreto!',
-      'Sto creando il Besti perfetto!',
+      'Sto creando il Bestie perfetto!',
       'Presto sarà pronto! ...O forse no!',
     ],
     sprite: 'professor',
