@@ -890,7 +890,7 @@ PIXEL_SPRITES.spritzatore = {
   icon: createPixelArt(spritzatoreFront, 2),
 }
 
-// PORCHETTA BESTIEEA - Earth
+// PORCHETTA BESTIEA - Earth
 const porchetta_bestiaFront = [
   [0,0,0,0,0,0,0,0,0,0,0x00FFAB91,0x00FFAB91,0x00FFAB91,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0x00FFAB91,0x00FFAB91,0x00FFAB91,0x00FFAB91,0x00FFAB91,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -1169,7 +1169,7 @@ PIXEL_SPRITES.prosecchione = {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MORE BESTIEE SPRITES
+// MORE BESTIE SPRITES
 // ═══════════════════════════════════════════════════════════════
 
 // Crimignolo - Shadow/Poison (cute bat-like creature)
@@ -1330,4 +1330,4 @@ export function getIconUrl(id: string | number): string {
 }
 
 // Legacy export for compatibility
-export const BESTIEE_SPRITES = PIXEL_SPRITES
+export const BESTIE_SPRITES = PIXEL_SPRITES

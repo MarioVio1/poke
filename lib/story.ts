@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// BESTIE DE VENETIA - BESTIEEE DE VENETIA
+// BESTIE DE VENETIA - BESTIEE DE VENETIA
 // Storia Completa con Personaggi Fastidiosi, Maranza e Terroni
 // Versione Italia Realistica con Umorismo
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -752,13 +752,13 @@ export const ANNOYING_CHARACTERS: AnnoyingCharacter[] = [
     blocksPath: true,
     appearsMultipleTimes: true,
     dialog: [
-      'VOGLIO UN BESTIEEA! VOGLIO UN BESTIEEA!',
+      'VOGLIO UN BESTIA! VOGLIO UN BESTIA!',
       'No, non ti do niente!',
       'MA PERCHÉ?! MAMMA!',
       'Perché sei romper!',
       'NO MAMAAAA!',
       'ECCO! Prendi questo!',
-      'NO! VOGLIO IL BESTIEEA PIÙ FORTE!',
+      'NO! VOGLIO IL BESTIA PIÙ FORTE!',
       'E Quale sarebbe?!',
       'QUELLO VERDE! NO QUELLO ROSSO!',
       'BASTA! COMBATTIAMO!',
@@ -1712,13 +1712,13 @@ export const ANNOYING_CHARACTERS: AnnoyingCharacter[] = [
     blocksPath: true,
     appearsMultipleTimes: true,
     dialog: [
-      'VOGLIO UN BESTIEEA! VOGLIO UN BESTIEEA!',
+      'VOGLIO UN BESTIA! VOGLIO UN BESTIA!',
       'No, non ti do niente!',
       'MA PERCHÉ?! MAMMA!',
       'Perché sei romper!',
       'NO MAMAAAA!',
       'ECCO! Prendi questo!',
-      'NO! VOGLIO IL BESTIEEA PIÙ FORTE!',
+      'NO! VOGLIO IL BESTIA PIÙ FORTE!',
       'E Quale sarebbe?!',
       'QUELLO VERDE! NO QUELLO ROSSO!',
       'BASTA! COMBATTIAMO!',
@@ -2182,7 +2182,7 @@ export const GAME_STORY: GameStory = {
       ],
       dialog: [
         { speaker: "", text: "(SOGNO)", emotion: 'neutral' },
-        { speaker: "", text: "Vedi una Bestia dorato che vola sopra Venetia...", emotion: 'excited' },
+        { speaker: "", text: "Vedi una Bestia dorata che vola sopra Venetia...", emotion: 'excited' },
         { speaker: "", text: "Sotto, figure mangiano polenta ovunque...", emotion: 'neutral' },
         { speaker: "", text: "Una voce: 'SALVA I CANALI! O TUTTI MANGERANNO POLENTA!'", emotion: 'angry' },
         { speaker: "", text: "Ti svegli di soprassalto!", emotion: 'neutral' },
@@ -2285,7 +2285,7 @@ export const GAME_STORY: GameStory = {
         { speaker: "Terzone da Napoli", text: "E i broccoli rabe?! Te l\'hai mai magnato?!", emotion: 'neutral' },
         { speaker: "", text: "NO! E NON LO VOGLIO SAPERE!", emotion: 'angry' },
         { speaker: "", text: "Prosegui di fretta...", emotion: 'neutral' },
-        { speaker: "Bambino Maleducato", text: "VOGLIO UN BESTIEEA! VOGLIO UN BESTIEEA!", emotion: 'excited' },
+        { speaker: "Bambino Maleducato", text: "VOGLIO UN BESTIA! VOGLIO UN BESTIA!", emotion: 'excited' },
         { speaker: "Bambino Maleducato", text: "PAPÀ! L\'è quello là! DÀGLI I SOLDI!", emotion: 'angry' },
         { speaker: "", text: "MA NON TI CONOSCO nemmeno!", emotion: 'angry' },
         { speaker: "Tifoso Juventus", text: "FORZA JUVE!", emotion: 'excited' },
@@ -2295,7 +2295,7 @@ export const GAME_STORY: GameStory = {
         { speaker: "", text: "Ma poi...", emotion: 'neutral' },
         { speaker: "Grint della Polenta", text: "ALTO LÀ, GIOVINOTTO!", emotion: 'angry' },
         { speaker: "Grint della Polenta", text: "LA COMPAGNIA DELLA POLENTA HA BISOOGNO DI TE!", emotion: 'angry' },
-        { speaker: "Grint della Polenta", text: "O meglio... del tuo BESTIEEA!", emotion: 'happy' },
+        { speaker: "Grint della Polenta", text: "O meglio... del tuo BESTIA!", emotion: 'happy' },
       ]
     },
 
@@ -2613,7 +2613,7 @@ export const GAME_STORY: GameStory = {
         { speaker: "Dux Polenta", text: "BENVENUTO! Ecco LA MIA STORIA!", emotion: 'excited' },
         { speaker: "Dux Polenta", text: "ERO UN CUOCO! BUONO!", emotion: 'happy' },
         { speaker: "Dux Polenta", text: "MA LA POLENTA NON VENIVA MAI BENE!", emotion: 'sad' },
-        { speaker: "Dux Polenta", text: "COSÌ HO CATTURATO TUTTI I BESTIEE!", emotion: 'angry' },
+        { speaker: "Dux Polenta", text: "COSÌ HO CATTURATO TUTTI I BESTIE!", emotion: 'angry' },
         { speaker: "Dux Polenta", text: "E HO FATTO UNA POLENTA GIGANTESCA!", emotion: 'excited' },
         { speaker: "Dux Polenta", text: "MA È BRUCIATA! COME SEMPRE!", emotion: 'sad' },
         { speaker: "Dux Polenta", text: "E POI! HO PRESO IL POTERE!", emotion: 'happy' },
@@ -2624,8 +2624,8 @@ export const GAME_STORY: GameStory = {
         { speaker: "Grint", text: "DUX! LA STORIA È GIÀ STATA DETTA 3 VOLTE!", emotion: 'annoyed' },
         { speaker: "Dux Polenta", text: "OKAY! MA C'È DI PIÙ!", emotion: 'happy' },
         { speaker: "Dux Polenta", text: "Ecco LA RICETTA SEGRETA!", emotion: 'excited' },
-        { speaker: "Dux Polenta", text: "FARINA, ACQUA, BESTIEEA, AMORE!", emotion: 'neutral' },
-        { speaker: "", text: "BESTIEEA?! È QUESTO IL PROBLEMA!", emotion: 'angry' },
+        { speaker: "Dux Polenta", text: "FARINA, ACQUA, BESTIA, AMORE!", emotion: 'neutral' },
+        { speaker: "", text: "BESTIA?! È QUESTO IL PROBLEMA!", emotion: 'angry' },
         { speaker: "Dux Polenta", text: "SÌ! E POI IL SEGRETO!", emotion: 'excited' },
         { speaker: "Dux Polenta", text: "IL SEGRETO È... È...", emotion: 'neutral' },
         { speaker: "", text: "QUAL È?!", emotion: 'neutral' },

@@ -748,7 +748,7 @@ export const EXTRA_NPCs: Record<string, NPCData> = {
     role: 'Bambino Fastidioso',
     dialog: [
       'VOGLIO! VOGLIO! VOGLIO!',
-      'IL BESTIEA! QUELLO VERDE!',
+      'IL BESTIE! QUELLO VERDE!',
       'NO! QUELLO BLU!',
     ],
     sprite: 'kid',

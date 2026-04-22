@@ -178,7 +178,7 @@ export const MAPS: Record<string, GameMap> = {
         dialog: ['Che bel tempo oggi!', 'Te voi un caffè?'] },
       
       { type: 'npc', x: 4, y: 12, name: 'Ragazzino Leo', npcId: 'ragazzino',
-        dialog: ['Ho visto un bestio strano!', 'Era verdissimo e volava!'] },
+        dialog: ['Ho visto un bestia strano!', 'Era verdissimo e volava!'] },
       
       // Signs
       { type: 'sign', x: 10, y: 10, text: 'CANALBORGO\nLa città dei canali' },
