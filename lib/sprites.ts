@@ -1,4 +1,4 @@
-// Besti Sprites - Uses PNG images from public/sprites/
+// Bestie Sprites - Uses PNG images from public/sprites/
 // If no PNG found, falls back to generated SVG
 
 export interface SpriteData {
@@ -8,7 +8,7 @@ export interface SpriteData {
   shiny?: string
 }
 
-export const BESTI_SVG_SPRITES: Record<string, SpriteData> = {}
+export const BESTIE_SVG_SPRITES: Record<string, SpriteData> = {}
 
 // Helper per creare SVG (fallback)
 const createSvg = (content: string, width = 96, height = 96): string => 
@@ -23,8 +23,8 @@ const pngSpritesLoaded: Set<string> = new Set()
 // Inizializza gli sprite PNG (carica le immagini disponibili)
 const initPngSprites = () => {
   const spriteNames = [
-    'fogaron', 'fogarox', 'fogarion', 'fogarion2',
-    'radiccor', 'radicorso', 'radicthron',
+    'fogaron', 'fogarox', 'fogarion', 'fogarion_shiny',
+    'radicor', 'radicorso', 'radicthron',
     'canalot', 'canalisk', 'canalord',
     'gabbianzo',
   ]
@@ -37,71 +37,72 @@ const initPngSprites = () => {
 initPngSprites()
 
 // RADICCOR - Nature Starter
-BESTI_SVG_SPRITES.radiccor = {
-  front: getPngPath('Radiccor'),
-  back: getPngPath('Radiccor'),
-  icon: getPngPath('Radiccor'),
+BESTIE_SVG_SPRITES.radicor = {
+  front: getPngPath('Radicor'),
+  back: getPngPath('Radicor'),
+  icon: getPngPath('Radicor'),
 }
 
-BESTI_SVG_SPRITES.radicorso = {
+BESTIE_SVG_SPRITES.radicorso = {
   front: getPngPath('Radicorso'),
   back: getPngPath('Radicorso'),
   icon: getPngPath('Radicorso'),
 }
 
-BESTI_SVG_SPRITES.radicthron = {
+BESTIE_SVG_SPRITES.radicthron = {
   front: getPngPath('Radicthron'),
   back: getPngPath('Radicthron'),
   icon: getPngPath('Radicthron'),
 }
 
 // CANALOT - Water Starter
-BESTI_SVG_SPRITES.canalot = {
+BESTIE_SVG_SPRITES.canalot = {
   front: getPngPath('Canalot'),
   back: getPngPath('Canalot'),
   icon: getPngPath('Canalot'),
 }
 
-BESTI_SVG_SPRITES.canalisk = {
+BESTIE_SVG_SPRITES.canalisk = {
   front: getPngPath('Canalisk'),
   back: getPngPath('Canalisk'),
   icon: getPngPath('Canalisk'),
 }
 
-BESTI_SVG_SPRITES.canalord = {
+BESTIE_SVG_SPRITES.canalord = {
   front: getPngPath('Canalord'),
   back: getPngPath('Canalord'),
   icon: getPngPath('Canalord'),
 }
 
 // GABBIANZO - Air
-BESTI_SVG_SPRITES.gabbianzo = {
+BESTIE_SVG_SPRITES.gabbianzo = {
   front: getPngPath('Gabbianzo'),
   back: getPngPath('Gabbianzo'),
   icon: getPngPath('Gabbianzo'),
 }
-BESTI_SVG_SPRITES.fogaron = {
+BESTIE_SVG_SPRITES.fogaron = {
   front: getPngPath('Fogaron'),
   back: getPngPath('Fogaron'),
   icon: getPngPath('Fogaron'),
 }
 
-BESTI_SVG_SPRITES.fogarox = {
+BESTIE_SVG_SPRITES.fogarox = {
   front: getPngPath('Fogarox'),
   back: getPngPath('Fogarox'),
   icon: getPngPath('Fogarox'),
 }
 
-BESTI_SVG_SPRITES.fogarion = {
+BESTIE_SVG_SPRITES.fogarion = {
   front: getPngPath('Fogarion'),
   back: getPngPath('Fogarion'),
   icon: getPngPath('Fogarion'),
+  shiny: getPngPath('Fogarion2'),
 }
 
 // ═══════════════════════════════════════════════════════════════
 // DOLOMITOR - Ice/Earth Legendary (Dolomites Spirit)
 // ═══════════════════════════════════════════════════════════════
-BESTI_SVG_SPRITES.dolomitor = {
+BESTIE_SVG_SPRITES.dolomitor = {
   front: createSvg(`
     <defs>
       <linearGradient id="dolo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -189,7 +190,7 @@ BESTI_SVG_SPRITES.dolomitor = {
 // ═══════════════════════════════════════════════════════════════
 // LAGORION - Water/Dragon Legendary (Lake Lord)
 // ═══════════════════════════════════════════════════════════════
-BESTI_SVG_SPRITES.lagorion = {
+BESTIE_SVG_SPRITES.lagorion = {
   front: createSvg(`
     <defs>
       <linearGradient id="lago-grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -272,7 +273,7 @@ BESTI_SVG_SPRITES.lagorion = {
 // ═══════════════════════════════════════════════════════════════
 // SERENISSIMA - Psycho/Air Legendary (Spirit of Venice)
 // ═══════════════════════════════════════════════════════════════
-BESTI_SVG_SPRITES.serenissima = {
+BESTIE_SVG_SPRITES.serenissima = {
   front: createSvg(`
     <defs>
       <linearGradient id="sere-grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -353,7 +354,7 @@ BESTI_SVG_SPRITES.serenissima = {
 // ═══════════════════════════════════════════════════════════════
 // OMBRASPRITZ - Magic/Poison Legendary (Aperitif Spirit)
 // ═══════════════════════════════════════════════════════════════
-BESTI_SVG_SPRITES.ombradriz = {
+BESTIE_SVG_SPRITES.ombraspritz = {
   front: createSvg(`
     <defs>
       <linearGradient id="ombr-grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -442,7 +443,7 @@ BESTI_SVG_SPRITES.ombradriz = {
 // ═══════════════════════════════════════════════════════════════
 // GABBIANZO - Seagull Bestia (Common)
 // ═══════════════════════════════════════════════════════════════
-BESTI_SVG_SPRITES.gabbianzo = {
+BESTIE_SVG_SPRITES.gabbianzo = {
   front: createSvg(`
     <defs>
       <linearGradient id="gab-grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -493,7 +494,7 @@ BESTI_SVG_SPRITES.gabbianzo = {
 // ═══════════════════════════════════════════════════════════════
 // SPRITZINO - Spritz Creature
 // ═══════════════════════════════════════════════════════════════
-BESTI_SVG_SPRITES.spritzino = {
+BESTIE_SVG_SPRITES.spritzino = {
   front: createSvg(`
     <defs>
       <linearGradient id="sprit-grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -576,5 +577,5 @@ export const getDefaultSprite = (): { front: string; back: string; icon: string 
 }
 
 // Export for use in game
-export const BESTI_SPRITES = BESTI_SVG_SPRITES
-export { BESTI_SVG_SPRITES as SVG_SPRITES }
+export const BESTIE_SPRITES = BESTIE_SVG_SPRITES
+export { BESTIE_SVG_SPRITES as SVG_SPRITES }

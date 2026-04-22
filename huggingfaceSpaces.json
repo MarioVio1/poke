@@ -1,13 +1,13 @@
 {
   "$schema": "https://huggingface.co/schema.json",
-  "title": "Pokemona - Besti di Venetia",
+  "title": "Bestie de Venetia - Bestie de Venetia",
   "emoji": "🦤",
   "colorFrom": "purple",
   "colorTo": "blue",
   "sdk": "docker",
   "app_port": 7860,
-  "meta_description": "Pokemon-style RPG game set in Venetian Italy with unique Besti creatures",
-  "meta_title": "Pokemona - Besti di Venetia",
+  "meta_description": "Pokemon-style RPG game set in Venetian Italy with unique Bestie creatures",
+  "meta_title": "Bestie de Venetia - Bestie de Venetia",
   "pinned": false,
   "license": "mit",
   "dockerfile": "Dockerfile"

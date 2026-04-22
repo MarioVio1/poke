@@ -172,7 +172,7 @@ PIXEL_SPRITES.serenissima = {
 // ═══════════════════════════════════════════════════════════════
 // OMBRASPRITZ - Magic/Poison (Pixel Art)
 // ═══════════════════════════════════════════════════════════════
-const ombradrizFront = [
+const ombraspritzFront = [
   [0,0,0,0,0,0,0,0,0x00E1BEE7,0x00E1BEE7,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0x00CE93D8,0x00E1BEE7,0x00E1BEE7,0x00CE93D8,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0x00CE93D8,0x00E1BEE7,0x009C27B0,0x009C27B0,0x00E1BEE7,0x00CE93D8,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -191,7 +191,7 @@ const ombradrizFront = [
   [0,0,0,0,0,0x00CE93D8,0x00CE93D8,0x00CE93D8,0x00CE93D8,0x00CE93D8,0x00CE93D8,0x00CE93D8,0x00CE93D8,0x00CE93D8,0x00CE93D8,0,0,0,0,0,0,0,0,0],
 ]
 
-const ombradrizBack = [
+const ombraspritzBack = [
   [0,0,0,0,0,0x00CE93D8,0x00CE93D8,0x00CE93D8,0x00CE93D8,0x00CE93D8,0x00CE93D8,0x00CE93D8,0,0,0,0,0,0,0,0],
   [0,0,0,0,0x00CE93D8,0x00E1BEE7,0x00E1BEE7,0x00E1BEE7,0x00E1BEE7,0x00E1BEE7,0x00E1BEE7,0x00E1BEE7,0x00CE93D8,0,0,0,0,0,0],
   [0,0,0,0x00CE93D8,0x00E1BEE7,0x00E1BEE7,0x00E1BEE7,0x00E1BEE7,0x00E1BEE7,0x00E1BEE7,0x00E1BEE7,0x00E1BEE7,0x00E1BEE7,0x00CE93D8,0,0,0,0,0],
@@ -204,10 +204,10 @@ const ombradrizBack = [
   [0,0x00880E4F,0x00880E4F,0x00880E4F,0x00880E4F,0x00880E4F,0x00880E4F,0x00880E4F,0x00880E4F,0x00880E4F,0x00880E4F,0x00880E4F,0x00880E4F,0x00880E4F,0x00880E4F,0x00880E4F,0x00880E4F,0,0],
 ]
 
-PIXEL_SPRITES.ombradriz = {
-  front: createPixelArt(ombradrizFront, 4),
-  back: createPixelArt(ombradrizBack, 4),
-  icon: createPixelArt(ombradrizFront, 2),
+PIXEL_SPRITES.ombraspritz = {
+  front: createPixelArt(ombraspritzFront, 4),
+  back: createPixelArt(ombraspritzBack, 4),
+  icon: createPixelArt(ombraspritzFront, 2),
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -857,7 +857,7 @@ PIXEL_SPRITES.duxvenetiae = {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// Additional RARE Besti - Pixel Art
+// Additional RARE Bestie - Pixel Art
 // ═══════════════════════════════════════════════════════════════
 
 // FOCACINO - Fire/Earth
@@ -890,7 +890,7 @@ PIXEL_SPRITES.spritzatore = {
   icon: createPixelArt(spritzatoreFront, 2),
 }
 
-// PORCHETTA BESTIA - Earth
+// PORCHETTA BESTIEEA - Earth
 const porchetta_bestiaFront = [
   [0,0,0,0,0,0,0,0,0,0,0x00FFAB91,0x00FFAB91,0x00FFAB91,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0x00FFAB91,0x00FFAB91,0x00FFAB91,0x00FFAB91,0x00FFAB91,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -1169,7 +1169,7 @@ PIXEL_SPRITES.prosecchione = {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// MORE BESTI SPRITES
+// MORE BESTIEE SPRITES
 // ═══════════════════════════════════════════════════════════════
 
 // Crimignolo - Shadow/Poison (cute bat-like creature)
@@ -1330,4 +1330,4 @@ export function getIconUrl(id: string | number): string {
 }
 
 // Legacy export for compatibility
-export const BESTI_SPRITES = PIXEL_SPRITES
+export const BESTIEE_SPRITES = PIXEL_SPRITES

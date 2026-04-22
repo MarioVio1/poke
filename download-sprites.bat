@@ -3,7 +3,7 @@ REM Script per scaricare sprites da PokeAPI
 REM Esegui questo file dalla cartella del progetto
 
 echo ========================================
-echo   DOWNLOAD SPRITES POKEMONA
+echo   DOWNLOAD SPRITES BESTIE DE VENETIA
 echo ========================================
 echo.
 

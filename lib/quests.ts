@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// POKEMONA - BESTI DI VENETIA
+// BESTIE DE VENETIA - BESTIE DI VENETIA
 // Sistema Missioni Completo - Come Pokemon
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -65,8 +65,8 @@ export const GAME_CHAPTERS: GameChapter[] = [
     objectives: [
       "Esci di casa",
       "Parla con la Mamma",
-      "Vai al Laboratorio Barcaro",
-      "Scegli il tuo Besti starter",
+      "Vai al Laboratorio GheSboro",
+      "Scegli il tuo Bestie starter",
       "Combatti contro Marco",
       "Esplora Canalborgo",
       "Vinci la tua prima battaglia selvatica"
@@ -77,7 +77,7 @@ export const GAME_CHAPTERS: GameChapter[] = [
     storyDialog: [
       { speaker: "Mamma", text: "Tesoro! Ti sei svegliato!", emotion: "happy" },
       { speaker: "Mamma", text: "Oggi è il grande giorno!", emotion: "excited" },
-      { speaker: "Mamma", text: "Vai dal Professor Barcaro, ti aspetta in laboratorio!", emotion: "happy" },
+      { speaker: "Mamma", text: "Vai dal Professor GheSboro, ti aspetta in laboratorio!", emotion: "happy" },
       { speaker: "Mamma", text: "E non dimenticare: la polenta è sempre la risposta!", emotion: "neutral" },
       { speaker: "", text: "Esci di casa e vai verso il laboratorio", emotion: "neutral" },
     ]
@@ -85,12 +85,12 @@ export const GAME_CHAPTERS: GameChapter[] = [
   {
     id: 1,
     name: "La Scelta del Destino",
-    description: "Scegli il tuo Besti leggendario e affronta Marco!",
+    description: "Scegli il tuo Bestie leggendarieo e affronta Marco!",
     mapId: "laboratorio",
     objectives: [
       "Entra nel laboratorio",
-      "Parla con il Professor Barcaro",
-      "Ascolta la storia dei Besti leggendari",
+      "Parla con il Professor GheSboro",
+      "Ascolta la storia dei Bestie leggendarie",
       "Scegli tra i 4 Starter leggendari",
       "Combatti la prima battaglia vs Marco"
     ],
@@ -98,13 +98,13 @@ export const GAME_CHAPTERS: GameChapter[] = [
     unlockedMaps: ["laboratorio", "arena_principianti"],
     unlockedGyms: [],
     storyDialog: [
-      { speaker: "Prof. Barcaro", text: "Ah, sei arrivato! Benvenuto nel mio laboratorio!", emotion: "happy" },
-      { speaker: "Prof. Barcaro", text: "Sono il Professor Barcaro, studio i Besti da 40 anni!", emotion: "neutral" },
-      { speaker: "Prof. Barcaro", text: "Oggi è il giorno più importante della tua vita!", emotion: "excited" },
-      { speaker: "Prof. Barcaro", text: "Ti affiderò uno dei 4 BESTI LEGGENDARI!", emotion: "excited" },
+      { speaker: "Prof. GheSboro", text: "Ah, sei arrivato! Benvenuto nel mio laboratorio!", emotion: "happy" },
+      { speaker: "Prof. GheSboro", text: "Sono il Professor GheSboro, studio i Bestie da 40 anni!", emotion: "neutral" },
+      { speaker: "Prof. GheSboro", text: "Oggi è il giorno più importante della tua vita!", emotion: "excited" },
+      { speaker: "Prof. GheSboro", text: "Ti affiderò uno dei 4 BESTIE LEGGENDARI!", emotion: "excited" },
       { speaker: "Marco", text: "EHI! CI SONO ANCHE IO!", emotion: "angry" },
       { speaker: "Marco", text: "Sono Marco, il tuo RIVALE! E prendo il migliore!", emotion: "happy" },
-      { speaker: "Prof. Barcaro", text: "Marco! Sei sempre il solito rompiscatole!", emotion: "confused" },
+      { speaker: "Prof. GheSboro", text: "Marco! Sei sempre il solito rompiscatole!", emotion: "confused" },
       { speaker: "", text: "Scegli il tuo starter leggendario!", emotion: "neutral", trigger: "choice" },
     ]
   },
@@ -117,7 +117,7 @@ export const GAME_CHAPTERS: GameChapter[] = [
       "Esplora Canalborgo",
       "Parla con gli NPC",
       "Vinci una battaglia selvatica",
-      "Vai al Centro Besti",
+      "Vai al Centro Bestie",
       "Attraversa Via del Prosecco verso nord"
     ],
     quests: ["explore_canalborgo", "first_wild_battle", "meet_the_locals"],
@@ -126,7 +126,7 @@ export const GAME_CHAPTERS: GameChapter[] = [
     storyDialog: [
       { speaker: "", text: "Ora sei libero di esplorare Canalborgo!", emotion: "happy" },
       { speaker: "", text: "Parla con la gente, potrebbero darti suggerimenti!", emotion: "neutral" },
-      { speaker: "", text: "Attento ai Besti selvatici nell'erba alta!", emotion: "neutral" },
+      { speaker: "", text: "Attento ai Bestie selvatici nell'erba alta!", emotion: "neutral" },
       { speaker: "", text: "Quando sei pronto, vai verso NORD per raggiungere SPRITZIA!", emotion: "neutral" },
     ]
   },
@@ -339,10 +339,10 @@ export const MAIN_QUESTS: Quest[] = [
     type: "main",
     chapter: 1,
     location: "laboratorio",
-    giver: "Prof. Barcaro",
+    giver: "Prof. GheSboro",
     objectives: [
       { type: "visit", target: "laboratorio", description: "Vai al laboratorio" },
-      { type: "talk", target: "Prof. Barcaro", description: "Parla con Barcaro" },
+      { type: "talk", target: "Prof. GheSboro", description: "Parla con GheSboro" },
       { type: "talk", target: "Marco", description: "Incontra Marco" }
     ],
     rewards: [
@@ -354,17 +354,17 @@ export const MAIN_QUESTS: Quest[] = [
   {
     id: "choice_of_destiny",
     name: "La Scelta del Destino",
-    description: "Scegli il tuo Besti leggendario!",
+    description: "Scegli il tuo Bestie leggendarieo!",
     type: "main",
     chapter: 1,
     location: "laboratorio",
-    giver: "Prof. Barcaro",
+    giver: "Prof. GheSboro",
     objectives: [
-      { type: "talk", target: "Prof. Barcaro", description: "Ascolta la storia dei leggendari" },
+      { type: "talk", target: "Prof. GheSboro", description: "Ascolta la storia dei leggendari" },
       { type: "visit", target: "choice_starter", description: "Scegli il tuo starter" }
     ],
     rewards: [
-      { type: "bestia", item: "starter", description: "Un Besti leggendario!" }
+      { type: "bestia", item: "starter", description: "Un Bestie leggendarieo!" }
     ],
     prerequisites: ["meet_rival"],
     repeatable: false,
@@ -376,9 +376,9 @@ export const MAIN_QUESTS: Quest[] = [
     type: "main",
     chapter: 1,
     location: "arena_principianti",
-    giver: "Prof. Barcaro",
+    giver: "Prof. GheSboro",
     objectives: [
-      { type: "talk", target: "Prof. Barcaro", description: "Vai all'arena" },
+      { type: "talk", target: "Prof. GheSboro", description: "Vai all'arena" },
       { type: "defeat", target: "Marco", description: "Sconfiggi Marco" }
     ],
     rewards: [
@@ -399,7 +399,7 @@ export const MAIN_QUESTS: Quest[] = [
     objectives: [
       { type: "visit", target: "piazza_centrale", description: "Visita la piazza centrale" },
       { type: "visit", target: "negozio_canar", description: "Trova il negozio" },
-      { type: "visit", target: "centro_besti", description: "Trova il Centro Besti" }
+      { type: "visit", target: "centro_besti", description: "Trova il Centro Bestie" }
     ],
     rewards: [
       { type: "item", item: "gondolball", amount: 5, description: "5 Gondolball" }
@@ -410,14 +410,14 @@ export const MAIN_QUESTS: Quest[] = [
   {
     id: "first_wild_battle",
     name: "Prima Battaglia Selvatica",
-    description: "Trova e cattura il tuo primo Besti selvatico!",
+    description: "Trova e cattura il tuo primo Bestie selvatico!",
     type: "main",
     chapter: 2,
     location: "route1",
     giver: "Narratore",
     objectives: [
-      { type: "defeat", target: "wild", description: "Trova un Besti selvatico", amount: 1 },
-      { type: "capture", target: "wild", description: "Cattura un Besti", amount: 1 }
+      { type: "defeat", target: "wild", description: "Trova una Bestia selvatico", amount: 1 },
+      { type: "capture", target: "wild", description: "Cattura una Bestia", amount: 1 }
     ],
     rewards: [
       { type: "experience", amount: 200, description: "200 EXP" }
@@ -817,13 +817,13 @@ export const SIDE_QUESTS: Quest[] = [
   {
     id: "catch_em_all",
     name: "Catturali Tutti!",
-    description: "Cattura almeno 20 Besti diversi",
+    description: "Cattura almeno 20 Bestie deversi",
     type: "collection",
     chapter: 6,
     location: "any",
-    giver: "Prof. Barcaro",
+    giver: "Prof. GheSboro",
     objectives: [
-      { type: "capture", target: "any_bestia", description: "Cattura Besti", amount: 20 }
+      { type: "capture", target: "any_bestia", description: "Cattura Bestie", amount: 20 }
     ],
     rewards: [
       { type: "keyItem", item: "cattura_master", description: "Titolo Cattura Master" }
@@ -838,7 +838,7 @@ export const SIDE_QUESTS: Quest[] = [
     type: "collection",
     chapter: 10,
     location: "any",
-    giver: "Prof. Barcaro",
+    giver: "Prof. GheSboro",
     objectives: [
       { type: "visit", target: "bestidex", description: "Completa il PokeDioex" }
     ],
@@ -909,7 +909,7 @@ export const SIDE_QUESTS: Quest[] = [
   {
     id: "museum_mystery",
     name: "Il Mistero del Museo",
-    description: "Indaga sul Museo dei Besti e scopri cosa nasconde",
+    description: "Indaga sul Museo dei Bestie e scopri cosa nasconde",
     type: "side",
     chapter: 6,
     location: "museo_besti",
@@ -1018,14 +1018,14 @@ export const SIDE_QUESTS: Quest[] = [
   {
     id: "beach_day",
     name: "Una Giornata in Spiaggia",
-    description: "Rilassati alla spiaggia di Gardalago e cattura Besti marini",
+    description: "Rilassati alla spiaggia di Gardalago e cattura Bestie marini",
     type: "side",
     chapter: 9,
     location: "spiaggia",
     giver: "Bagnino",
     objectives: [
       { type: "visit", target: "spiaggia", description: "Vai alla spiaggia" },
-      { type: "capture", target: "bestia_acqua", description: "Cattura Besti d'acqua", amount: 3 }
+      { type: "capture", target: "bestia_acqua", description: "Cattura Bestie d'acqua", amount: 3 }
     ],
     rewards: [
       { type: "item", item: "scampaball", description: "Scampaball x5" },
@@ -1058,14 +1058,14 @@ export const SIDE_QUESTS: Quest[] = [
   {
     id: "foto_mario_album",
     name: "Album da Bacaro",
-    description: "Aiuta Foto Mario a fotografare i Besti piu strani di Spritzia",
+    description: "Aiuta Foto Mario a fotografare i Bestie piu strani di Spritzia",
     type: "character",
     chapter: 3,
     location: "spritzia",
     giver: "Foto Mario",
     objectives: [
       { type: "talk", target: "Foto Mario", description: "Parla con Foto Mario" },
-      { type: "capture", target: "besti_curiosi", description: "Cattura 3 Besti curiosi per l'album", amount: 3 },
+      { type: "capture", target: "besti_curiosi", description: "Cattura 3 Bestie curiosi per l'album", amount: 3 },
       { type: "deliver", target: "foto_souvenir", description: "Riporta l'album al fotografo" }
     ],
     rewards: [
@@ -1078,7 +1078,7 @@ export const SIDE_QUESTS: Quest[] = [
   {
     id: "spritzia_stone_run",
     name: "Ostrega, la Pietra Verde",
-    description: "Nonna Marisa vuole una Pietra Verde per far evolvere il Besti del nipote",
+    description: "Nonna Marisa vuole una Pietra Verde per far evolvere il Bestie del nipote",
     type: "side",
     chapter: 3,
     location: "spritzia",
@@ -1160,7 +1160,7 @@ export const SIDE_QUESTS: Quest[] = [
   {
     id: "dolomax_frozen_shard",
     name: "Scheggia de Giaso",
-    description: "Una guida alpina di Dolomax cerca una Pietra Ghiaccio per calmare Besti imbizzarriti",
+    description: "Una guida alpina di Dolomax cerca una Pietra Ghiaccio per calmare Bestie imbizzarriti",
     type: "side",
     chapter: 8,
     location: "dolomax",
@@ -1168,7 +1168,7 @@ export const SIDE_QUESTS: Quest[] = [
     objectives: [
       { type: "visit", target: "dolomax", description: "Raggiungi Dolomax" },
       { type: "collect", target: "pietra_ghiaccio", description: "Trova una Pietra Ghiaccio" },
-      { type: "defeat", target: "bestia_ghiaccio", description: "Calma 2 Besti di ghiaccio", amount: 2 }
+      { type: "defeat", target: "bestia_ghiaccio", description: "Calma 2 Bestie de ghiaccio", amount: 2 }
     ],
     rewards: [
       { type: "item", item: "pietra_ghiaccio", description: "Pietra Ghiaccio" },
@@ -1187,7 +1187,7 @@ export const SIDE_QUESTS: Quest[] = [
     giver: "Maestro Marco",
     objectives: [
       { type: "talk", target: "Maestro Marco", description: "Parla con Maestro Marco" },
-      { type: "capture", target: "bestia_laguna", description: "Cattura 5 Besti della laguna", amount: 5 },
+      { type: "capture", target: "bestia_laguna", description: "Cattura 5 Bestie della laguna", amount: 5 },
       { type: "collect", target: "pietra_alba", description: "Recupera una Pietra Alba per il faro" }
     ],
     rewards: [

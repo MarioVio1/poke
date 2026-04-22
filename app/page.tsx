@@ -1,12 +1,12 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { BESTI, Bestia, MOVES, GameMap, MapEvent, MoveData, LEGENDARY_STARTERS } from '@/lib/besti'
+import { BESTIE, Bestia, MOVES, GameMap, MapEvent, MoveData, LEGENDARY_STARTERS } from '@/lib/besti'
 import { MAPS, CITY_THEMES, getCityTheme } from '@/lib/maps'
 import { ITEMS, SHOP_ITEMS, GameItem } from '@/lib/items'
 import { NPCs, NPCData } from '@/lib/npcs'
 import { VEHICLES, VehicleType, canMoveOnTile, getMovementSpeed } from '@/lib/vehicles'
-import { BESTI_SVG_SPRITES, BESTI_SPRITES, SpriteData, getDefaultSprite } from '@/lib/sprites'
+import { BESTIE_SVG_SPRITES, BESTIE_SPRITES, SpriteData, getDefaultSprite } from '@/lib/sprites'
 import { PIXEL_SPRITES, getSpriteUrl, getIconUrl } from '@/lib/pixelSprites'
 import { getNPCSprite } from '@/lib/npcSprites'
 import { TYPE_COLORS, TILE_COLORS, TYPE_CHART, isIndoorMap, getMapBackground, renderTile, renderBuilding } from '@/lib/types'
@@ -41,7 +41,7 @@ interface GameFlags {
   collectedItems?: string[]
   receivedGifts?: string[]
   defeatedTrainers?: string[]
-  caughtBesti?: number[]
+  caughtBestia?: number[]
 }
 
 type PlayerIdentity = 'maschio' | 'femmina' | 'trans'
@@ -85,9 +85,9 @@ type ControlMode = 'boot' | 'title' | 'setup' | 'story' | 'dialog' | 'shop' | 'm
 
 // Intro animation frames
 const INTRO_FRAMES = [
-  { text: '★ POKEMONA ★', subtext: 'Besti di Venetia', delay: 2000 },
+  { text: '★ BESTIE DE VENETIA ★', subtext: 'Bestie de Venetia', delay: 2000 },
   { text: 'Una regione magica...', subtext: 'Dove i canali cantano', delay: 1500 },
-  { text: 'Dove i Besti regnano...', subtext: 'Tra spritz e polenta', delay: 1500 },
+  { text: 'Dove le Bestie regnano...', subtext: 'Tra spritz e polenta', delay: 1500 },
   { text: 'La tua avventura inizia ora!', subtext: '', delay: 2000 },
 ]
 
@@ -220,19 +220,19 @@ const OPENING_STORY: StoryIntroScene[] = [
   {
     speaker: 'Prof. GheSboro',
     title: 'Benvenuto a Venetia',
-    text: 'Questa e una terra di canali, colline, lagune e Besti strani. Ogni citta ha le sue abitudini, le sue palestre e le sue leggende.',
+    text: 'Questa e una terra di canali, colline, lagune e Bestie strane. Ogni citta ha le sue abitudini, le sue palestre e le sue leggende.',
     accent: '#4f8cff',
   },
   {
     speaker: 'Prof. GheSboro',
-    title: 'I Besti di Venetia',
+    title: 'Le Bestie de Venetia',
     text: 'Alcuni nascono tra i campi, altri nei canali, altri ancora tra nebbia, neve e spritz. Per capirli serve curiosita, coraggio e un buon compagno.',
     accent: '#68c16f',
   },
   {
     speaker: 'Mamma',
     title: 'Sveglia, Federico',
-    text: 'Il Dottor GheSboro ti aspetta. Muoviti, vestite e va in laboratorio: oggi scegli il tuo primo Besti e inizi davvero il viaggio.',
+    text: 'Il Dottor GheSboro ti aspetta. Muoviti, vestite e va in laboratorio: oggi scegli la tua prima Bestia e inizi davvero il viaggio.',
     accent: '#f28cae',
   },
 ]
@@ -389,7 +389,7 @@ export default function Game() {
         savedAt: new Date().toISOString(),
         version: '1.0.0',
       }
-      localStorage.setItem('pokemona_save', JSON.stringify(dataToSave))
+      localStorage.setItem('bestie_de_venetia_save', JSON.stringify(dataToSave))
       if (!autoSave) {
         setNotification('Partita salvata!')
         soundManager.levelUp()
@@ -414,7 +414,7 @@ export default function Game() {
 
   const loadGame = useCallback(() => {
     try {
-      const saved = localStorage.getItem('pokemona_save')
+      const saved = localStorage.getItem('bestie_de_venetia_save')
       if (saved) {
         const saveData = JSON.parse(saved)
         setGs({
@@ -445,13 +445,13 @@ export default function Game() {
 
   const hasSave = useCallback(() => {
     if (typeof window === 'undefined') return false
-    return localStorage.getItem('pokemona_save') !== null
+    return localStorage.getItem('bestie_de_venetia_save') !== null
   }, [])
 
   const getSaveInfo = useCallback(() => {
     try {
       if (typeof window === 'undefined') return null
-      const saved = localStorage.getItem('pokemona_save')
+      const saved = localStorage.getItem('bestie_de_venetia_save')
       if (saved) {
         const saveData = JSON.parse(saved)
         return {
@@ -535,7 +535,7 @@ export default function Game() {
   }, [hasSave, loadGame])
 
   const deleteSave = useCallback(() => {
-    localStorage.removeItem('pokemona_save')
+    localStorage.removeItem('bestie_de_venetia_save')
     setNotification('Salvataggio eliminato!')
   }, [])
 
@@ -566,7 +566,7 @@ export default function Game() {
 
   // Auto-load on mount
   useEffect(() => {
-    const saved = localStorage.getItem('pokemona_save')
+    const saved = localStorage.getItem('bestie_de_venetia_save')
     if (saved) {
       try {
         const saveData = JSON.parse(saved)
@@ -624,8 +624,8 @@ export default function Game() {
   }, [])
 
   // Create a Bestia with stats (including legendary starters)
-  const createBesti = useCallback((id: string, lvl: number): PartyBestia => {
-    const t = BESTI[id] || LEGENDARY_STARTERS[id]
+  const createBestia = useCallback((id: string, lvl: number): PartyBestia => {
+    const t = BESTIE[id] || LEGENDARY_STARTERS[id]
     if (!t) throw new Error('Bestia not found: ' + id)
     const lf = lvl / 50
     const hp = Math.floor(t.bs.hp * lf + 10 + lvl)
@@ -649,7 +649,7 @@ export default function Game() {
     const idStr = String(id)
     
     // Try PNG sprites first (custom user-generated)
-    const pngSprite = BESTI_SVG_SPRITES[idStr]
+    const pngSprite = BESTIE_SVG_SPRITES[idStr]
     if (pngSprite && pngSprite.front.startsWith('/sprites/')) {
       return isBack ? (pngSprite.back || pngSprite.front) : pngSprite.front
     }
@@ -659,7 +659,7 @@ export default function Game() {
     if (pixelUrl) return pixelUrl
     
     // Fallback to SVG sprites
-    const sprite = BESTI_SVG_SPRITES[idStr] || BESTI_SPRITES[idStr] || getDefaultSprite()
+    const sprite = BESTIE_SVG_SPRITES[idStr] || BESTIE_SPRITES[idStr] || getDefaultSprite()
     return isBack ? (sprite.back || sprite.front) : sprite.front
   }
 
@@ -668,7 +668,7 @@ export default function Game() {
     const idStr = String(id)
     
     // Try PNG sprites first
-    const pngSprite = BESTI_SVG_SPRITES[idStr]
+    const pngSprite = BESTIE_SVG_SPRITES[idStr]
     if (pngSprite && pngSprite.icon.startsWith('/sprites/')) {
       return pngSprite.icon
     }
@@ -678,7 +678,7 @@ export default function Game() {
     if (iconUrl) return iconUrl
     
     // Fallback to SVG sprites
-    const sprite = BESTI_SVG_SPRITES[idStr] || BESTI_SPRITES[idStr] || getDefaultSprite()
+    const sprite = BESTIE_SVG_SPRITES[idStr] || BESTIE_SPRITES[idStr] || getDefaultSprite()
     return sprite.icon || sprite.front
   }
 
@@ -1018,7 +1018,7 @@ export default function Game() {
             'Dopo va in laboratorio dal Dottor GheSboro. Oggi comincia davvero il tuo viaggio.',
           ] : [
             'Sei ancora qua?',
-            'Vai dal Dottor GheSboro prima che scelga il tuo Besti per conto suo.',
+            'Vai dal Dottor GheSboro prima che scelga la tua Bestia per conto suo.',
           ])
           setSpeaker(ev.name || '')
           setDialogCallback(null)
@@ -1026,9 +1026,9 @@ export default function Game() {
         } else if (ev.givesStarter && !gs.flags.hasStarter) {
           setDialogs([
             'Finalmente te son rivà fin qua!',
-            'I Besti di Venetia xe più agitati del solito, e qualcuno deve capirne il motivo.',
+            'Le Bestie de Venetia xe più agitati del solito, e qualcuno deve capirne il motivo.',
             'Non ti serve solo forza: ti serve testa, curiosità e un compagno giusto.',
-            'Scegli il Besti che senti tuo, e portalo con dignità.',
+            'Scegli la Bestia che senti tuo, e portalo con dignità.',
           ])
           setSpeaker(ev.name || '')
           setDialogCallback(() => {
@@ -1128,7 +1128,7 @@ export default function Game() {
           party: prev.party.map(p => ({ ...p, hp: p.maxHp, status: undefined })),
         }))
         soundManager.heal()
-        setDialogs(['I tuoi Besti sono stati curati!'])
+        setDialogs(['I tuole Bestie sono stati curati!'])
         setSpeaker('Infermiera')
         setInDialog(true)
         break
@@ -1237,10 +1237,10 @@ export default function Game() {
   // Select starter - RIVAL always picks the strongest (like in Pokemon)
   const selectStarter = useCallback((id: string) => {
     soundManager.menuSelect()
-    const b = createBesti(id, 5)
+    const b = createBestia(id, 5)
     
     // Rival picks the strongest legendary (OmbraSpritz = index 3)
-    const rivalStarter = createBesti('ombradriz', 5)
+    const rivalStarter = createBestia('ombraspritz', 5)
     
     setGs(prev => ({
       ...prev,
@@ -1255,7 +1255,7 @@ export default function Game() {
       `Hai scelto ${b.name}!`,
       `Marco: Come osi! Io prendo ${rivalStarter.name}!`,
       `Marco: Il più forte, ovviamente.`,
-      `Prof. GheSboro: Bene. Adesso vediamo se contano più le chiacchiere o l'intesa col proprio Besti.`,
+      `Prof. GheSboro: Bene. Adesso vediamo se contano più le chiacchiere o l'intesa col proprio Bestia.`,
       `Marco: Preparati, perché non ti regalo niente!`,
     ])
     setSpeaker('Marco')
@@ -1277,7 +1277,7 @@ export default function Game() {
       setShowBattleMsg(true)
     })
     setInDialog(true)
-  }, [createBesti])
+  }, [createBestia])
 
   // Start wild encounter
   const startWild = useCallback(() => {
@@ -1287,7 +1287,7 @@ export default function Game() {
     const wildId = map.wild?.[idx] || 'gabbianzo'
     const minLvl = map.wildLvl?.[idx] || 3
     const lvl = minLvl + Math.floor(Math.random() * 3)
-    const enemy = createBesti(wildId, lvl)
+    const enemy = createBestia(wildId, lvl)
 
     setBattleState({
       enemy,
@@ -1302,12 +1302,12 @@ export default function Game() {
     soundManager.encounter()
     setBattleMsg(`Un ${enemy.name} selvatico è apparso!`)
     setShowBattleMsg(true)
-  }, [gs.party, createBesti])
+  }, [gs.party, createBestia])
 
   // Start trainer battle
   const startTrainerBattle = useCallback((ev: MapEvent) => {
     if (!gs.party.length) return
-    const team = (ev.team || []).map((t: { id: string; lvl: number }) => createBesti(t.id, t.lvl))
+    const team = (ev.team || []).map((t: { id: string; lvl: number }) => createBestia(t.id, t.lvl))
     setBattleState({
       enemy: team[0],
       enemyTeam: team,
@@ -1325,7 +1325,7 @@ export default function Game() {
       setInBattle(true)
     })
     setInDialog(true)
-  }, [gs.party, createBesti])
+  }, [gs.party, createBestia])
 
   // Calculate damage
   const calcDmg = useCallback((a: PartyBestia, d: PartyBestia, m: string): number => {
@@ -1361,11 +1361,22 @@ export default function Game() {
     const newEnemyHp = Math.max(0, enemyHp.current - dmg)
     setEnemyHp({ ...enemyHp, current: newEnemyHp })
 
+    // Random status effect chance
+    let statusEffect = ''
+    if (moveData?.type === 'poison' && Math.random() < 0.3) statusEffect = 'avvelenato'
+    if (moveData?.type === 'ice' && Math.random() < 0.1) statusEffect = 'congelato'
+    if (moveData?.type === 'electric' && Math.random() < 0.2) statusEffect = 'paralizzato'
+
     setTimeout(() => {
       setBattleAnimation('damage')
       setShakeScreen(true)
       setTimeout(() => setShakeScreen(false), 200)
       
+      if (statusEffect) {
+        setBattleMsg(`${battleState.enemy.name} è ${statusEffect}!`)
+        setShowBattleMsg(true)
+      }
+
       if (newEnemyHp <= 0) {
         setBattleAnimation('idle')
         enemyFainted()
@@ -1373,7 +1384,7 @@ export default function Game() {
         setTimeout(() => {
           enemyTurn()
           setBattleAnimation('idle')
-        }, 300)
+        }, statusEffect ? 800 : 300)
       }
     }, 400)
   }, [battleState, gs.party, animating, calcDmg, enemyHp])
@@ -1433,7 +1444,7 @@ export default function Game() {
       const newLvl = p.level + 1
       const newExpTL = newLvl * 100
       const lf = newLvl / 50
-      const pData = BESTI[p.id]
+      const pData = BESTIE[p.id]
       const newHp = Math.floor((pData?.bs.hp || 50) * lf + 10 + newLvl)
       const newAtk = Math.floor((pData?.bs.atk || 50) * lf + 5)
       const newDef = Math.floor((pData?.bs.def || 50) * lf + 5)
@@ -1458,7 +1469,7 @@ export default function Game() {
       soundManager.levelUp()
       
       // Check for evolution
-      const bestiaData = BESTI[p.id]
+      const bestiaData = BESTIE[p.id]
       if (bestiaData?.ev && newLvl >= (bestiaData?.evLvl || 99)) {
         setTimeout(() => evolveBestia(String(p.id), bestiaData.ev!), 1000)
       }
@@ -1469,15 +1480,15 @@ export default function Game() {
 
   // Evolve Bestia
   const evolveBestia = useCallback((fromId: string, toId: string) => {
-    const newBesti = createBesti(toId, gs.party[0].level)
+    const newBestia = createBestia(toId, gs.party[0].level)
     setGs(prev => ({
       ...prev,
-      party: prev.party.map((b, idx) => idx === 0 ? { ...b, ...newBesti, id: newBesti.id } : b),
+      party: prev.party.map((b, idx) => idx === 0 ? { ...b, ...newBestia, id: newBestia.id } : b),
     }))
-    setBattleMsg(`${gs.party[0].name} si è evoluto in ${newBesti.name}!`)
+    setBattleMsg(`${gs.party[0].name} si è evoluto in ${newBestia.name}!`)
     soundManager.evolve()
     setTimeout(() => continueBattle(), 1500)
-  }, [gs.party, createBesti])
+  }, [gs.party, createBestia])
 
   // Continue battle
   const continueBattle = useCallback(() => {
@@ -1548,7 +1559,7 @@ export default function Game() {
                 `★★★ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ★★★`,
                 ``,
                 `COMPLIMENTS!`,
-                `HAI COMPLETATO POKEMONA - BESTI DI VENETIA!`,
+                `HAI COMPLETATO BESTIE DE VENETIA - BESTIE DE VENETIA!`,
                 ``,
                 `Sei ufficialmente il nuovo DUCE di Venetia!`,
                 `I migliori allenatori ti omaggeranno!`,
@@ -1761,7 +1772,7 @@ export default function Game() {
             party: [...prev.party, caught],
             flags: {
               ...prev.flags,
-              caughtBesti: [...(prev.flags.caughtBesti || []), caught.id],
+              caughtBestia: [...(prev.flags.caughtBestia || []), caught.id],
             },
             inv: prev.inv.map(i => i.item.id === ballId ? { ...i, qty: i.qty - 1 } : i)
           }))
@@ -1771,7 +1782,7 @@ export default function Game() {
             pc: [...prev.pc, caught],
             flags: {
               ...prev.flags,
-              caughtBesti: [...(prev.flags.caughtBesti || []), caught.id],
+              caughtBestia: [...(prev.flags.caughtBestia || []), caught.id],
             },
             inv: prev.inv.map(i => i.item.id === ballId ? { ...i, qty: i.qty - 1 } : i)
           }))
@@ -1898,16 +1909,16 @@ export default function Game() {
   }
 
   const showPokedex = () => {
-    const caughtBesti = gs.flags.caughtBesti || []
-    const allBesti = Object.values(BESTI)
+    const caughtBestia = gs.flags.caughtBestia || []
+    const allBestia = Object.values(BESTIE)
     
     // Mostra tutti i besti, evidenziando quelli catturati
-    setOverlayTitle(`BESTIDEX ${caughtBesti.length}/${allBesti.length}`)
+    setOverlayTitle(`BESTIDEX ${caughtBestia.length}/${allBestia.length}`)
     setOverlayContent(
       <div className="dex-full">
         <div className="dex-list">
-          {allBesti.map(b => {
-            const isCaught = caughtBesti.includes(b.id)
+          {allBestia.map(b => {
+            const isCaught = caughtBestia.includes(b.id)
             return (
               <div 
                 key={b.id} 
@@ -1915,7 +1926,7 @@ export default function Game() {
                 onClick={() => {
                   if (isCaught) {
                     // Mostra dettagli
-                    const evol = b.ev ? BESTI[b.ev] : null
+                    const evol = b.ev ? BESTIE[b.ev] : null
                     setOverlayContent(
                       <div className="dex-detail">
                         <div className="dex-detail-header">
@@ -2050,7 +2061,7 @@ export default function Game() {
       return
     }
     
-    const evolved = BESTI[newForm]
+    const evolved = BESTIE[newForm]
     if (!evolved) return
     
     // Show evolution animation
@@ -2063,7 +2074,7 @@ export default function Game() {
         ...prev,
         party: prev.party.map(p => p === bestia ? {
           ...p,
-          id: BESTI[newForm]?.id ?? p.id,
+          id: BESTIE[newForm]?.id ?? p.id,
           name: evolved.name,
           types: evolved.types,
           maxHp: Math.floor(evolved.bs.hp * 1.5),
@@ -2267,7 +2278,7 @@ export default function Game() {
       ? (gs.storyProgress < 2 ? 'Obiettivo: parla con la Mamma e raccogli gli oggetti in camera' : 'Obiettivo: vai dal Dottor GheSboro in laboratorio')
       : gs.defeatedRival
         ? `Obiettivo: lascia ${MAPS[gs.map]?.name || 'Canalborgo'} e punta a nord verso Spritzia`
-        : 'Obiettivo: scegli il tuo Besti e supera Marco'
+        : 'Obiettivo: scegli il tuo Bestia e supera Marco'
     setNotification(hint)
     setTimeout(() => setNotification(''), 1600)
   }, [gs.defeatedRival, gs.flags.hasStarter, gs.map, gs.storyProgress])
@@ -2620,6 +2631,7 @@ export default function Game() {
   return (
     <div className="game-wrapper" ref={gameWrapperRef} tabIndex={0} onFocus={() => {}}>
       <div className="gba-console">
+        <div className="delta-skin" />
         {/* TOP SCREEN */}
         <div className="top-screen">
           <div className="screen-bezel">
@@ -2669,18 +2681,18 @@ export default function Game() {
 
                   <div className="title-frame">
                     <div className="title-main">
-                      <div className="title-pokemona">POKEMONA</div>
+                      <div className="title-delta">BESTIE DE VENETIA</div>
                       <div className="title-venetia">DE VENETIA</div>
                       <div className="title-version">ROSSO SPRITZ</div>
                       <div className="title-subtext">
-                        Cacia i Besti · Ghefa i Spritz · Drio la Gloria
+                        Cacia le Bestie · Ghefa i Spritz · Drio la Gloria
                       </div>
                     </div>
 
                     <div className="title-hero">
                       <img src={getBestiaSprite('lagorion')} alt="Lagorion" className="title-hero-side pixel-sprite" />
                       <img src={getBestiaSprite('serenissima')} alt="Serenissima" className="title-hero-main pixel-sprite" />
-                      <img src={getBestiaSprite('ombradriz')} alt="Ombradriz" className="title-hero-side pixel-sprite" />
+                      <img src={getBestiaSprite('ombraspritz')} alt="Ombradriz" className="title-hero-side pixel-sprite" />
                     </div>
 
                     <div className="title-menu-card">
@@ -2757,7 +2769,7 @@ export default function Game() {
                       {storyIntroStep === 1 && (
                         <>
                           <img src={getBestiaSprite('lagorion')} alt="Lagorion" className="story-stage-side pixel-sprite left" />
-                          <img src={getBestiaSprite('ombradriz')} alt="Ombradriz" className="story-stage-side pixel-sprite right" />
+                          <img src={getBestiaSprite('ombraspritz')} alt="Ombradriz" className="story-stage-side pixel-sprite right" />
                         </>
                       )}
                     </div>
@@ -2892,7 +2904,7 @@ export default function Game() {
                     <div className="battle-menu">
                       <button className="battle-btn" onClick={showMoves}>MOSSA</button>
                       <button className="battle-btn" onClick={showBag}>ZAINO</button>
-                      <button className="battle-btn" onClick={showParty}>BESTIA</button>
+                      <button className="battle-btn" onClick={showParty}>BESTIE</button>
                       <button className="battle-btn" onClick={battleState?.isWild ? () => setShowBallSelect(true) : tryRun}>
                         {battleState?.isWild ? 'CATTURA' : 'SCAPPA'}
                       </button>
@@ -2949,8 +2961,8 @@ export default function Game() {
               {/* Starter Choice - 4 LEGENDARY STARTERS */}
               {showStarterChoice && (
                 <div className="starter-choice">
-                  <h2>Scegli il tuo Besti!</h2>
-                  <p className="starter-subtitle">4 Besti Leggendari</p>
+                  <h2>Scegli il tuo Bestia!</h2>
+                  <p className="starter-subtitle">4 Bestia Leggendari</p>
                   <div className="starter-container legendary">
                     <div className="starter-btn legendary" onClick={() => selectStarter('dolomitor')}>
                       <img src={getBestiaSprite('dolomitor')} alt="Dolomitor" className="pixel-sprite" />
@@ -2970,8 +2982,8 @@ export default function Game() {
                       <span className="type-badge type-psycho">Psico</span>
                       <span className="type-badge type-air">Aria</span>
                     </div>
-                    <div className="starter-btn legendary" onClick={() => selectStarter('ombradriz')}>
-                      <img src={getBestiaSprite('ombradriz')} alt="OmbraSpritz" className="pixel-sprite" />
+                    <div className="starter-btn legendary" onClick={() => selectStarter('ombraspritz')}>
+                      <img src={getBestiaSprite('ombraspritz')} alt="OmbraSpritz" className="pixel-sprite" />
                       <div className="starter-name">OMBRASPRITZ</div>
                       <span className="type-badge type-magic">Magico</span>
                       <span className="type-badge type-poison">Veleno</span>
@@ -3033,7 +3045,7 @@ export default function Game() {
                   <div className="overlay-content">
                     {inMenu ? (
                       <div className="menu-options">
-                        {['Squadra', 'Zaino', 'BestiDex', 'Teletrasporto', 'Trofei', 'Salva', 'Carica', 'Chiudi'].map((label, index) => (
+                        {['Squadra', 'Zaino', 'Bestidex', 'Teletrasporto', 'Trofei', 'Salva', 'Carica', 'Chiudi'].map((label, index) => (
                           <div
                             key={label}
                             className={`menu-option ${menuSelection === index ? 'selected' : ''}`}
@@ -3558,7 +3570,7 @@ export default function Game() {
           padding: 20px;
         }
 
-        .title-pokemona {
+        .title-delta {
           font-size: clamp(36px, 12vw, 64px);
           font-weight: 900;
           background: linear-gradient(180deg, #ffd700 0%, #ffb347 25%, #ff6b35 50%, #c41e3a 75%, #800020 100%);
@@ -3717,7 +3729,7 @@ export default function Game() {
             padding: 15px 10px;
           }
           
-          .title-pokemona {
+          .title-delta {
             letter-spacing: 1px;
           }
           
@@ -3757,7 +3769,7 @@ export default function Game() {
             padding: 10px 5px;
           }
           
-          .title-pokemona {
+          .title-delta {
             letter-spacing: 0px;
           }
           
@@ -4149,27 +4161,42 @@ export default function Game() {
 
         .battle-menu, .moves-menu {
           position: absolute;
-          bottom: 6px;
-          right: 6px;
+          bottom: 8px;
+          right: 8px;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 6px;
-          width: 186px;
-          background: #33506a;
-          border: 4px solid #f3e2a5;
-          border-radius: 8px;
-          padding: 6px;
+          gap: 8px;
+          width: 200px;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 16px;
+          padding: 10px;
           z-index: 10;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         .battle-btn, .move-btn {
-          background: #f5f7fb;
-          border: 2px solid #203245;
-          border-radius: 4px;
-          padding: 6px;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          padding: 8px;
           font-family: inherit;
           font-size: 9px;
+          color: white;
           cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .battle-btn:hover, .move-btn:hover {
+          background: rgba(255, 255, 255, 0.2);
+          transform: translateY(-1px);
+        }
+
+        .battle-btn:active, .move-btn:active {
+          transform: translateY(0);
+          background: rgba(255, 255, 255, 0.05);
         }
 
         .battle-btn:hover, .move-btn:hover {

@@ -4,9 +4,9 @@ sdk: docker
 emoji: 🚀
 colorTo: red
 ---
-# 🎮 Pokemona - Besti di Venetia
+# 🎮 Bestie de Venetia - Bestie de Venetia
 
-Un gioco RPG estilo Pokemon ambientato nella regione veneta con Besti ispirati alla cucina e cultura italiana.
+Un gioco RPG estilo Pokemon ambientato nella regione veneta con Bestie ispirati alla cucina e cultura italiana.
 
 ![Game](https://img.shields.io/badge/Game-Pokemon%20style-blue)
 ![Platform](https://img.shields.io/badge/Platform-Next.js-green)
@@ -31,11 +31,11 @@ npm run dev
 
 | Feature | Status |
 |---------|--------|
-| **50+ Besti unici** | ✅ |
-| **4 Besti Leggendari starter** | ✅ |
+| **50+ Bestie unici** | ✅ |
+| **4 Bestie Leggendari starter** | ✅ |
 | **7 città tematiche** | ✅ |
 | **Sistema battaglia completo** | ✅ |
-| **Cattura Besti** | ✅ |
+| **Cattura Bestie** | ✅ |
 | **Pixel art sprites** | ✅ |
 | **Effetti sonori** | ✅ |
 | **Mobile touch controls** | ✅ |
@@ -54,7 +54,7 @@ npm run dev
 
 ---
 
-## 🎨 Besti Leggendari (Starter)
+## 🎨 Bestie Leggendari (Starter)
 
 | Bestia | Tipi | Descrizione |
 |--------|------|------------|
@@ -67,7 +67,7 @@ npm run dev
 
 ## 🏆 Elite Four Challenge
 
-Dopo aver sconfitto tutti gli 8 GYM, affronta la **Lega Besti**:
+Dopo aver sconfitto tutti gli 8 GYM, affronta la **Lega Bestie**:
 
 1. **Il Fuocoso** - Specialista Fuoco (lvl 45-43)
 2. **L'Acquoso** - Specialista Acqua (lvl 46-44)
@@ -126,7 +126,7 @@ Dopo aver sconfitto tutti gli 8 GYM, affronta la **Lega Besti**:
 - **Filosofo Torinese** - Dice sempre cose strane
 - **Commentatore Calabrese** - "MA CHE BELLU!"
 - **Nonna Maria** - Preoccupata sempre
-- **Attivista Greta** - Diriti dei Besti
+- **Attivista Greta** - Diriti dei Bestie
 - **E tanti altri...**
 
 ---
@@ -156,13 +156,13 @@ vercel deploy
 ## 📁 Struttura Progetto
 
 ```
-pokemona-next/
+bestie_de_venetia-next/
 ├── app/
 │   ├── page.tsx          # Main game (3300+ lines)
 │   ├── layout.tsx        # App layout
 │   └── globals.css       # Styles
 ├── lib/
-│   ├── besti.ts          # Besti data (50+ creatures)
+│   ├── besti.ts          # Bestie data (50+ creatures)
 │   ├── pixelSprites.ts   # Pixel art sprites
 │   ├── maps.ts           # Map definitions (7 cities + dungeons)
 │   ├── dialogs.ts        # Dialog system
@@ -197,10 +197,10 @@ pokemona-next/
 
 ```bash
 # Clona il tuo nuovo Space
-git clone https://huggingface.co/spaces/TUO_USERNAME/pokemona
+git clone https://huggingface.co/spaces/TUO_USERNAME/bestie_de_venetia
 
 # Aggiungi come remote e push
-git remote add hf https://hf.co/spaces/TUO_USERNAME/pokemona
+git remote add hf https://hf.co/spaces/TUO_USERNAME/bestie_de_venetia
 git push hf main
 ```
 
@@ -217,7 +217,7 @@ git push hf main
 ### Verifica deployment
 
 - Il build richiede ~3-5 minuti
-- Una volta completato, il gioco sarà accessibile su `https://TUO_USERNAME-pokemona.hf.space`
+- Una volta completato, il gioco sarà accessibile su `https://TUO_USERNAME-bestie_de_venetia.hf.space`
 - Il server Node.js gira sulla porta 7860
 
 ### Troubleshooting
@@ -235,7 +235,7 @@ MIT - Fatto con ❤️ in Veneto
 ## 🎯 Obiettivo del Gioco
 
 1. Scegli il tuo **LEGgendario starter**
-2. Cattura e allena **Besti**
+2. Cattura e allena **Bestie**
 3. Sconfiggi gli **8 GYM** per ottenere i Badge
 4. Affronta l'**Elite Four**
 5. **Sconfiggi il DUX VENETIAE** e diventa il Campione!

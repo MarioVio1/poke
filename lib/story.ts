@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// POKEMONA - BESTI DI VENETIA
+// BESTIE DE VENETIA - BESTIEEE DE VENETIA
 // Storia Completa con Personaggi Fastidiosi, Maranza e Terroni
 // Versione Italia Realistica con Umorismo
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -630,7 +630,7 @@ export const ANNOYING_CHARACTERS: AnnoyingCharacter[] = [
     appearsMultipleTimes: true,
     dialog: [
       'Ai miei tempi era tutto meglio!',
-      'I Besti? Noi li chiamavamo "bestie"!',
+      'I Bestie? Noi li chiamavamo "bestie"!',
       'E funzionavano lo stesso!',
       'E la polenta? Quella sì che era polenta!',
       'Questa nuova polenta... bah!',
@@ -687,7 +687,7 @@ export const ANNOYING_CHARACTERS: AnnoyingCharacter[] = [
       'Ma no, era fango!',
       'E il fango era buono! Si coltivava!',
       'E le verdure? Le migliori!',
-      'E i Besti? Venivano da soli!',
+      'E i Bestie? Venivano da soli!',
       'E il latte? Era gratis!',
       'E il pane? Pure!',
       'E i soldi? Non esistevano!',
@@ -752,13 +752,13 @@ export const ANNOYING_CHARACTERS: AnnoyingCharacter[] = [
     blocksPath: true,
     appearsMultipleTimes: true,
     dialog: [
-      'VOGLIO UN BESTIA! VOGLIO UN BESTIA!',
+      'VOGLIO UN BESTIEEA! VOGLIO UN BESTIEEA!',
       'No, non ti do niente!',
       'MA PERCHÉ?! MAMMA!',
       'Perché sei romper!',
       'NO MAMAAAA!',
       'ECCO! Prendi questo!',
-      'NO! VOGLIO IL BESTIA PIÙ FORTE!',
+      'NO! VOGLIO IL BESTIEEA PIÙ FORTE!',
       'E Quale sarebbe?!',
       'QUELLO VERDE! NO QUELLO ROSSO!',
       'BASTA! COMBATTIAMO!',
@@ -1162,7 +1162,7 @@ export const ANNOYING_CHARACTERS: AnnoyingCharacter[] = [
     blocksPath: true,
     appearsMultipleTimes: true,
     dialog: [
-      'FERMO! I Besti sono liberi!',
+      'FERMO! I Bestie sono liberi!',
       'Sì, lo so, combatto con i miei...',
       'COMBATTERE?!È VIOLENZA!',
       'Ma è un gioco!',
@@ -1672,7 +1672,7 @@ export const ANNOYING_CHARACTERS: AnnoyingCharacter[] = [
     appearsMultipleTimes: true,
     dialog: [
       'Ai miei tempi era tutto meglio!',
-      'I Besti? Noi li chiamavamo "bestie"!',
+      'I Bestie? Noi li chiamavamo "bestie"!',
       'E funzionavano lo stesso!',
       'E la polenta? Quella sì che era polenta!',
       'Questa nuova polenta... bah!',
@@ -1712,13 +1712,13 @@ export const ANNOYING_CHARACTERS: AnnoyingCharacter[] = [
     blocksPath: true,
     appearsMultipleTimes: true,
     dialog: [
-      'VOGLIO UN BESTIA! VOGLIO UN BESTIA!',
+      'VOGLIO UN BESTIEEA! VOGLIO UN BESTIEEA!',
       'No, non ti do niente!',
       'MA PERCHÉ?! MAMMA!',
       'Perché sei romper!',
       'NO MAMAAAA!',
       'ECCO! Prendi questo!',
-      'NO! VOGLIO IL BESTIA PIÙ FORTE!',
+      'NO! VOGLIO IL BESTIEEA PIÙ FORTE!',
       'E Quale sarebbe?!',
       'QUELLO VERDE! NO QUELLO ROSSO!',
       'BASTA! COMBATTIAMO!',
@@ -2089,7 +2089,7 @@ export const ROUTE_TRAINERS: RouteTrainer[] = [
     ],
     moneyReward: 350,
     dialog: [
-      'FERMO! I Besti hanno diritti!',
+      'FERMO! I Bestie hanno diritti!',
       'Lo so! Li amo anche io!',
       'ALLORA PERCHÉ LI USI PER COMBATTERE?!',
       'Perché è così che funziona il gioco!',
@@ -2182,12 +2182,12 @@ export const GAME_STORY: GameStory = {
       ],
       dialog: [
         { speaker: "", text: "(SOGNO)", emotion: 'neutral' },
-        { speaker: "", text: "Vedi un Bestia dorato che vola sopra Venetia...", emotion: 'excited' },
+        { speaker: "", text: "Vedi una Bestia dorato che vola sopra Venetia...", emotion: 'excited' },
         { speaker: "", text: "Sotto, figure mangiano polenta ovunque...", emotion: 'neutral' },
         { speaker: "", text: "Una voce: 'SALVA I CANALI! O TUTTI MANGERANNO POLENTA!'", emotion: 'angry' },
         { speaker: "", text: "Ti svegli di soprassalto!", emotion: 'neutral' },
         { speaker: "Mamma", text: "TESORO! SEI SVEGLIO?!", emotion: 'excited' },
-        { speaker: "Mamma", text: "Ma che te gheti a far?! Il Professor Barcaro ti aspetta!", emotion: 'angry' },
+        { speaker: "Mamma", text: "Ma che te gheti a far?! Il Professor GheSboro ti aspetta!", emotion: 'angry' },
         { speaker: "Mamma", text: "E PRIMMA! Colazione! Per forza!", emotion: 'angry' },
         { speaker: "Mamma", text: "Se no te sì debole!", emotion: 'neutral' },
         { speaker: "Mamma", text: "E SEMPRE l'ora de magnar!", emotion: 'happy' },
@@ -2222,9 +2222,9 @@ export const GAME_STORY: GameStory = {
         { speaker: "", text: "NO! Non voglio sentire!", emotion: 'angry' },
         { speaker: "Vecchio 2", text: "...LA POLENTA ERA PIÙ GIALLA!", emotion: 'excited' },
         { speaker: "", text: "CORRI verso il laboratorio!", emotion: 'neutral' },
-        { speaker: "", text: "Il Professor Barcaro ti aspetta, visibilmente seccato", emotion: 'neutral' },
-        { speaker: "Prof. Barcaro", text: "FINALMENTE! Te gheti piano come na lumaca!", emotion: 'angry' },
-        { speaker: "Prof. Barcaro", text: "Vieni! Entramo! Prima che arrivi mia moglie!", emotion: 'neutral' },
+        { speaker: "", text: "Il Professor GheSboro ti aspetta, visibilmente seccato", emotion: 'neutral' },
+        { speaker: "Prof. GheSboro", text: "FINALMENTE! Te gheti piano come na lumaca!", emotion: 'angry' },
+        { speaker: "Prof. GheSboro", text: "Vieni! Entramo! Prima che arrivi mia moglie!", emotion: 'neutral' },
       ]
     },
 
@@ -2240,20 +2240,20 @@ export const GAME_STORY: GameStory = {
         "Combatti Marco"
       ],
       dialog: [
-        { speaker: "Prof. Barcaro", text: "Ho 4 Besti leggendari per te!", emotion: 'excited' },
+        { speaker: "Prof. GheSboro", text: "Ho 4 Bestie leggendarie per te!", emotion: 'excited' },
         { speaker: "Marco", text: "EHI! CI SONO ANCH'IO!", emotion: 'excited' },
-        { speaker: "Prof. Barcaro", text: "Marco! Sempe el solito romper!", emotion: 'annoyed' },
+        { speaker: "Prof. GheSboro", text: "Marco! Sempe el solito romper!", emotion: 'annoyed' },
         { speaker: "Marco", text: "Sono il tuo RIVALE! E PRENDO IL MEGLIO!", emotion: 'happy' },
         { speaker: "Marco", text: "E poi, quante fidanzate hai?! Io ne ho 10!", emotion: 'happy' },
         { speaker: "Marco", text: "Ok, forse 2. Ma una è brava a cucinare!", emotion: 'neutral' },
         { speaker: "Marco", text: "E l'altra... beh, cucina anca lei!", emotion: 'happy' },
-        { speaker: "Prof. Barcaro", text: "Marco! ZITTO!", emotion: 'angry' },
+        { speaker: "Prof. GheSboro", text: "Marco! ZITTO!", emotion: 'angry' },
         { speaker: "Marco", text: "Ok zio! Ma prima: SCEGLI QUELLO PIÙ FORTE!", emotion: 'excited' },
         { speaker: "Marco", text: "E poi ti dò i consigli! Io so tutto!", emotion: 'happy' },
         { speaker: "Marco", text: "Come quando ti ho insegnato ad andare in bici...", emotion: 'neutral' },
         { speaker: "Marco", text: "...e te sì cadù 50 volte!", emotion: 'happy' },
         { speaker: "Marco", text: "ERI proprio brutto! AHAHAH!", emotion: 'excited' },
-        { speaker: "Prof. Barcaro", text: "MARCO! BASTA! Scegli il tuo starter!", emotion: 'angry' },
+        { speaker: "Prof. GheSboro", text: "MARCO! BASTA! Scegli il tuo starter!", emotion: 'angry' },
         { speaker: "", text: "Scegli il tuo starter leggendario!", emotion: 'excited' },
       ]
     },
@@ -2285,7 +2285,7 @@ export const GAME_STORY: GameStory = {
         { speaker: "Terzone da Napoli", text: "E i broccoli rabe?! Te l\'hai mai magnato?!", emotion: 'neutral' },
         { speaker: "", text: "NO! E NON LO VOGLIO SAPERE!", emotion: 'angry' },
         { speaker: "", text: "Prosegui di fretta...", emotion: 'neutral' },
-        { speaker: "Bambino Maleducato", text: "VOGLIO UN BESTIA! VOGLIO UN BESTIA!", emotion: 'excited' },
+        { speaker: "Bambino Maleducato", text: "VOGLIO UN BESTIEEA! VOGLIO UN BESTIEEA!", emotion: 'excited' },
         { speaker: "Bambino Maleducato", text: "PAPÀ! L\'è quello là! DÀGLI I SOLDI!", emotion: 'angry' },
         { speaker: "", text: "MA NON TI CONOSCO nemmeno!", emotion: 'angry' },
         { speaker: "Tifoso Juventus", text: "FORZA JUVE!", emotion: 'excited' },
@@ -2295,7 +2295,7 @@ export const GAME_STORY: GameStory = {
         { speaker: "", text: "Ma poi...", emotion: 'neutral' },
         { speaker: "Grint della Polenta", text: "ALTO LÀ, GIOVINOTTO!", emotion: 'angry' },
         { speaker: "Grint della Polenta", text: "LA COMPAGNIA DELLA POLENTA HA BISOOGNO DI TE!", emotion: 'angry' },
-        { speaker: "Grint della Polenta", text: "O meglio... del tuo BESTIA!", emotion: 'happy' },
+        { speaker: "Grint della Polenta", text: "O meglio... del tuo BESTIEEA!", emotion: 'happy' },
       ]
     },
 
@@ -2471,7 +2471,7 @@ export const GAME_STORY: GameStory = {
         { speaker: "Prof. Sansovino", text: "Tua madre... È SECONDA CUCCIA DEL RE!", emotion: 'neutral' },
         { speaker: "", text: "MA QUALE RE?!", emotion: 'angry' },
         { speaker: "Prof. Sansovino", text: "Il Re del Prosecco! Quello buono!", emotion: 'happy' },
-        { speaker: "Prof. Sansovino", text: "E il nonno di Barcaro... era il Dux Polenta!", emotion: 'neutral' },
+        { speaker: "Prof. Sansovino", text: "E il nonno di GheSboro... era il Dux Polenta!", emotion: 'neutral' },
         { speaker: "Prof. Sansovino", text: "Ma IL PRIMO Dux Polenta era il padre del Doge!", emotion: 'excited' },
         { speaker: "", text: "OKAY! HO CAPITO! È TUTTO CONFUSO!", emotion: 'angry' },
         { speaker: "Prof. Sansovino", text: "Esatto! Per questo è importante!", emotion: 'happy' },
@@ -2502,7 +2502,7 @@ export const GAME_STORY: GameStory = {
         { speaker: "Nonno", text: "AI MIEI TEMPI...", emotion: 'neutral' },
         { speaker: "", text: "NO! NON ANCORA!", emotion: 'angry' },
         { speaker: "Nonno", text: "...LA POLENTA ERA PIÙ GIALLA!", emotion: 'excited' },
-        { speaker: "Nonno", text: "E i Besti... i Besti i sonava il violino!", emotion: 'neutral' },
+        { speaker: "Nonno", text: "E i Bestie... i Bestie i sonava il violino!", emotion: 'neutral' },
         { speaker: "Nonno", text: "E le donne... le gaveva 10 figli!", emotion: 'happy' },
         { speaker: "", text: "MA NON È VERO!", emotion: 'angry' },
         { speaker: "Nonno", text: "E LÀ C'ERA IL MERCATO!", emotion: 'excited' },
@@ -2613,7 +2613,7 @@ export const GAME_STORY: GameStory = {
         { speaker: "Dux Polenta", text: "BENVENUTO! Ecco LA MIA STORIA!", emotion: 'excited' },
         { speaker: "Dux Polenta", text: "ERO UN CUOCO! BUONO!", emotion: 'happy' },
         { speaker: "Dux Polenta", text: "MA LA POLENTA NON VENIVA MAI BENE!", emotion: 'sad' },
-        { speaker: "Dux Polenta", text: "COSÌ HO CATTURATO TUTTI I BESTI!", emotion: 'angry' },
+        { speaker: "Dux Polenta", text: "COSÌ HO CATTURATO TUTTI I BESTIEE!", emotion: 'angry' },
         { speaker: "Dux Polenta", text: "E HO FATTO UNA POLENTA GIGANTESCA!", emotion: 'excited' },
         { speaker: "Dux Polenta", text: "MA È BRUCIATA! COME SEMPRE!", emotion: 'sad' },
         { speaker: "Dux Polenta", text: "E POI! HO PRESO IL POTERE!", emotion: 'happy' },
@@ -2624,8 +2624,8 @@ export const GAME_STORY: GameStory = {
         { speaker: "Grint", text: "DUX! LA STORIA È GIÀ STATA DETTA 3 VOLTE!", emotion: 'annoyed' },
         { speaker: "Dux Polenta", text: "OKAY! MA C'È DI PIÙ!", emotion: 'happy' },
         { speaker: "Dux Polenta", text: "Ecco LA RICETTA SEGRETA!", emotion: 'excited' },
-        { speaker: "Dux Polenta", text: "FARINA, ACQUA, BESTIA, AMORE!", emotion: 'neutral' },
-        { speaker: "", text: "BESTIA?! È QUESTO IL PROBLEMA!", emotion: 'angry' },
+        { speaker: "Dux Polenta", text: "FARINA, ACQUA, BESTIEEA, AMORE!", emotion: 'neutral' },
+        { speaker: "", text: "BESTIEEA?! È QUESTO IL PROBLEMA!", emotion: 'angry' },
         { speaker: "Dux Polenta", text: "SÌ! E POI IL SEGRETO!", emotion: 'excited' },
         { speaker: "Dux Polenta", text: "IL SEGRETO È... È...", emotion: 'neutral' },
         { speaker: "", text: "QUAL È?!", emotion: 'neutral' },
@@ -2656,10 +2656,10 @@ export const GAME_STORY: GameStory = {
   ],
 
   elite: [
-    { id: 'elite_1', name: 'Elite 1', title: 'Il Fuocoso', specialty: 'Besti di Fuoco', team: [{ id: 'fogarion', lvl: 42 }, { id: 'fogarox', lvl: 41 }, { id: 'spritzilla', lvl: 40 }], backstory: 'Parla di fuoco.' },
-    { id: 'elite_2', name: 'Elite 2', title: 'L\'Acquoso', specialty: 'Besti d\'Acqua', team: [{ id: 'canalord', lvl: 43 }, { id: 'lagunaga', lvl: 42 }, { id: 'lagorion', lvl: 43 }], backstory: 'Parla di acqua.' },
-    { id: 'elite_3', name: 'Elite 3', title: 'Il Naturale', specialty: 'Besti di Natura', team: [{ id: 'radicthron', lvl: 44 }, { id: 'vignarbor', lvl: 43 }, { id: 'formaggion', lvl: 42 }], backstory: 'Parla di terra e formaggio.' },
-    { id: 'elite_4', name: 'Elite 4', title: 'Il Magico', specialty: 'Besti Magici', team: [{ id: 'mascarion', lvl: 45 }, { id: 'spritzilla', lvl: 44 }, { id: 'serenissima', lvl: 45 }], backstory: 'Non fa niente di magico.' },
+    { id: 'elite_1', name: 'Elite 1', title: 'Il Fuocoso', specialty: 'Bestie de Fuoco', team: [{ id: 'fogarion', lvl: 42 }, { id: 'fogarox', lvl: 41 }, { id: 'spritzilla', lvl: 40 }], backstory: 'Parla di fuoco.' },
+    { id: 'elite_2', name: 'Elite 2', title: 'L\'Acquoso', specialty: 'Bestie d\'Acqua', team: [{ id: 'canalord', lvl: 43 }, { id: 'lagunaga', lvl: 42 }, { id: 'lagorion', lvl: 43 }], backstory: 'Parla di acqua.' },
+    { id: 'elite_3', name: 'Elite 3', title: 'Il Naturale', specialty: 'Bestie de Natura', team: [{ id: 'radicthron', lvl: 44 }, { id: 'vignarbor', lvl: 43 }, { id: 'formaggion', lvl: 42 }], backstory: 'Parla di terra e formaggio.' },
+    { id: 'elite_4', name: 'Elite 4', title: 'Il Magico', specialty: 'Bestie Magici', team: [{ id: 'mascarion', lvl: 45 }, { id: 'spritzilla', lvl: 44 }, { id: 'serenissima', lvl: 45 }], backstory: 'Non fa niente di magico.' },
   ],
 
   villainTeam: {
@@ -2677,16 +2677,21 @@ export const GAME_STORY: GameStory = {
     { id: 'dolomitor', name: 'Dolomitor', type: ['ice', 'earth'], desc: 'Spirito delle Dolomiti', reason: 'Perché il ghiaccio è forte', legend: 'Dorme nelle montagne.' },
     { id: 'lagorion', name: 'Lagorion', type: ['water', 'dragon'], desc: 'Signore del Lago', reason: 'Perché l\'acqua è forte', legend: 'Nuota nel lago.' },
     { id: 'serenissima', name: 'Serenissima', type: ['psycho', 'air'], desc: 'Spirito di Venezia', reason: 'Perché la mente è forte', legend: 'Protegge la città.' },
-    { id: 'ombradriz', name: 'OmbraSpritz', type: ['magic', 'poison'], desc: 'Ombra degli Aperitivi', reason: 'Perché la magia è forte', legend: 'È stato creato per sbaglio.' },
+    { id: 'ombraspritz', name: 'OmbraSpritz', type: ['magic', 'poison'], desc: 'Ombra degli Aperitivi', reason: 'Perché la magia è forte', legend: 'È stato creato per sbaglio.' },
   ],
 
   mythology: {
-    origin: 'I Besti sono nati dalla polenta magica.',
-    creation: 'Un cuoco li ha creati per fare la polenta perfetta.',
-    theFourGuardians: [],
-    theDuxVenetiae: { name: 'DUX VENETIAE', legend: 'È un Bestia fortissimo.', power: 'TANTO' },
-    theAncientWar: 'Una guerra per la polenta.',
-    theBetrayal: 'Qualcuno ha bruciato la polenta.'
+    origin: 'Le Bestie sono nate dal vapore di una gigantesca caldera di polenta taragna e spritz Select.',
+    creation: 'Il Primo Doge usò una mescola segreta di grappa e acqua della laguna per dar vita ai Guardiani.',
+    theFourGuardians: [
+      { name: 'Dolomitor', role: 'Il Gigante di Pietra', element: 'Ghiaccio/Terra', legend: 'Si dice che le sue lacrime siano grappa pura.' },
+      { name: 'Lagorion', role: 'Il Serpente di Suca', element: 'Acqua/Drago', legend: 'Protegge le vigne sommerse della laguna.' },
+      { name: 'Serenissima', role: 'L\'Ombra Alata', element: 'Psico/Aria', legend: 'Appare solo durante il redentore per rubare i cicchetti.' },
+      { name: 'OmbraSpritz', role: 'Lo Spirito Frizzante', element: 'Magico/Veleno', legend: 'Nato da uno spritz dimenticato al sole per tre giorni.' }
+    ],
+    theDuxVenetiae: { name: 'DUX VENETIAE', legend: 'Il Bestia supremo che cavalca il ruggito del Leone di San Marco.', power: 'Ghe sboro, el xe imbattibile!' },
+    theAncientWar: 'La Guerra dei Cento Cicchetti, dove le città si contesero la ricetta originale dello spritz.',
+    theBetrayal: 'Quando qualcuno mise l\'ananas sulla pizza a Verona, scatenando l\'ira degli dei.'
   },
 
   sideQuests: [
