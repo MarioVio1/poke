@@ -8,6 +8,7 @@ import { NPCs, NPCData } from '@/lib/npcs'
 import { VEHICLES, VehicleType, canMoveOnTile, getMovementSpeed } from '@/lib/vehicles'
 import { BESTIE_SVG_SPRITES, BESTIE_SPRITES, SpriteData, getDefaultSprite } from '@/lib/sprites'
 import { PIXEL_SPRITES, getSpriteUrl, getIconUrl } from '@/lib/pixelSprites'
+import { BESTIE_PNG_SPRITES } from '@/lib/pngSprites'
 import { getNPCSprite } from '@/lib/npcSprites'
 import { TYPE_COLORS, TILE_COLORS, TYPE_CHART, isIndoorMap, getMapBackground, renderTile, renderBuilding } from '@/lib/types'
 import { soundManager } from '@/lib/sounds'
@@ -646,38 +647,50 @@ export default function Game() {
 
   // Get sprite URL for a Bestia (try PNG first, then pixel art, then SVG)
   const getBestiaSprite = (id: string | number, isBack: boolean = false): string => {
-    const idStr = String(id)
+    const idStr = String(id).toLowerCase()
     
-    // Try PNG sprites first (custom user-generated)
-    const pngSprite = BESTIE_SVG_SPRITES[idStr]
-    if (pngSprite && pngSprite.front.startsWith('/sprites/')) {
+    // Try our new PNG mapping first
+    const pngSprite = BESTIE_PNG_SPRITES[idStr]
+    if (pngSprite) {
       return isBack ? (pngSprite.back || pngSprite.front) : pngSprite.front
     }
+
+    // Fallback to legacy PNG sprites
+    const legacyPng = BESTIE_SVG_SPRITES[idStr]
+    if (legacyPng && legacyPng.front.startsWith('/sprites/')) {
+      return isBack ? (legacyPng.back || legacyPng.front) : legacyPng.front
+    }
     
-    // Try pixel sprites
+    // Try pixel art
     const pixelUrl = getSpriteUrl(id, isBack)
     if (pixelUrl) return pixelUrl
     
-    // Fallback to SVG sprites
+    // Final fallback to generated SVG
     const sprite = BESTIE_SVG_SPRITES[idStr] || BESTIE_SPRITES[idStr] || getDefaultSprite()
     return isBack ? (sprite.back || sprite.front) : sprite.front
   }
 
   // Get icon sprite
   const getBestiaIcon = (id: string | number): string => {
-    const idStr = String(id)
+    const idStr = String(id).toLowerCase()
     
-    // Try PNG sprites first
-    const pngSprite = BESTIE_SVG_SPRITES[idStr]
-    if (pngSprite && pngSprite.icon.startsWith('/sprites/')) {
+    // Try our new PNG mapping first
+    const pngSprite = BESTIE_PNG_SPRITES[idStr]
+    if (pngSprite) {
       return pngSprite.icon
     }
+
+    // Fallback to legacy PNG
+    const legacyPng = BESTIE_SVG_SPRITES[idStr]
+    if (legacyPng && legacyPng.icon.startsWith('/sprites/')) {
+      return legacyPng.icon
+    }
     
-    // Try pixel sprites
+    // Try pixel art
     const iconUrl = getIconUrl(id)
     if (iconUrl) return iconUrl
     
-    // Fallback to SVG sprites
+    // Final fallback to SVG
     const sprite = BESTIE_SVG_SPRITES[idStr] || BESTIE_SPRITES[idStr] || getDefaultSprite()
     return sprite.icon || sprite.front
   }
@@ -3065,6 +3078,11 @@ export default function Game() {
 
         {/* BOTTOM SCREEN */}
         <div className="bottom-screen">
+          {/* L and R Shoulder buttons for Delta Style */}
+          <div className="shoulder-btns">
+            <button className="shoulder-btn l-btn" {...bindVirtualControl('select')}>L</button>
+            <button className="shoulder-btn r-btn" {...bindVirtualControl('start')}>R</button>
+          </div>
           <div className="screen-bezel-bottom">
             <div className="bottom-content">
               {/* Info Panel */}
@@ -4517,9 +4535,12 @@ export default function Game() {
         }
 
         .party-sprite {
-          width: 32px;
-          height: 32px;
-          border-radius: 5px;
+          width: 48px;
+          height: 48px;
+          border-radius: 12px;
+          padding: 4px;
+          background: rgba(255, 255, 255, 0.1);
+          box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
         }
 
         .party-info {
@@ -4574,11 +4595,15 @@ export default function Game() {
         .dex-row {
           display: flex;
           align-items: center;
-          gap: 8px;
-          padding: 5px 8px;
-          border-radius: 4px;
+          gap: 12px;
+          padding: 10px 12px;
+          border-radius: 12px;
           cursor: pointer;
-          font-size: 8px;
+          font-size: 10px;
+          margin-bottom: 4px;
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          transition: all 0.2s;
         }
 
         .dex-row.caught {
@@ -4595,8 +4620,11 @@ export default function Game() {
         }
 
         .dex-icon {
-          width: 24px;
-          height: 24px;
+          width: 32px;
+          height: 32px;
+          padding: 2px;
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 6px;
         }
 
         .dex-detail {

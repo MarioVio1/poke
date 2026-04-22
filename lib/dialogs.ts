@@ -182,7 +182,7 @@ export const DIALOGS = {
       'NON LO SO! È CONFUSO!',
     ],
     choosing: [
-      'Hai scelto [BESTIEEA]!',
+      'Hai scelto [BESTIA]!',
       'Ottima scelta! Questo Bestie è...',
       '...il più forte di tutti! Ahaha!',
       'Marco: VA BENE! IO PRENDO OMBRASPRITZ!',
@@ -210,7 +210,7 @@ export const DIALOGS = {
       'E IL CANE NORMALE?!',
       'NON ESISTE IL CANE NORMALE!',
       'TUTTI I CANI SONO SPECIALI!',
-      'COME I BESTIEE!',
+      'COME I BESTIE!',
       'E COME LA POLENTA!',
       'CHE È SEMPRE BRUCIATA!',
       'O CRUDA!',
@@ -301,7 +301,7 @@ export const DIALOGS = {
       'E DEL NONNO!',
       'E DELLA NONNA!',
       'E DEL COUSIN!',
-      'E DEL BESTIEEA!',
+      'E DEL BESTIA!',
       'E DELLA STORIA!',
       'E DEL TEMPO!',
       'E DELLO SPAZIO!',
@@ -579,7 +579,7 @@ export const DIALOGS = {
     ],
     grunt_fight: [
       'Prima le presentazioni!',
-      'Ecco el mio bestio!',
+      'Ecco el mio bestia!',
       'El xe nato nel fango!',
       'Come la polenta! AHAHAHA!',
     ],
@@ -1012,7 +1012,7 @@ export const DIALOGS = {
       'Hai visto la partita ieri? No? Peccato!',
       'El calcio xe la mia vita!',
       'E i Bestie... i gioca anca a calze!',
-      'Una volta gò visto un bestio tirarghe una penale...',
+      'Una volta gò visto un bestia tirarghe una penale...',
     ],
     don_bepi: [
       'Dio ti benedica, figliolo!',
@@ -1164,7 +1164,7 @@ export const DIALOGS = {
       'Qua i pesi i xe pì boni!',
       'El luccio xe grandissimo!',
       'El lago el ga i suoi secreti!',
-      'Una volta gò tirà su un bestio!',
+      'Una volta gò tirà su un bestia!',
       'El gavà 3 metri! ...O forse 2!',
       '...O forse 1! Ma el gavà fame!',
     ],
@@ -1296,7 +1296,7 @@ export const CITY_DIALOGS = {
     fisherman: [
       'Sto pescando da 30 anni!',
       'I pesci de canalboro xe i migliori!',
-      'Una volta ho vist una Bestia grandissimo!',
+      'Una volta ho vist una Bestia grandissima!',
     ],
     tourist: [
       'Venezia xe tanto bela!',
@@ -1421,7 +1421,7 @@ export const LOCATION_DIALOGS = {
     ],
   },
   
-  // MUSEO DEI BESTIEE
+  // MUSEO DEI BESTIE
   museo_besti: {
     guida: [
       'Benvenuto nel Museo dei Bestie!',
@@ -1440,7 +1440,7 @@ export const LOCATION_DIALOGS = {
     fossile: [
       'Hai trovato un fossile!',
       'Questo è antico!',
-      'Forse contiene una Bestiae!',
+      'Forse contiene una Bestie!',
       'Portalo al laboratorio!',
       'Quello segreto, ovviamente!',
     ],
@@ -1849,7 +1849,7 @@ export const ANNOYING_CHARACTERS = {
 
   // ANIMALISTI/ATTIVISTI
   attivista_animale: [
-    'I BESTIEE SONO LIBERI!',
+    'I BESTIE SONO LIBERI!',
     'LIBERTÀ PER TUTTI!',
     'LA POLENTA È UN CRIMINE!',
     'LIBERATE I GABBIANI!',
@@ -1903,7 +1903,7 @@ export const ANNOYING_CHARACTERS = {
   // BAMBINI
   capriccio: [
     'VOGLIO! VOGLIO! VOGLIO!',
-    'IL BESTIEEA! QUELLO VERDE!',
+    'IL BESTIA! QUELLO VERDE!',
     'NO! QUELLO BLU!',
     'TUTTI! VOGLIO TUTTI!',
     '*piange*',

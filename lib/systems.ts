@@ -41,7 +41,7 @@ export const ACHIEVEMENTS: Record<string, Achievement> = {
   secret_found: { id: 'secret_found', name: 'Esploratore', desc: 'Hai trovato un luogo segreto!', icon: '🔍' },
   
   // SPECIALI
-  legendary_caught: { id: 'legendary_caught', name: 'Cacciatore di Leggende', desc: 'Hai catturato una Bestia Leggendario!', icon: '🌟', reward: { money: 5000 } },
+  legendary_caught: { id: 'legendary_caught', name: 'Cacciatore di Leggende', desc: 'Hai catturato una Bestia Leggendaria!', icon: '🌟', reward: { money: 5000 } },
   starter_legendary: { id: 'starter_legendary', name: 'Scelta del Destino', desc: 'Hai scelto un Leggendario come starter!', icon: '✨' },
   
   // TRADING / STORY
