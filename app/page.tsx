@@ -61,6 +61,7 @@ interface GameState {
   achievements?: string[]
   evolutions?: number
   citiesVisited?: string[]
+  completedQuests?: string[]
 }
 
 interface BattleState {
@@ -380,6 +381,7 @@ export default function Game() {
     achievements: [],
     evolutions: 0,
     citiesVisited: [],
+    completedQuests: [],
   })
 
   // Save/Load System with Auto-Save
