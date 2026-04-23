@@ -61,6 +61,7 @@ interface GameState {
   achievements?: string[]
   evolutions?: number
   citiesVisited?: string[]
+  completedQuests?: string[]
 }
 
 interface BattleState {
@@ -380,6 +381,7 @@ export default function Game() {
     achievements: [],
     evolutions: 0,
     citiesVisited: [],
+    completedQuests: [],
   })
 
   // Save/Load System with Auto-Save
@@ -1023,6 +1025,15 @@ export default function Game() {
 
     switch (ev.type) {
       case 'npc':
+        if (ev.npcId === 'capitano') {
+            addItemToInventory(ITEMS.gondola_oro)
+            setGs(prev => ({
+                ...prev,
+                vehicle: 'gondola_oro',
+                completedQuests: [...(prev.completedQuests || []), 'gardalago_intro']
+            }))
+            setNotification("Hai ottenuto la Gondola d'Oro!")
+        }
         if (gs.map === 'casa' && ev.name === 'Mamma' && !gs.flags.hasStarter) {
           setGs(prev => ({ ...prev, storyProgress: Math.max(prev.storyProgress, 2) }))
           setDialogs(gs.storyProgress < 2 ? [
@@ -1221,17 +1232,23 @@ export default function Game() {
   // Manual interaction with A button
   const checkInteractionEvents = useCallback(() => {
     const map = MAPS[gs.map]
+    if (!map || !map.events) return
 
-    const ev = map.events?.find((e: MapEvent) => {
+    const ev = map.events.find((e: MapEvent) => {
       if (e.type === 'npc' || e.type === 'trainer' || e.type === 'gym' || e.type === 'sign') {
         if (typeof e.x !== 'number' || typeof e.y !== 'number') return false
-        return Math.abs(e.x - gs.player.x) + Math.abs(e.y - gs.player.y) <= 1
+        const dx = Math.abs(e.x - gs.player.x)
+        const dy = Math.abs(e.y - gs.player.y)
+        // Check if player is standing next to the event
+        return (dx === 1 && dy === 0) || (dx === 0 && dy === 1) || (dx === 0 && dy === 0)
       }
       return false
     })
 
-    if (ev) handleEvent(ev)
-  }, [gs, handleEvent])
+    if (ev) {
+      handleEvent(ev)
+    }
+  }, [gs.map, gs.player.x, gs.player.y, handleEvent])
 
   // Advance dialog
   const advanceDialog = useCallback(() => {
@@ -2037,6 +2054,22 @@ export default function Game() {
     setInMenu(false)
   }
 
+  // Check quests based on game state
+  const checkQuests = useCallback(() => {
+    const caught = gs.pc.length + gs.party.length
+
+    // Catch em all
+    if (caught >= 20 && !gs.completedQuests?.includes('catch_em_all')) {
+        setGs(prev => ({ ...prev, completedQuests: [...(prev.completedQuests || []), 'catch_em_all'] }))
+    }
+
+    // Bestia Dex
+    const dexCaught = gs.flags.caughtBestia?.length || 0
+    if (dexCaught >= Object.keys(BESTIE).length && !gs.completedQuests?.includes('bestia_dex_complete')) {
+        setGs(prev => ({ ...prev, completedQuests: [...(prev.completedQuests || []), 'bestia_dex_complete'] }))
+    }
+  }, [gs.pc.length, gs.party.length, gs.completedQuests, gs.flags.caughtBestia?.length])
+
   // Check achievements based on game state
   const checkAchievements = () => {
     const caught = gs.pc.length + gs.party.length
@@ -2053,12 +2086,21 @@ export default function Game() {
     if (gs.player.badges.length >= 5) unlockAchievement('five_badges')
     if (gs.player.badges.length >= 8) unlockAchievement('all_badges')
     if (gs.flags.defeatedRival) unlockAchievement('rival_defeated')
+
+    // Story Progression Achievements / Quests
+    if (gs.player.badges.includes('aperitivo') && !gs.completedQuests?.includes('defeat_spritzia_gym')) {
+         setGs(prev => ({ ...prev, completedQuests: [...(prev.completedQuests || []), 'defeat_spritzia_gym'] }))
+    }
+    if (gs.player.badges.includes('arena') && !gs.completedQuests?.includes('defeat_veronara_gym')) {
+         setGs(prev => ({ ...prev, completedQuests: [...(prev.completedQuests || []), 'defeat_veronara_gym'] }))
+    }
   }
 
   useEffect(() => {
     if (!gameStarted || showStoryIntro) return
     checkAchievements()
-  }, [achievements, gameStarted, gs.flags.battlesWon, gs.flags.defeatedRival, gs.party.length, gs.pc.length, gs.player.badges.length, showStoryIntro])
+    checkQuests()
+  }, [achievements, gameStarted, gs.flags.battlesWon, gs.flags.defeatedRival, gs.party.length, gs.pc.length, gs.player.badges.length, showStoryIntro, checkQuests])
 
   // ═══════════════════════════════════════════════════════════════════
   // STONE EVOLUTION SYSTEM
@@ -5072,6 +5114,41 @@ export default function Game() {
           inset: 0;
           z-index: 4;
           pointer-events: auto;
+        }
+
+        .shoulder-btns {
+          position: absolute;
+          top: 0;
+          left: 30px;
+          right: 30px;
+          display: flex;
+          justify-content: space-between;
+          z-index: 10;
+        }
+
+        .shoulder-btn {
+          width: 60px;
+          height: 30px;
+          background: rgba(255,255,255,0.1);
+          backdrop-filter: blur(5px);
+          border: 1px solid rgba(255,255,255,0.2);
+          border-top: none;
+          border-bottom-left-radius: 15px;
+          border-bottom-right-radius: 15px;
+          color: rgba(255,255,255,0.4);
+          font-family: 'Press Start 2P', monospace;
+          font-size: 10px;
+          cursor: pointer;
+          transition: all 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          outline: none;
+        }
+
+        .shoulder-btn:active {
+          background: rgba(255,255,255,0.2);
+          transform: translateY(2px);
         }
 
         .dpad-container {
