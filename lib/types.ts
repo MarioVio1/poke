@@ -45,7 +45,9 @@ export const OUTDOOR_TILES: Record<number, {
   0: { base: '#9fe29b', detail: '#69b85d', walkable: true, type: 'grass' },
   1: { base: '#8a7a61', detail: '#6d604d', walkable: false, type: 'wall' },
   2: { base: '#67c7dd', detail: '#b7f0f4', walkable: false, type: 'water' },
-  3: { base: '#f3d58b', detail: '#d86356', walkable: false, type: 'building' },
+  3: { base: '#d86356', detail: '#b94e46', walkable: false, type: 'building' }, // Roof
+  4: { base: '#f7f1d4', detail: '#d7ccc8', walkable: false, type: 'building' }, // Wall
+  5: { base: '#7a5b45', detail: '#5d4037', walkable: true, type: 'building' }, // Door
   6: { base: '#7bc86a', detail: '#4f9649', walkable: true, type: 'grass' },
   7: { base: '#c44b5b', detail: '#8d2136', walkable: true, type: 'grass' },
   8: { base: '#d9f6e4', detail: '#b9e3cf', walkable: true, type: 'grass' },
@@ -202,19 +204,31 @@ export const renderTile = (
   }
 
   if (tile.type === 'building') {
-    ctx.fillStyle = '#db7259'
-    ctx.fillRect(x, y, size, 5)
-    ctx.fillStyle = '#b94e46'
-    ctx.fillRect(x, y + 4, size, 1)
-    ctx.fillStyle = '#f7f1d4'
-    ctx.fillRect(x + 1, y + 5, size - 2, size - 6)
-    ctx.fillStyle = '#7a5b45'
-    ctx.fillRect(x + 5, y + 8, 6, 7)
-    ctx.fillStyle = '#88bdf2'
-    ctx.fillRect(x + 2, y + 6, 3, 3)
-    ctx.fillRect(x + 11, y + 6, 3, 3)
-    ctx.fillStyle = '#d9dde5'
-    ctx.fillRect(x + 1, y + 5, size - 2, 1)
+    if (tileType === 3) { // Roof
+      ctx.fillStyle = tile.base
+      ctx.fillRect(x, y + 4, size, size - 4)
+      ctx.fillStyle = tile.detail || tile.base
+      ctx.fillRect(x, y + 2, size, 2)
+      ctx.fillStyle = 'rgba(255,255,255,0.1)'
+      ctx.fillRect(x + 2, y + 6, size - 4, 2)
+    } else if (tileType === 4) { // Wall
+      ctx.fillStyle = tile.base
+      ctx.fillRect(x, y, size, size)
+      ctx.fillStyle = 'rgba(0,0,0,0.1)'
+      ctx.fillRect(x, y + size - 2, size, 2)
+      // Small window
+      ctx.fillStyle = '#88bdf2'
+      ctx.fillRect(x + 4, y + 4, 8, 6)
+      ctx.strokeStyle = 'rgba(255,255,255,0.5)'
+      ctx.strokeRect(x + 4, y + 4, 8, 6)
+    } else if (tileType === 5) { // Door
+      ctx.fillStyle = '#f7f1d4' // Wall around door
+      ctx.fillRect(x, y, size, size)
+      ctx.fillStyle = tile.base
+      ctx.fillRect(x + 2, y, size - 4, size)
+      ctx.fillStyle = '#ffd700' // Handle
+      ctx.fillRect(x + size - 6, y + size/2, 2, 2)
+    }
   }
   
   if (tile.type === 'floor' || tile.type === 'carpet') {

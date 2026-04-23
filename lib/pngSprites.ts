@@ -56,8 +56,4 @@ export const BESTIE_PNG_SPRITES: Record<string, SpriteData> = {
   'serenissima': { front: '/sprites/Serenissima.PNG', back: '/sprites/Serenissima.PNG', icon: '/sprites/Serenissima.PNG' },
   'ombraspritz': { front: '/sprites/OmbraSpritz.PNG', back: '/sprites/OmbraSpritz.PNG', icon: '/sprites/OmbraSpritz.PNG' },
   'duxvenetiae': { front: '/sprites/Dux%20Venetiae.PNG', back: '/sprites/Dux%20Venetiae.PNG', icon: '/sprites/Dux%20Venetiae.PNG' },
-  'dolomitor': { front: '/sprites/Dolomitor.PNG', back: '/sprites/Dolomitor.PNG', icon: '/sprites/Dolomitor.PNG' },
-  'lagorion': { front: '/sprites/Lagorion.PNG', back: '/sprites/Lagorion.PNG', icon: '/sprites/Lagorion.PNG' },
-  'serenissima': { front: '/sprites/Serenissima.PNG', back: '/sprites/Serenissima.PNG', icon: '/sprites/Serenissima.PNG' },
-  'ombraspritz': { front: '/sprites/OmbraSpritz.PNG', back: '/sprites/OmbraSpritz.PNG', icon: '/sprites/OmbraSpritz.PNG' },
-}
+};
