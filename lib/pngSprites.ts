@@ -1,59 +1,58 @@
 import { SpriteData } from './sprites'
 
+/**
+ * Mapping for high-quality PNG sprites.
+ * ONLY include files that actually exist in /public/sprites/
+ */
 export const BESTIE_PNG_SPRITES: Record<string, SpriteData> = {
-  'fogaron': { front: '/sprites/Fogaron.PNG', back: '/sprites/Fogaron.PNG', icon: '/sprites/Fogaron.PNG' },
-  'fogarox': { front: '/sprites/Fogarox.PNG', back: '/sprites/Fogarox.PNG', icon: '/sprites/Fogarox.PNG' },
-  'fogarion': { front: '/sprites/Fogarion.PNG', back: '/sprites/Fogarion.PNG', icon: '/sprites/Fogarion.PNG' },
-  'radicor': { front: '/sprites/Radicor.PNG', back: '/sprites/Radicor.PNG', icon: '/sprites/Radicor.PNG' },
-  'radicorso': { front: '/sprites/Radicorso.PNG', back: '/sprites/Radicorso.PNG', icon: '/sprites/Radicorso.PNG' },
-  'radicthron': { front: '/sprites/Radicthron.PNG', back: '/sprites/Radicthron.PNG', icon: '/sprites/Radicthron.PNG' },
-  'canalot': { front: '/sprites/Canalot.PNG', back: '/sprites/Canalot.PNG', icon: '/sprites/Canalot.PNG' },
-  'canalisk': { front: '/sprites/Canalisk.PNG', back: '/sprites/Canalisk.PNG', icon: '/sprites/Canalisk.PNG' },
-  'canalord': { front: '/sprites/Canalord.PNG', back: '/sprites/Canalord.PNG', icon: '/sprites/Canalord.PNG' },
-  'gabbianzo': { front: '/sprites/Gabbianzo.PNG', back: '/sprites/Gabbianzo.PNG', icon: '/sprites/Gabbianzo.PNG' },
-  'gabbianator': { front: '/sprites/Gabbianator.PNG', back: '/sprites/Gabbianator.PNG', icon: '/sprites/Gabbianator.PNG' },
-  'polentaur': { front: '/sprites/Polentaur.PNG', back: '/sprites/Polentaur.PNG', icon: '/sprites/Polentaur.PNG' },
-  'polentitan': { front: '/sprites/Polentitan.PNG', back: '/sprites/Polentitan.PNG', icon: '/sprites/Polentitan.PNG' },
-  'spritzino': { front: '/sprites/Spritzino.PNG', back: '/sprites/Spritzino.PNG', icon: '/sprites/Spritzino.PNG' },
-  'spritzilla': { front: '/sprites/Spritzilla.PNG', back: '/sprites/Spritzilla.PNG', icon: '/sprites/Spritzilla.PNG' },
-  'gondolo': { front: '/sprites/Gondolo.PNG', back: '/sprites/Gondolo.PNG', icon: '/sprites/Gondolo.PNG' },
-  'gondrago': { front: '/sprites/Gondrago.PNG', back: '/sprites/Gondrago.PNG', icon: '/sprites/Gondrago.PNG' },
-  'salamix': { front: '/sprites/Salamix.PNG', back: '/sprites/Salamix.PNG', icon: '/sprites/Salamix.PNG' },
-  'salamastro': { front: '/sprites/Salamastro.PNG', back: '/sprites/Salamastro.PNG', icon: '/sprites/Salamastro.PNG' },
-  'prosecchino': { front: '/sprites/Prosecchino.PNG', back: '/sprites/Prosecchino.PNG', icon: '/sprites/Prosecchino.PNG' },
-  'prosecchione': { front: '/sprites/Prosecchione.PNG', back: '/sprites/Prosecchione.PNG', icon: '/sprites/Prosecchione.PNG' },
-  'mascarin': { front: '/sprites/Mascarin.PNG', back: '/sprites/Mascarin.PNG', icon: '/sprites/Mascarin.PNG' },
-  'mascarion': { front: '/sprites/Mascarion.PNG', back: '/sprites/Mascarion.PNG', icon: '/sprites/Mascarion.PNG' },
-  'vespolo': { front: '/sprites/Vespolo.PNG', back: '/sprites/Vespolo.PNG', icon: '/sprites/Vespolo.PNG' },
-  'vespatron': { front: '/sprites/Vespatron.PNG', back: '/sprites/Vespatron.PNG', icon: '/sprites/Vespatron.PNG' },
-  'nevelet': { front: '/sprites/Nevelet.PNG', back: '/sprites/Nevelet.PNG', icon: '/sprites/Nevelet.PNG' },
-  'dolomor': { front: '/sprites/Dolomor.PNG', back: '/sprites/Dolomor.PNG', icon: '/sprites/Dolomor.PNG' },
-  'alpibex': { front: '/sprites/Alpibex.PNG', back: '/sprites/Alpibex.PNG', icon: '/sprites/Alpibex.PNG' },
-  'dolomibex': { front: '/sprites/Dolomibex.PNG', back: '/sprites/Dolomibex.PNG', icon: '/sprites/Dolomibex.PNG' },
-  'lagunello': { front: '/sprites/Lagunello.PNG', back: '/sprites/Lagunello.PNG', icon: '/sprites/Lagunello.PNG' },
-  'lagunaga': { front: '/sprites/Lagunaga.PNG', back: '/sprites/Lagunaga.PNG', icon: '/sprites/Lagunaga.PNG' },
-  'smogatto': { front: '/sprites/Smogatto.PNG', back: '/sprites/Smogatto.PNG', icon: '/sprites/Smogatto.PNG' },
-  'fumigor': { front: '/sprites/Fumigor.PNG', back: '/sprites/Fumigor.PNG', icon: '/sprites/Fumigor.PNG' },
-  'colombo': { front: '/sprites/Colombo.PNG', back: '/sprites/Colombo.PNG', icon: '/sprites/Colombo.PNG' },
-  'colombarion': { front: '/sprites/Colombarion.PNG', back: '/sprites/Colombarion.PNG', icon: '/sprites/Colombarion.PNG' },
-  'tiramisu': { front: '/sprites/Tiramisù.PNG', back: '/sprites/Tiramisù.PNG', icon: '/sprites/Tiramisù.PNG' },
-  'tiramisuper': { front: '/sprites/Tiramisuper.PNG', back: '/sprites/Tiramisuper.PNG', icon: '/sprites/Tiramisuper.PNG' },
-  'vignel': { front: '/sprites/Vignel.PNG', back: '/sprites/Vignel.PNG', icon: '/sprites/Vignel.PNG' },
-  'vignarbor': { front: '/sprites/Vignarbor.PNG', back: '/sprites/Vignarbor.PNG', icon: '/sprites/Vignarbor.PNG' },
-  'formaggion': { front: '/sprites/Formaggion.PNG', back: '/sprites/Formaggion.PNG', icon: '/sprites/Formaggion.PNG' },
-  'parmageddon': { front: '/sprites/Parmageddon.PNG', back: '/sprites/Parmageddon.PNG', icon: '/sprites/Parmageddon.PNG' },
-  'focacino': { front: '/sprites/Focacino.PNG', back: '/sprites/Focacino.PNG', icon: '/sprites/Focacino.PNG' },
-  'scampetto': { front: '/sprites/Scampetto.PNG', back: '/sprites/Scampetto.PNG', icon: '/sprites/Scampetto.PNG' },
-  'risotto_al_nero': { front: '/sprites/Risotto%20al%20Nero.PNG', back: '/sprites/Risotto%20al%20Nero.PNG', icon: '/sprites/Risotto%20al%20Nero.PNG' },
-  'porchetta_bestia': { front: '/sprites/Porchetta%20Bestia.PNG', back: '/sprites/Porchetta%20Bestia.PNG', icon: '/sprites/Porchetta%20Bestia.PNG' },
-  'spritzatore': { front: '/sprites/Spritzatore.PNG', back: '/sprites/Spritzatore.PNG', icon: '/sprites/Spritzatore.PNG' },
-  'bacaro_mostro': { front: '/sprites/Bacaro%20Mostro.PNG', back: '/sprites/Bacaro%20Mostro.PNG', icon: '/sprites/Bacaro%20Mostro.PNG' },
-  'topo_granchio': { front: '/sprites/Topo%20Granchio.PNG', back: '/sprites/Topo%20Granchio.PNG', icon: '/sprites/Topo%20Granchio.PNG' },
-  'fantasma_laghetto': { front: '/sprites/Fantasma%20Laghetto.PNG', back: '/sprites/Fantasma%20Laghetto.PNG', icon: '/sprites/Fantasma%20Laghetto.PNG' },
-  'fiore_pantofola': { front: '/sprites/Fiore%20Pantofola.PNG', back: '/sprites/Fiore%20Pantofola.PNG', icon: '/sprites/Fiore%20Pantofola.PNG' },
-  'dolomitor': { front: '/sprites/Dolomitor.PNG', back: '/sprites/Dolomitor.PNG', icon: '/sprites/Dolomitor.PNG' },
-  'lagorion': { front: '/sprites/Lagorion.PNG', back: '/sprites/Lagorion.PNG', icon: '/sprites/Lagorion.PNG' },
-  'serenissima': { front: '/sprites/Serenissima.PNG', back: '/sprites/Serenissima.PNG', icon: '/sprites/Serenissima.PNG' },
-  'ombraspritz': { front: '/sprites/OmbraSpritz.PNG', back: '/sprites/OmbraSpritz.PNG', icon: '/sprites/OmbraSpritz.PNG' },
-  'duxvenetiae': { front: '/sprites/Dux%20Venetiae.PNG', back: '/sprites/Dux%20Venetiae.PNG', icon: '/sprites/Dux%20Venetiae.PNG' },
+  'fogaron': {
+    front: '/sprites/Fogaron.PNG',
+    back: '/sprites/Fogaron.PNG',
+    icon: '/sprites/Fogaron.PNG'
+  },
+  'fogarox': {
+    front: '/sprites/Fogarox.PNG',
+    back: '/sprites/Fogarox.PNG',
+    icon: '/sprites/Fogarox.PNG'
+  },
+  'fogarion': {
+    front: '/sprites/Fogarion.PNG',
+    back: '/sprites/Fogarion2.PNG',
+    icon: '/sprites/Fogarion.PNG'
+  },
+  'radicor': {
+    front: '/sprites/Radicor.PNG',
+    back: '/sprites/Radicor.PNG',
+    icon: '/sprites/Radicor.PNG'
+  },
+  'radicorso': {
+    front: '/sprites/Radicorso.PNG',
+    back: '/sprites/Radicorso.PNG',
+    icon: '/sprites/Radicorso.PNG'
+  },
+  'radicthron': {
+    front: '/sprites/Radicthron.PNG',
+    back: '/sprites/Radicthron.PNG',
+    icon: '/sprites/Radicthron.PNG'
+  },
+  'canalot': {
+    front: '/sprites/Canalot.PNG',
+    back: '/sprites/Canalot.PNG',
+    icon: '/sprites/Canalot.PNG'
+  },
+  'canalisk': {
+    front: '/sprites/Canalisk.PNG',
+    back: '/sprites/Canalisk.PNG',
+    icon: '/sprites/Canalisk.PNG'
+  },
+  'canalord': {
+    front: '/sprites/Canalord.PNG',
+    back: '/sprites/Canalord.PNG',
+    icon: '/sprites/Canalord.PNG'
+  },
+  'gabbianzo': {
+    front: '/sprites/Gabbianzo.PNG',
+    back: '/sprites/Gabbianzo.PNG',
+    icon: '/sprites/Gabbianzo.PNG'
+  },
 };

@@ -182,7 +182,7 @@ export const MAPS: Record<string, GameMap> = {
       
       // Signs
       { type: 'sign', x: 10, y: 10, text: 'CANALBORGO\nLa città dei canali' },
-      { type: 'sign', x: 3, y: 2, text: 'Casa di Federico' },
+      { type: 'sign', x: 3, y: 2, text: 'Casa di El Bocia' },
       { type: 'sign', x: 17, y: 6, text: 'Laboratorio ➜' },
       { type: 'sign', x: 25, y: 2, text: 'Centro Bestie ➜' },
       { type: 'sign', x: 25, y: 10, text: 'Bottega ➜' },
@@ -228,7 +228,7 @@ export const MAPS: Record<string, GameMap> = {
 
   // Home interior
   casa: {
-    name: 'Casa di Federico',
+    name: 'Casa di El Bocia',
     tiles: [
       [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
       [2,6,6,6,6,6,6,6,6,6,6,6,6,6,6,2],
@@ -255,7 +255,7 @@ export const MAPS: Record<string, GameMap> = {
 
   // Piano superiore casa (nuovo!)
   casa_piano1: {
-    name: 'Camera di Federico',
+    name: 'Camera di El Bocia',
     tiles: [
       [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
       [2,6,6,6,6,6,6,6,6,6,6,6,6,6,6,2],
@@ -372,7 +372,7 @@ export const MAPS: Record<string, GameMap> = {
     ],
     events: [
       { type: 'npc', x: 7, y: 6, name: 'Infermiera', npcId: 'lass',
-        dialog: ['Il tuo Bestie è stato curato!', 'Tien qua anche un PokeDioex: cussì no vai in giro come un mona.', 'Buona fortuna nel viaggio!'], gift: 'pokedex' },
+        dialog: ['Il tuo Bestie è stato curato!', 'Tien qua anche un Bestidex: cussì no vai in giro come un mona.', 'Buona fortuna nel viaggio!'], gift: 'bestidex' },
       { type: 'npc', x: 10, y: 8, name: 'Dottore', npcId: 'professor',
         dialog: ['Il centro xe aperto 24 ore!', 'Te serve qualcosa?'] },
       { type: 'heal' },
@@ -399,7 +399,7 @@ export const MAPS: Record<string, GameMap> = {
     ],
     events: [
       { type: 'npc', x: 3, y: 5, name: 'Commessa Bruna', npcId: 'lass',
-        dialog: ['Se te manca el PokeDioex, qua te lo sistemo subito.', 'Annota i Bestie e dopo torna a comprare, fio mio.'], gift: 'pokedex' },
+        dialog: ['Se te manca el Bestidex, qua te lo sistemo subito.', 'Annota i Bestie e dopo torna a comprare, fio mio.'], gift: 'bestidex' },
       { type: 'shop', x: 8, y: 4, 
         items: [
           { name: 'Pozioncino', price: 100, type: 'heal', val: 20 },
@@ -523,7 +523,7 @@ export const MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,1,1,1,1,1],
     ],
     events: [
-      { type: 'npc', x: 4, y: 3, name: 'Infermiera', npcId: 'lass', dialog: ['Curato!', 'Sei a Spritzia: porta via anche el PokeDioex e segnate tuto.'], gift: 'pokedex' },
+      { type: 'npc', x: 4, y: 3, name: 'Infermiera', npcId: 'lass', dialog: ['Curato!', 'Sei a Spritzia: porta via anche el Bestidex e segnate tuto.'], gift: 'bestidex' },
       { type: 'heal' },
       { type: 'warp', x: 4, y: 5, dest: 'spritzia', dx: 10, dy: 5 },
     ],
@@ -655,7 +655,7 @@ export const MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,1,1,1,1,1],
     ],
     events: [
-      { type: 'npc', x: 4, y: 3, name: 'Infermiera', npcId: 'lass', dialog: ['Curato!', 'Mi raccomando: col PokeDioex vedi chi te manca ancora.'], gift: 'pokedex' },
+      { type: 'npc', x: 4, y: 3, name: 'Infermiera', npcId: 'lass', dialog: ['Curato!', 'Mi raccomando: col Bestidex vedi chi te manca ancora.'], gift: 'bestidex' },
       { type: 'heal' },
       { type: 'warp', x: 4, y: 5, dest: 'veronara', dx: 15, dy: 5 },
     ],
@@ -785,7 +785,7 @@ export const MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,1,1,1,1,1],
     ],
     events: [
-      { type: 'npc', x: 4, y: 3, name: 'Infermiera', npcId: 'lass', dialog: ['Curato!', 'A Padoana i studenti lo perdono sempre: tien stretto sto PokeDioex.'], gift: 'pokedex' },
+      { type: 'npc', x: 4, y: 3, name: 'Infermiera', npcId: 'lass', dialog: ['Curato!', 'A Padoana i studenti lo perdono sempre: tien stretto sto Bestidex.'], gift: 'bestidex' },
       { type: 'heal' },
       { type: 'warp', x: 4, y: 5, dest: 'padoana', dx: 15, dy: 5 },
     ],
@@ -915,7 +915,7 @@ export const MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,1,1,1,1,1],
     ],
     events: [
-      { type: 'npc', x: 4, y: 3, name: 'Infermiera', npcId: 'lass', dialog: ['Curato!', 'Se trovi Bestie nei campi, segnali subito nel PokeDioex.'], gift: 'pokedex' },
+      { type: 'npc', x: 4, y: 3, name: 'Infermiera', npcId: 'lass', dialog: ['Curato!', 'Se trovi Bestie nei campi, segnali subito nel Bestidex.'], gift: 'bestidex' },
       { type: 'heal' },
       { type: 'warp', x: 4, y: 5, dest: 'trevisella', dx: 15, dy: 7 },
     ],
@@ -1042,7 +1042,7 @@ export const MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,1,1,1,1,1],
     ],
     events: [
-      { type: 'npc', x: 4, y: 3, name: 'Infermiera', npcId: 'lass', dialog: ['Curato!', 'Qua in montagna ghe serve memoria: tien anche el tuo PokeDioex.'], gift: 'pokedex' },
+      { type: 'npc', x: 4, y: 3, name: 'Infermiera', npcId: 'lass', dialog: ['Curato!', 'Qua in montagna ghe serve memoria: tien anche el tuo Bestidex.'], gift: 'bestidex' },
       { type: 'heal' },
       { type: 'warp', x: 4, y: 5, dest: 'dolomax', dx: 15, dy: 7 },
     ],
@@ -1263,7 +1263,7 @@ export const MAPS: Record<string, GameMap> = {
       [1,1,1,1,1,1,1,1,1,1],
     ],
     events: [
-      { type: 'npc', x: 4, y: 3, name: 'Infermiera', npcId: 'lass', dialog: ['Curato!', 'Tra lago e porto se perde tutto: per fortuna el PokeDioex no.'], gift: 'pokedex' },
+      { type: 'npc', x: 4, y: 3, name: 'Infermiera', npcId: 'lass', dialog: ['Curato!', 'Tra lago e porto se perde tutto: per fortuna el Bestidex no.'], gift: 'bestidex' },
       { type: 'heal' },
       { type: 'warp', x: 4, y: 5, dest: 'gardalago', dx: 15, dy: 9 },
     ],

@@ -45,7 +45,7 @@ export const COMPLETE_MAPS: Record<string, GameMap> = {
 
   // HOME
   casa: {
-    name: 'Casa di Federico',
+    name: 'Casa di El Bocia',
     tiles: [
       [1,1,1,1,1,1,1,1,1,1],
       [1,4,4,4,4,4,4,4,4,1],

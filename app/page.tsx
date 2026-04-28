@@ -6,7 +6,7 @@ import { MAPS, CITY_THEMES, getCityTheme } from '@/lib/maps'
 import { ITEMS, SHOP_ITEMS, GameItem } from '@/lib/items'
 import { NPCs, NPCData } from '@/lib/npcs'
 import { VEHICLES, VehicleType, canMoveOnTile, getMovementSpeed } from '@/lib/vehicles'
-import { BESTIE_SVG_SPRITES, BESTIE_SPRITES, SpriteData, getDefaultSprite } from '@/lib/sprites'
+import { BESTIE_SVG_SPRITES, BESTIE_SPRITES, SpriteData, getDefaultSprite, getDynamicFallback } from '@/lib/sprites'
 import { PIXEL_SPRITES, getSpriteUrl, getIconUrl } from '@/lib/pixelSprites'
 import { BESTIE_PNG_SPRITES } from '@/lib/pngSprites'
 import { getNPCSprite } from '@/lib/npcSprites'
@@ -17,7 +17,7 @@ import { ACHIEVEMENTS, Achievement, STONE_EVOLUTIONS, canEvolveWithStone, getSto
 
 const TILE = 16
 const MAPW = 15
-const MAPH = 10
+const MAPH = 14
 
 interface PartyBestia extends Bestia {
   level: number
@@ -233,7 +233,7 @@ const OPENING_STORY: StoryIntroScene[] = [
   },
   {
     speaker: 'Mamma',
-    title: 'Sveglia, Federico',
+    title: 'Sveglia, El Bocia',
     text: 'Il Dottor GheSboro ti aspetta. Muoviti, vestite e va in laboratorio: oggi scegli la tua prima Bestia e inizi davvero il viaggio.',
     accent: '#f28cae',
   },
@@ -247,7 +247,7 @@ export default function Game() {
   const moveIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const normalizePlayer = useCallback((player: Partial<GameState['player']> | undefined): GameState['player'] => ({
-    name: player?.name || 'Federico',
+    name: player?.name || 'El Bocia',
     x: typeof player?.x === 'number' ? player.x : 7,
     y: typeof player?.y === 'number' ? player.y : 9,
     money: typeof player?.money === 'number' ? player.money : 3000,
@@ -314,7 +314,7 @@ export default function Game() {
   const [titleSelection, setTitleSelection] = useState(0)
   const [showPlayerSetup, setShowPlayerSetup] = useState(false)
   const [mapTransition, setMapTransition] = useState(false)
-  const [setupName, setSetupName] = useState('Federico')
+  const [setupName, setSetupName] = useState('El Bocia')
   const [setupIdentity, setSetupIdentity] = useState<PlayerIdentity>('maschio')
   const [showStoryIntro, setShowStoryIntro] = useState(false)
   const [storyIntroStep, setStoryIntroStep] = useState(0)
@@ -364,7 +364,7 @@ export default function Game() {
   const [evolvingBestia, setEvolvingBestia] = useState<PartyBestia | null>(null)
 
   const [gs, setGs] = useState<GameState>({
-    player: { name: 'Federico', x: 7, y: 9, money: 3000, badges: [], gender: 'maschio' },
+    player: { name: 'El Bocia', x: 7, y: 9, money: 3000, badges: [], gender: 'maschio' },
     party: [],
     rival: undefined,
     pc: [],
@@ -472,7 +472,7 @@ export default function Game() {
   }, [])
 
   const startNewGame = useCallback(() => {
-    setSetupName('Federico')
+    setSetupName('El Bocia')
     setSetupIdentity('maschio')
     setTitleSelection(0)
     setShowPlayerSetup(true)
@@ -487,7 +487,7 @@ export default function Game() {
   }, [])
 
   const confirmNewGameSetup = useCallback(() => {
-    const playerName = setupName.trim() || 'Federico'
+    const playerName = setupName.trim() || 'El Bocia'
     setGs({
       player: { name: playerName, x: 4, y: 2, money: 3000, badges: [], gender: setupIdentity },
       party: [],
@@ -667,8 +667,9 @@ export default function Game() {
     const pixelUrl = getSpriteUrl(id, isBack)
     if (pixelUrl) return pixelUrl
     
-    // Final fallback to generated SVG
-    const sprite = BESTIE_SVG_SPRITES[idStr] || BESTIE_SPRITES[idStr] || getDefaultSprite()
+    // Final fallback to generated SVG (now dynamic with types)
+    const bestiaData = BESTIE[idStr] || LEGENDARY_STARTERS[idStr]
+    const sprite = BESTIE_SVG_SPRITES[idStr] || BESTIE_SPRITES[idStr] || (bestiaData ? getDynamicFallback(idStr, bestiaData.types) : getDefaultSprite())
     return isBack ? (sprite.back || sprite.front) : sprite.front
   }
 
@@ -692,8 +693,9 @@ export default function Game() {
     const iconUrl = getIconUrl(id)
     if (iconUrl) return iconUrl
     
-    // Final fallback to SVG
-    const sprite = BESTIE_SVG_SPRITES[idStr] || BESTIE_SPRITES[idStr] || getDefaultSprite()
+    // Final fallback to SVG (now dynamic)
+    const bestiaData = BESTIE[idStr] || LEGENDARY_STARTERS[idStr]
+    const sprite = BESTIE_SVG_SPRITES[idStr] || BESTIE_SPRITES[idStr] || (bestiaData ? getDynamicFallback(idStr, bestiaData.types) : getDefaultSprite())
     return sprite.icon || sprite.front
   }
 
@@ -709,7 +711,7 @@ export default function Game() {
     return PLAYER_BACK_PORTRAIT
   }
 
-  const personalizeText = (text: string): string => text.replaceAll('Federico', gs.player.name)
+  const personalizeText = (text: string): string => text.replaceAll('El Bocia', gs.player.name)
 
   const getSpeakerPortrait = (name: string): string => {
     const lower = name.toLowerCase()
@@ -739,7 +741,7 @@ export default function Game() {
     if (indoor) {
       // Indoor: darker, ceiling visible
       ctx.fillStyle = '#1a1a2e'
-      ctx.fillRect(0, 0, 240, 160)
+      ctx.fillRect(0, 0, 240, 224)
       
       // Ceiling lights effect
       for (let i = 0; i < 5; i++) {
@@ -754,12 +756,12 @@ export default function Game() {
       }
     } else {
       // Outdoor: sky gradient
-      const gradient = ctx.createLinearGradient(0, 0, 0, 160)
+      const gradient = ctx.createLinearGradient(0, 0, 0, 224)
       gradient.addColorStop(0, bgColors.sky)
       gradient.addColorStop(0.6, bgColors.ground)
       gradient.addColorStop(1, '#4a4a4a')
       ctx.fillStyle = gradient
-      ctx.fillRect(0, 0, 240, 160)
+      ctx.fillRect(0, 0, 240, 224)
       
       // Clouds for outdoor
       ctx.fillStyle = 'rgba(255,255,255,0.6)'
@@ -776,7 +778,7 @@ export default function Game() {
     }
 
     const sx = Math.max(0, Math.min(gs.player.x - 7, (map.tiles[0]?.length || 0) - MAPW))
-    const sy = Math.max(0, Math.min(gs.player.y - 4, (map.tiles.length || 0) - MAPH))
+    const sy = Math.max(0, Math.min(gs.player.y - 7, (map.tiles.length || 0) - MAPH))
 
     // Draw tiles with detail
     for (let y = sy; y < sy + MAPH + 1 && y < map.tiles.length; y++) {
@@ -918,9 +920,9 @@ export default function Game() {
         ? { hat: '#57b9ff', hair: '#6f3dc4', jacket: '#ffd54f', shirt: '#ff76aa', legs: '#57b9ff', accent: '#f6d2ae', bag: '#f0c25e' }
         : { hat: '#d13b35', hair: '#5e2d18', jacket: '#f0c330', shirt: '#ffffff', legs: '#4f7fd0', accent: '#f6d2ae', bag: '#f1c36c' }
     
-    ctx.fillStyle = 'rgba(0,0,0,0.3)'
+    ctx.fillStyle = 'rgba(0,0,0,0.25)'
     ctx.beginPath()
-    ctx.ellipse(px + 8, py + 14, 5, 3, 0, 0, Math.PI * 2)
+    ctx.ellipse(px + 8, py + 15, 6, 2.5, 0, 0, Math.PI * 2)
     ctx.fill()
 
     ctx.fillStyle = '#1a1a1a'
@@ -1073,9 +1075,9 @@ export default function Game() {
           }
 
           const dialogLines = [...ev.dialog]
-          if (ev.gift === 'pokedex') {
+          if (ev.gift === 'bestidex') {
             if (giftAlreadyReceived) {
-              dialogLines.splice(0, dialogLines.length, 'Il PokeDioex te l\'ho già dato.', 'Adesso riempilo, non lasciarlo a far polvere.')
+              dialogLines.splice(0, dialogLines.length, 'Il Bestidex te l\'ho già dato.', 'Adesso riempilo, non lasciarlo a far polvere.')
             } else {
               dialogLines.push('Tienilo stretto: ti aiuterà a capire chi hai incontrato e cosa ti manca ancora.')
             }
@@ -1096,13 +1098,13 @@ export default function Game() {
                 setShowStarterChoice(true)
                 return
               }
-              if (ev.gift === 'pokedex' && !giftAlreadyReceived) {
-                addItemToInventory(ITEMS.pokedex)
+              if (ev.gift === 'bestidex' && !giftAlreadyReceived) {
+                addItemToInventory(ITEMS.bestidex)
                 setGs(prev => ({
                   ...prev,
                   flags: { ...prev.flags, receivedGifts: [...(prev.flags.receivedGifts || []), giftKey] },
                 }))
-                setNotification('Ottenuto: PokeDioex!')
+                setNotification('Ottenuto: Bestidex!')
                 return
               }
               if (ev.gift === 'biciRubata') {
@@ -1723,7 +1725,7 @@ export default function Game() {
     
     switch (ballId) {
       case 'dogeball':
-        return 1.0 // 100% capture
+        return 1.0 // auto capture
       case 'carnevaleball':
         return 0.95 // 95% capture
       case 'dragoball':
@@ -1938,7 +1940,7 @@ export default function Game() {
     setShowOverlay(true)
   }
 
-  const showPokedex = () => {
+  const showBestidex = () => {
     const caughtBestia = gs.flags.caughtBestia || []
     const allBestia = Object.values(BESTIE)
     
@@ -1977,7 +1979,7 @@ export default function Game() {
                         {b.ev && <div className="dex-detail-ev">Evoluzione: {b.ev} (livello {b.evLvl})</div>}
                         {b.evItem && <div className="dex-detail-ev">Evoluzione: {b.evItem}</div>}
                         <div className="dex-detail-moves">Mosse: {b.moves.join(', ')}</div>
-                        <button className="back-btn" onClick={() => showPokedex()}>← Indietro</button>
+                        <button className="back-btn" onClick={() => showBestidex()}>← Indietro</button>
                       </div>
                     )
                   }
@@ -2220,7 +2222,7 @@ export default function Game() {
     }))
     setInTeleport(false)
     setShowOverlay(false)
-    setNotification(`Teletrasporto a ${loc.name}!`)
+    setNotification(`Teleporto a ${loc.name}!`)
     setTimeout(() => setNotification(''), 2000)
   }
 
@@ -2284,7 +2286,7 @@ export default function Game() {
         return
       case 2:
         setInMenu(false)
-        showPokedex()
+        showBestidex()
         return
       case 3:
         setInMenu(false)
@@ -2306,7 +2308,7 @@ export default function Game() {
         setInMenu(false)
         setShowOverlay(false)
     }
-  }, [showAchievements, showBag, showLoad, showParty, showPokedex, showSave, showTeleport])
+  }, [showAchievements, showBag, showLoad, showParty, showBestidex, showSave, showTeleport])
 
   const getControlMode = useCallback((): ControlMode => {
     if (showIntro) return 'boot'
@@ -2691,7 +2693,7 @@ export default function Game() {
         <div className="top-screen">
           <div className="screen-bezel">
             <div className={`game-container top ${gs.map.includes('canalborgo') || gs.map === 'casa' ? 'city-canalborgo' : gs.map.includes('spritzia') ? 'city-spritzia' : gs.map.includes('veronara') ? 'city-veronara' : gs.map.includes('padoana') ? 'city-padoana' : gs.map.includes('trevisella') ? 'city-trevisella' : gs.map.includes('dolomax') ? 'city-dolomax' : gs.map.includes('gardalago') ? 'city-gardalago' : ''}`}>
-              <canvas ref={canvasRef} className={`game-canvas ${shakeScreen ? 'shake' : ''}`} width={240} height={160} />
+              <canvas ref={canvasRef} className={`game-canvas ${shakeScreen ? 'shake' : ''}`} width={240} height={224} />
 
               {/* INTRO SEQUENCE */}
               {showIntro && (
@@ -2747,7 +2749,7 @@ export default function Game() {
                     <div className="title-hero">
                       <img src={getBestiaSprite('lagorion')} alt="Lagorion" className="title-hero-side pixel-sprite" />
                       <img src={getBestiaSprite('serenissima')} alt="Serenissima" className="title-hero-main pixel-sprite" />
-                      <img src={getBestiaSprite('ombraspritz')} alt="Ombradriz" className="title-hero-side pixel-sprite" />
+                      <img src={getBestiaSprite('ombraspritz')} alt="OmbraSpritz" className="title-hero-side pixel-sprite" />
                     </div>
 
                     <div className="title-menu-card">
@@ -2787,7 +2789,7 @@ export default function Game() {
                         value={setupName}
                         maxLength={12}
                         onChange={(e) => setSetupName(e.target.value)}
-                        placeholder="Federico"
+                        placeholder="El Bocia"
                       />
                     </div>
                     <div className="identity-grid">
@@ -2824,7 +2826,7 @@ export default function Game() {
                       {storyIntroStep === 1 && (
                         <>
                           <img src={getBestiaSprite('lagorion')} alt="Lagorion" className="story-stage-side pixel-sprite left" />
-                          <img src={getBestiaSprite('ombraspritz')} alt="Ombradriz" className="story-stage-side pixel-sprite right" />
+                          <img src={getBestiaSprite('ombraspritz')} alt="OmbraSpritz" className="story-stage-side pixel-sprite right" />
                         </>
                       )}
                     </div>
@@ -2889,7 +2891,7 @@ export default function Game() {
               {/* Dialog */}
               {inDialog && (
                 <div className="dialog-box">
-                  <img src={getSpeakerPortrait(speaker || 'Federico')} alt={speaker || 'Narratore'} className="dialog-portrait pixel-sprite" />
+                  <img src={getSpeakerPortrait(speaker || 'El Bocia')} alt={speaker || 'Narratore'} className="dialog-portrait pixel-sprite" />
                   {speaker && <div className="dialog-speaker">{speaker}</div>}
                   <div className="dialog-text">{dialogs[0]}</div>
                   <div className="dialog-arrow">▼</div>
@@ -3100,7 +3102,7 @@ export default function Game() {
                   <div className="overlay-content">
                     {inMenu ? (
                       <div className="menu-options">
-                        {['Squadra', 'Zaino', 'Bestidex', 'Teletrasporto', 'Trofei', 'Salva', 'Carica', 'Chiudi'].map((label, index) => (
+                        {['Squadra', 'Zaino', 'Bestidex', 'Teleporto', 'Trofei', 'Salva', 'Carica', 'Chiudi'].map((label, index) => (
                           <div
                             key={label}
                             className={`menu-option ${menuSelection === index ? 'selected' : ''}`}
@@ -3307,7 +3309,7 @@ export default function Game() {
           position: relative;
           width: 100%;
           height: 100%;
-          aspect-ratio: 3 / 2;
+          aspect-ratio: 240 / 224;
           min-height: 0;
           background: #000;
           overflow: hidden;
@@ -4547,7 +4549,7 @@ export default function Game() {
         }
 
         .item-qty {
-          margin-left: auto;
+          margin-left: 100%;
           color: #666;
         }
 
@@ -5446,7 +5448,7 @@ export default function Game() {
             height: 100%;
             max-width: 100vw;
             border-radius: 0;
-            aspect-ratio: auto;
+            aspect-ratio: 15 / 18;
             min-height: 0;
             flex: 1;
           }
@@ -5460,23 +5462,23 @@ export default function Game() {
             flex-shrink: 0;
             display: flex;
             align-items: stretch;
-            height: auto;
-            min-height: auto;
+            height: 100%;
+            min-height: 100%;
           }
 
           .screen-bezel-bottom {
             width: 100%;
-            height: auto;
-            min-height: 22dvh;
-            max-height: 30dvh;
+            height: 100%;
+            min-height: 20dvh;
+            max-height: 25dvh;
             border-radius: 0;
             background: linear-gradient(180deg, #111a33 0%, #0b1224 100%);
           }
 
           .bottom-content {
-            height: auto;
-            min-height: 22dvh;
-            max-height: 30dvh;
+            height: 100%;
+            min-height: 20dvh;
+            max-height: 25dvh;
           }
 
           .info-panel {
@@ -5524,7 +5526,7 @@ export default function Game() {
           }
 
           .start-select {
-            top: auto;
+            top: 100%;
             bottom: 10px;
             display: flex;
             gap: 18px;
@@ -5554,7 +5556,7 @@ export default function Game() {
 
           .bottom-screen {
             flex-shrink: 0;
-            height: auto;
+            height: 100%;
           }
 
           .dpad-container {
@@ -5584,7 +5586,7 @@ export default function Game() {
           }
 
           .start-select {
-            top: auto;
+            top: 100%;
             bottom: 8px;
             gap: 14px;
           }

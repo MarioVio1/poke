@@ -156,19 +156,27 @@ export const renderTile = (
   // Tile detail pattern
   ctx.fillStyle = detailColor
   if (tile.type === 'grass') {
-    ctx.fillStyle = 'rgba(255,255,255,0.08)'
-    ctx.fillRect(x, y, size, 1)
-    ctx.fillRect(x + 2, y + 2, 2, 5)
-    ctx.fillRect(x + 7, y + 3, 1, 4)
-    ctx.fillRect(x + 11, y + 5, 2, 5)
-    ctx.fillRect(x + 5, y + 10, 2, 4)
-    ctx.fillStyle = 'rgba(255,255,255,0.1)'
-    ctx.fillRect(x + 1, y + 1, size - 2, 1)
-    if ((x * 7 + y * 13) % 29 === 0) {
-      ctx.fillStyle = '#f26f7e'
-      ctx.fillRect(x + 4, y + 9, 2, 2)
-      ctx.fillStyle = '#ffe56f'
-      ctx.fillRect(x + 10, y + 11, 2, 2)
+    // Grass blades
+    ctx.fillStyle = tile.detail || 'rgba(0,0,0,0.1)'
+    ctx.fillRect(x + 3, y + 4, 1, 3)
+    ctx.fillRect(x + 4, y + 5, 1, 2)
+    ctx.fillRect(x + 10, y + 8, 1, 4)
+    ctx.fillRect(x + 11, y + 9, 1, 3)
+
+    // Highlights
+    ctx.fillStyle = 'rgba(255,255,255,0.2)'
+    ctx.fillRect(x + 2, y + 3, 1, 1)
+    ctx.fillRect(x + 9, y + 7, 1, 1)
+
+    // Random flowers
+    if ((x * 7 + y * 13) % 31 === 0) {
+      ctx.fillStyle = '#ff5252' // Red flower
+      ctx.fillRect(x + 6, y + 6, 2, 2)
+      ctx.fillStyle = '#ffeb3b' // Center
+      ctx.fillRect(x + 6.5, y + 6.5, 1, 1)
+    } else if ((x * 11 + y * 17) % 41 === 0) {
+      ctx.fillStyle = '#ba68c8' // Purple flower
+      ctx.fillRect(x + 12, y + 4, 2, 2)
     }
   }
   
@@ -181,19 +189,18 @@ export const renderTile = (
   }
 
   if (tile.type === 'water') {
-    const waveOffset = Math.sin(time / 260 + x / 11) * 2
-    ctx.fillStyle = '#7ad6ef'
+    const waveOffset = Math.sin(time / 400 + (x + y) / 20) * 3
+    ctx.fillStyle = '#4fc3f7' // Base water
     ctx.fillRect(x, y, size, size)
-    ctx.fillStyle = '#d8fbff'
-    ctx.fillRect(x + waveOffset + 2, y + 4, 5, 2)
-    ctx.fillRect(x - waveOffset + 8, y + 9, 4, 2)
-    ctx.fillStyle = '#3ea6cb'
-    ctx.fillRect(x, y + size - 2, size, 2)
-    ctx.fillStyle = 'rgba(255,255,255,0.28)'
-    ctx.fillRect(x + 1, y + 1, size - 2, 1)
-    ctx.fillStyle = '#4f94d4'
-    ctx.fillRect(x, y + 6, size, 1)
-    ctx.fillRect(x, y + 12, size, 1)
+
+    // Wave highlights
+    ctx.fillStyle = 'rgba(255,255,255,0.4)'
+    ctx.fillRect(x + ((x + waveOffset) % size), y + 4, 4, 1)
+    ctx.fillRect(x + ((y - waveOffset + size) % size), y + 10, 3, 1)
+
+    // Deep water patches
+    ctx.fillStyle = 'rgba(0,0,0,0.05)'
+    ctx.fillRect(x + 2, y + 6, 6, 4)
   }
   
   if (tile.type === 'wall') {
@@ -420,26 +427,29 @@ export const renderTile = (
   }
 
   if (tile.type === 'tree') {
-    if (tileType === 9) {
+    if (tileType === 9) { // Trunk
       ctx.fillStyle = '#7c5c3a'
-      ctx.fillRect(x + 5, y + 4, 6, 12)
-      ctx.fillStyle = '#9a754c'
-      ctx.fillRect(x + 6, y + 5, 1, 10)
-    } else {
-      ctx.fillStyle = '#4f9f43'
+      ctx.fillRect(x + 5, y, 6, size)
+      ctx.fillStyle = 'rgba(0,0,0,0.1)'
+      ctx.fillRect(x + 5, y, 2, size)
+    } else { // Foliage
+      // Dark base
+      ctx.fillStyle = '#2e7d32'
       ctx.beginPath()
-      ctx.arc(x + 8, y + 9, 7, 0, Math.PI * 2)
+      ctx.arc(x + 8, y + 8, 8, 0, Math.PI * 2)
       ctx.fill()
-      ctx.fillStyle = '#c8ff88'
+
+      // Main green
+      ctx.fillStyle = '#4caf50'
       ctx.beginPath()
-      ctx.arc(x + 8, y + 6, 4, 0, Math.PI * 2)
+      ctx.arc(x + 8, y + 6, 6, 0, Math.PI * 2)
       ctx.fill()
-      ctx.fillStyle = '#77cc58'
+
+      // Highlights
+      ctx.fillStyle = '#81c784'
       ctx.beginPath()
-      ctx.arc(x + 5, y + 9, 4, 0, Math.PI * 2)
+      ctx.arc(x + 5, y + 4, 3, 0, Math.PI * 2)
       ctx.fill()
-      ctx.fillStyle = '#5cad4f'
-      ctx.fillRect(x + 10, y + 10, 2, 2)
     }
   }
 }

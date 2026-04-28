@@ -549,32 +549,116 @@ BESTIE_SVG_SPRITES.spritzino = {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// Default sprite generator
+// Dynamic Fallback Sprite Generator
 // ═══════════════════════════════════════════════════════════════
-export const getDefaultSprite = (): { front: string; back: string; icon: string } => {
+const TYPE_COLORS: Record<string, string> = {
+  nature: '#4CAF50', water: '#2196F3', fire: '#F44336',
+  air: '#00BCD4', earth: '#795548', magic: '#E91E63',
+  poison: '#9C27B0', ice: '#E1F5FE', dragon: '#3F51B5',
+  psycho: '#FF4081', normal: '#9E9E9E', sweet: '#FFEB3B',
+  electric: '#FFEB3B', shadow: '#212121', flying: '#81D4FA'
+}
+
+export const getDynamicFallback = (id: string, types: string[] = ['normal']): SpriteData => {
+  const primaryColor = TYPE_COLORS[types[0]] || '#9E9E9E'
+  const secondaryColor = TYPE_COLORS[types[1]] || primaryColor
+
+  const hasType = (t: string) => types.includes(t)
+  const typeIcon = hasType('fire') ? '🔥' : hasType('water') ? '💧' : hasType('nature') ? '🌿' : hasType('electric') ? '⚡' : '🐾'
+
+  let features = ''
+
+  // Wings for Aria/Flying/Magic
+  if (hasType('air') || hasType('magic') || hasType('flying')) {
+    features += `
+      <path d="M 20 40 Q 0 10 25 15" fill="${secondaryColor}" opacity="0.6"/>
+      <path d="M 76 40 Q 96 10 71 15" fill="${secondaryColor}" opacity="0.6"/>
+    `
+  }
+
+  // Fins/Tail for Water/Ice
+  if (hasType('water') || hasType('ice')) {
+    features += `
+      <path d="M 76 65 Q 95 60 92 80 Q 85 95 70 85" fill="${primaryColor}"/>
+      <path d="M 48 20 Q 48 5 35 15" fill="${secondaryColor}" opacity="0.5"/>
+    `
+  }
+
+  // Flames for Fire
+  if (hasType('fire')) {
+    features += `
+      <path d="M 35 25 Q 48 -10 61 25" fill="#FF9800" opacity="0.8"/>
+      <path d="M 40 20 Q 48 5 56 20" fill="#F44336"/>
+    `
+  }
+
+  // Horns for Dragon/Earth/Normal/Poison
+  if (hasType('dragon') || hasType('earth') || hasType('poison')) {
+    features += `
+      <path d="M 30 25 L 15 5" stroke="${secondaryColor}" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 66 25 L 81 5" stroke="${secondaryColor}" stroke-width="5" stroke-linecap="round"/>
+    `
+  }
+
+  // Leaves/Vines for Nature
+  if (hasType('nature')) {
+    features += `
+      <circle cx="25" cy="25" r="6" fill="#4CAF50"/>
+      <circle cx="71" cy="25" r="6" fill="#4CAF50"/>
+      <path d="M 48 85 L 48 95" stroke="#2E7D32" stroke-width="3"/>
+    `
+  }
+
+  // Bubbles for Poison/Magic/Sweet
+  if (hasType('poison') || hasType('magic') || hasType('sweet')) {
+    features += `
+      <circle cx="20" cy="30" r="4" fill="#E1BEE7" opacity="0.7"/>
+      <circle cx="76" cy="30" r="4" fill="#CE93D8" opacity="0.7"/>
+      <circle cx="25" cy="15" r="3" fill="#F3E5F5" opacity="0.6"/>
+    `
+  }
+
   return {
     front: createSvg(`
-      <circle cx="48" cy="48" r="35" fill="#9e9e9e"/>
-      <circle cx="38" cy="40" r="8" fill="#fff"/>
-      <circle cx="58" cy="40" r="8" fill="#fff"/>
-      <circle cx="39" cy="41" r="4" fill="#1a1a2e"/>
-      <circle cx="59" cy="41" r="4" fill="#1a1a2e"/>
-      <path d="M 38 58 Q 48 68 58 58" stroke="#1a1a2e" stroke-width="3" fill="none"/>
+      <defs>
+        <linearGradient id="grad-${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:${primaryColor}"/>
+          <stop offset="100%" style="stop-color:${secondaryColor}"/>
+        </linearGradient>
+        <filter id="shadow">
+          <feDropShadow dx="0" dy="2" stdDeviation="1" flood-opacity="0.3"/>
+        </filter>
+      </defs>
+      ${features}
+      <!-- Monster Main Body (Chunky pixel style) -->
+      <path d="M 24 75 L 24 35 L 32 25 L 64 25 L 72 35 L 72 75 L 64 85 L 32 85 Z" fill="url(#grad-${id})" filter="url(#shadow)"/>
+
+      <!-- Face Details -->
+      <rect x="34" y="40" width="8" height="10" fill="white"/>
+      <rect x="54" y="40" width="8" height="10" fill="white"/>
+      <rect x="36" y="42" width="4" height="4" fill="#1a1a2e"/>
+      <rect x="56" y="42" width="4" height="4" fill="#1a1a2e"/>
+
+      <!-- Mouth -->
+      <path d="M 40 65 L 56 65" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- Type Indicator -->
+      <text x="48" y="78" text-anchor="middle" font-size="18" filter="drop-shadow(1px 1px 1px rgba(0,0,0,0.5))">${typeIcon}</text>
+      <text x="48" y="92" text-anchor="middle" fill="white" font-size="7" font-family="monospace" font-weight="bold" stroke="black" stroke-width="0.3">${types.join('/').toUpperCase()}</text>
     `),
     back: createSvg(`
-      <circle cx="48" cy="48" r="38" fill="#757575"/>
-      <circle cx="40" cy="45" r="5" fill="#9e9e9e"/>
-      <circle cx="56" cy="45" r="5" fill="#9e9e9e"/>
+      <path d="M 24 80 L 24 40 L 32 30 L 64 30 L 72 40 L 72 80 L 64 90 L 32 90 Z" fill="${primaryColor}" opacity="0.8"/>
+      <path d="M 32 40 L 64 40 L 64 70 L 32 70 Z" fill="${secondaryColor}" opacity="0.5"/>
     `),
     icon: createSvg(`
-      <circle cx="24" cy="24" r="20" fill="#9e9e9e"/>
-      <circle cx="20" cy="22" r="4" fill="#fff"/>
-      <circle cx="28" cy="22" r="4" fill="#fff"/>
-      <circle cx="21" cy="23" r="2" fill="#1a1a2e"/>
-      <circle cx="29" cy="23" r="2" fill="#1a1a2e"/>
+      <rect x="4" y="4" width="40" height="40" rx="8" fill="${primaryColor}"/>
+      <rect x="12" y="16" width="6" height="6" fill="#fff"/>
+      <rect x="30" y="16" width="6" height="6" fill="#fff"/>
     `, 48, 48)
   }
 }
+
+export const getDefaultSprite = (): SpriteData => getDynamicFallback('unknown', ['normal'])
 
 // Export for use in game
 export const BESTIE_SPRITES = BESTIE_SVG_SPRITES
