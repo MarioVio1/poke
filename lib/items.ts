@@ -14,7 +14,7 @@ export interface GameItem {
 
 export const ITEMS: Record<string, GameItem> = {
   // ═══════════════════════════════════════════════════════════════════
-  // VENETIAN BESTIEBALLS - 12 balls for different situations
+  // VENETIAN POKEBALLS - 12 balls for different situations
   // ═══════════════════════════════════════════════════════════════════
   
   // BASIC BALLS
@@ -1211,9 +1211,9 @@ export const ITEMS: Record<string, GameItem> = {
     effect: 'map_unlock',
     sprite: 'mappa',
   },
-  bestidex: {
-    id: 'bestidex',
-    name: 'Bestidex',
+  pokedex: {
+    id: 'pokedex',
+    name: 'PokeDioex',
     desc: 'Enciclopedia ufficiale dei Bestie de Venetia, distribuita nei Centri Bestie e in alcune botteghe.',
     type: 'key',
     price: 0,
@@ -1304,8 +1304,8 @@ export const ITEMS: Record<string, GameItem> = {
   },
   bestidex_nazionale: {
     id: 'bestidex_nazionale',
-    name: 'Bestidex Nazionale',
-    desc: 'Aggiornamento completo del Bestidex con tutte le regioni note.',
+    name: 'PokeDioex Nazionale',
+    desc: 'Aggiornamento completo del PokeDioex con tutte le regioni note.',
     type: 'key',
     price: 0,
     effect: 'bestidex_national',

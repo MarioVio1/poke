@@ -383,7 +383,7 @@ export const MAIN_QUESTS: Quest[] = [
     ],
     rewards: [
       { type: "money", amount: 500, description: "₿500" },
-      { type: "keyItem", item: "bestidex", description: "Bestidex!" }
+      { type: "keyItem", item: "pokedex", description: "PokeDioex!" }
     ],
     prerequisites: ["choice_of_destiny"],
     repeatable: false,
@@ -833,17 +833,17 @@ export const SIDE_QUESTS: Quest[] = [
   },
   {
     id: "bestia_dex_complete",
-    name: "Bestidex Completo",
-    description: "Vedi tutte le voci del Bestidex",
+    name: "PokeDioex Completo",
+    description: "Vedi tutte le voci del PokeDioex",
     type: "collection",
     chapter: 10,
     location: "any",
     giver: "Prof. GheSboro",
     objectives: [
-      { type: "visit", target: "bestidex", description: "Completa il Bestidex" }
+      { type: "visit", target: "bestidex", description: "Completa il PokeDioex" }
     ],
     rewards: [
-      { type: "keyItem", item: "bestidex_nazionale", description: "Bestidex Nazionale" }
+      { type: "keyItem", item: "bestidex_nazionale", description: "PokeDioex Nazionale" }
     ],
     prerequisites: ["champion_battle"],
     repeatable: false,

@@ -1075,9 +1075,9 @@ export default function Game() {
           }
 
           const dialogLines = [...ev.dialog]
-          if (ev.gift === 'bestidex') {
+          if (ev.gift === 'pokedex') {
             if (giftAlreadyReceived) {
-              dialogLines.splice(0, dialogLines.length, 'Il Bestidex te l\'ho già dato.', 'Adesso riempilo, non lasciarlo a far polvere.')
+              dialogLines.splice(0, dialogLines.length, 'Il PokeDioex te l\'ho già dato.', 'Adesso riempilo, non lasciarlo a far polvere.')
             } else {
               dialogLines.push('Tienilo stretto: ti aiuterà a capire chi hai incontrato e cosa ti manca ancora.')
             }
@@ -1098,13 +1098,13 @@ export default function Game() {
                 setShowStarterChoice(true)
                 return
               }
-              if (ev.gift === 'bestidex' && !giftAlreadyReceived) {
-                addItemToInventory(ITEMS.bestidex)
+              if (ev.gift === 'pokedex' && !giftAlreadyReceived) {
+                addItemToInventory(ITEMS.pokedex)
                 setGs(prev => ({
                   ...prev,
                   flags: { ...prev.flags, receivedGifts: [...(prev.flags.receivedGifts || []), giftKey] },
                 }))
-                setNotification('Ottenuto: Bestidex!')
+                setNotification('Ottenuto: PokeDioex!')
                 return
               }
               if (ev.gift === 'biciRubata') {
@@ -1725,7 +1725,7 @@ export default function Game() {
     
     switch (ballId) {
       case 'dogeball':
-        return 1.0 // auto capture
+        return 1.0 // 100% capture
       case 'carnevaleball':
         return 0.95 // 95% capture
       case 'dragoball':
@@ -1940,7 +1940,7 @@ export default function Game() {
     setShowOverlay(true)
   }
 
-  const showBestidex = () => {
+  const showPokedex = () => {
     const caughtBestia = gs.flags.caughtBestia || []
     const allBestia = Object.values(BESTIE)
     
@@ -1979,7 +1979,7 @@ export default function Game() {
                         {b.ev && <div className="dex-detail-ev">Evoluzione: {b.ev} (livello {b.evLvl})</div>}
                         {b.evItem && <div className="dex-detail-ev">Evoluzione: {b.evItem}</div>}
                         <div className="dex-detail-moves">Mosse: {b.moves.join(', ')}</div>
-                        <button className="back-btn" onClick={() => showBestidex()}>← Indietro</button>
+                        <button className="back-btn" onClick={() => showPokedex()}>← Indietro</button>
                       </div>
                     )
                   }
@@ -2222,7 +2222,7 @@ export default function Game() {
     }))
     setInTeleport(false)
     setShowOverlay(false)
-    setNotification(`Teleporto a ${loc.name}!`)
+    setNotification(`Teletrasporto a ${loc.name}!`)
     setTimeout(() => setNotification(''), 2000)
   }
 
@@ -2286,7 +2286,7 @@ export default function Game() {
         return
       case 2:
         setInMenu(false)
-        showBestidex()
+        showPokedex()
         return
       case 3:
         setInMenu(false)
@@ -2308,7 +2308,7 @@ export default function Game() {
         setInMenu(false)
         setShowOverlay(false)
     }
-  }, [showAchievements, showBag, showLoad, showParty, showBestidex, showSave, showTeleport])
+  }, [showAchievements, showBag, showLoad, showParty, showPokedex, showSave, showTeleport])
 
   const getControlMode = useCallback((): ControlMode => {
     if (showIntro) return 'boot'
@@ -3102,7 +3102,7 @@ export default function Game() {
                   <div className="overlay-content">
                     {inMenu ? (
                       <div className="menu-options">
-                        {['Squadra', 'Zaino', 'Bestidex', 'Teleporto', 'Trofei', 'Salva', 'Carica', 'Chiudi'].map((label, index) => (
+                        {['Squadra', 'Zaino', 'Bestidex', 'Teletrasporto', 'Trofei', 'Salva', 'Carica', 'Chiudi'].map((label, index) => (
                           <div
                             key={label}
                             className={`menu-option ${menuSelection === index ? 'selected' : ''}`}
@@ -4549,7 +4549,7 @@ export default function Game() {
         }
 
         .item-qty {
-          margin-left: 100%;
+          margin-left: auto;
           color: #666;
         }
 
@@ -5448,7 +5448,7 @@ export default function Game() {
             height: 100%;
             max-width: 100vw;
             border-radius: 0;
-            aspect-ratio: 15 / 18;
+            aspect-ratio: auto;
             min-height: 0;
             flex: 1;
           }
@@ -5462,13 +5462,13 @@ export default function Game() {
             flex-shrink: 0;
             display: flex;
             align-items: stretch;
-            height: 100%;
-            min-height: 100%;
+            height: auto;
+            min-height: auto;
           }
 
           .screen-bezel-bottom {
             width: 100%;
-            height: 100%;
+            height: auto;
             min-height: 20dvh;
             max-height: 25dvh;
             border-radius: 0;
@@ -5476,7 +5476,7 @@ export default function Game() {
           }
 
           .bottom-content {
-            height: 100%;
+            height: auto;
             min-height: 20dvh;
             max-height: 25dvh;
           }
@@ -5526,7 +5526,7 @@ export default function Game() {
           }
 
           .start-select {
-            top: 100%;
+            top: auto;
             bottom: 10px;
             display: flex;
             gap: 18px;
@@ -5556,7 +5556,7 @@ export default function Game() {
 
           .bottom-screen {
             flex-shrink: 0;
-            height: 100%;
+            height: auto;
           }
 
           .dpad-container {
@@ -5586,7 +5586,7 @@ export default function Game() {
           }
 
           .start-select {
-            top: 100%;
+            top: auto;
             bottom: 8px;
             gap: 14px;
           }
